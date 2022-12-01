@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.FoodClasses.Food;
+import com.mygdx.game.FoodClasses.FoodItems;
+
 
 public class PiazzaPanic extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -18,6 +21,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		Texture chefTexture = new Texture("badlogic.jpg");
 		chef = new Chef(chefTexture, 200, 20);
+
+		for (Food food: FoodItems.finishedFoods) {
+			System.out.println(food.name);
+		}
 	}
 
 	@Override

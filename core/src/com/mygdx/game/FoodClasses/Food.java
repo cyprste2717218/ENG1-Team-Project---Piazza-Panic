@@ -1,14 +1,16 @@
-package com.mygdx.game;
+package com.mygdx.game.FoodClasses;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.interfaces.IInteractable;
 
-public class Food {
+public class Food implements IInteractable {
 
-    private String name;
-    private Texture foodSprite;
-    private boolean isFryable;
-    private boolean isChoppable;
-    private boolean isBakeable;
+    public String name;
+    public Texture foodSprite;
+    public boolean isFryable;
+    public boolean isChoppable;
+    public boolean isBakeable;
+    public int reward;
 
     public Food(FoodBuilder builder){
         name = builder.name;
@@ -16,18 +18,27 @@ public class Food {
         isFryable = builder.isFryable;
         isBakeable = builder.isBakeable;
         isChoppable = builder.isChoppable;
+        reward = builder.reward;
+
+        if(reward > 0){
+            FoodItems.finishedFoods.add(this);
+        }
     }
 
-    public void onInteract(){
+    @Override
+    public void onInteract() {
 
     }
 
-    private static class FoodBuilder{
+
+    public static class FoodBuilder{
         private String name;
         private Texture foodSprite;
         private boolean isFryable = false;
         private boolean isChoppable = false;
         private boolean isBakeable = false;
+
+        private int reward = 0;
 
         public FoodBuilder(String name, Texture foodSprite){
             this.name = name;
@@ -48,6 +59,12 @@ public class Food {
             isBakeable = true;
             return this;
         }
+
+        public FoodBuilder setReward(int reward){
+            this.reward = reward;
+            return this;
+        }
+
 
         public Food build(){
             return new Food(this);
