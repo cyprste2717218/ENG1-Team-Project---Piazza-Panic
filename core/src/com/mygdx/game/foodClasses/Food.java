@@ -1,4 +1,4 @@
-package com.mygdx.game.FoodClasses;
+package com.mygdx.game.foodClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.interfaces.IInteractable;
@@ -10,6 +10,8 @@ public class Food implements IInteractable {
     public boolean isFryable;
     public boolean isChoppable;
     public boolean isBakeable;
+    public boolean isFormable;
+    public boolean isToastable;
     public int reward;
 
     public Food(FoodBuilder builder){
@@ -18,6 +20,8 @@ public class Food implements IInteractable {
         isFryable = builder.isFryable;
         isBakeable = builder.isBakeable;
         isChoppable = builder.isChoppable;
+        isFormable = builder.isFormable;
+        isToastable = builder.isToastable;
         reward = builder.reward;
 
         if(reward > 0){
@@ -37,7 +41,8 @@ public class Food implements IInteractable {
         private boolean isFryable = false;
         private boolean isChoppable = false;
         private boolean isBakeable = false;
-
+        private boolean isFormable = false;
+        private boolean isToastable = false;
         private int reward = 0;
 
         public FoodBuilder(String name, Texture foodSprite){
@@ -60,11 +65,20 @@ public class Food implements IInteractable {
             return this;
         }
 
+        public FoodBuilder setFormable(){
+            isFormable = true;
+            return this;
+        }
+
+        public FoodBuilder setToastable(){
+            isToastable = true;
+            return this;
+        }
+
         public FoodBuilder setReward(int reward){
             this.reward = reward;
             return this;
         }
-
 
         public Food build(){
             return new Food(this);

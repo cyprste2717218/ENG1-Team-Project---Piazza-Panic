@@ -1,9 +1,10 @@
 package com.mygdx.game;
 
-import com.mygdx.game.FoodClasses.Food;
+import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.interfaces.ITimer;
 
-public class Customer implements IInteractable {
+public class Customer implements IInteractable, ITimer {
     boolean beenServed;
     Food order;
     float orderTimer;
@@ -18,5 +19,13 @@ public class Customer implements IInteractable {
     @Override
     public void onInteract() {
 
+    }
+
+    @Override
+    public float runTimer(float timerValue) {
+        if(timerValue == 0){
+            //FAILURE CONDITION
+        }
+        return timerValue--;
     }
 }

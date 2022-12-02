@@ -1,7 +1,7 @@
-package com.mygdx.game;
+package com.mygdx.game.stations;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.game.FoodClasses.Food;
+import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
 
 import java.util.Stack;

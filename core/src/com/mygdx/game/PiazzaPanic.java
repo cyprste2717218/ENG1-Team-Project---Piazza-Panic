@@ -4,11 +4,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.game.FoodClasses.Food;
-import com.mygdx.game.FoodClasses.FoodItems;
+import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.foodClasses.FoodItems;
+import com.mygdx.game.stations.Stations;
 
 
 public class PiazzaPanic extends ApplicationAdapter {
@@ -25,6 +25,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		for (Food food: FoodItems.finishedFoods) {
 			System.out.println(food.name);
 		}
+		Stations.setUpStations();
 	}
 
 	@Override
