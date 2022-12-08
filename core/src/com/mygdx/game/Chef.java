@@ -5,11 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.stations.Station;
 
 import java.util.Stack;
 
 public class Chef {
-    private final int chefSize = 16;
+    private final int chefSize = 64;
     public Sprite chefSprite;
     private Stack<Food> foodStack;
 
