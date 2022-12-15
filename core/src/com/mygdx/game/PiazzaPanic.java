@@ -19,8 +19,8 @@ public class PiazzaPanic extends ApplicationAdapter {
 	public void create () {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
-		Texture chefTexture = new Texture("badlogic.jpg");
-		chef = new Chef(chefTexture, 200, 20);
+		Texture chefTexture = new Texture("chefSprite.png");
+		chef = new Chef(chefTexture);
 
 		for (Food food: FoodItems.finishedFoods) {
 			System.out.println(food.name);

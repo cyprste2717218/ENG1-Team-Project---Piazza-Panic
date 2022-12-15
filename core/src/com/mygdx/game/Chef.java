@@ -11,12 +11,22 @@ import com.mygdx.game.stations.Station;
 import java.util.Stack;
 
 public class Chef {
-    private final int chefSize = 64;
+
+    public enum Facing{
+        UP,
+        LEFT,
+        DOWN,
+        RIGHT;
+    }
+
+    private Facing facing = Facing.UP;
+    private final int chefSize = 256;
     public Sprite chefSprite;
     private Stack<Food> foodStack;
 
-    public Chef(Texture chefTexture, int spawnPosX, int spawnPosY){
-        this.chefSprite = new Sprite(chefTexture, spawnPosX, spawnPosY, chefSize, chefSize);
+    public Chef(Texture chefTexture){
+        this.chefSprite = new Sprite(chefTexture, chefSize, chefSize);
+        this.chefSprite.setScale(0.125f);
         foodStack = new Stack<>();
     }
 
@@ -24,20 +34,21 @@ public class Chef {
         final float speed = 100;
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
-            chefSprite.setRotation(0);
+            facing = facing.UP;
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.S)){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
-            chefSprite.setRotation(180);
+            facing = facing.DOWN;
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.A)){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
-            chefSprite.setRotation(270);
+            facing = facing.LEFT;
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
-            chefSprite.setRotation(90);
+            facing = facing.RIGHT;
         }
+        chefSprite.setRotation(90 * facing.ordinal());
     }
 
     public void interact(){
