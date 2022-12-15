@@ -2,23 +2,39 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.stations.Stations;
+import com.mygdx.game.utils.TileMapUtils;
 
 
 public class PiazzaPanic extends ApplicationAdapter {
+
+	private World world;
 	private SpriteBatch batch;
 	private Chef chef;
 	private OrthographicCamera camera;
+
+	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+	private TiledMap tiledMap;
+
 	@Override
 	public void create () {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(Gdx.graphics.getWidth()/2.5f, Gdx.graphics.getHeight()/2, camera.position.z);
 		batch = new SpriteBatch();
+		world = new World(new Vector2(0f,0f), false);
 		Texture chefTexture = new Texture("chefSprite.png");
 		chef = new Chef(chefTexture);
 
@@ -26,17 +42,30 @@ public class PiazzaPanic extends ApplicationAdapter {
 			System.out.println(food.name);
 		}
 		Stations.setUpStations();
+
+		tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
+		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+		boolean[][] wallChecker = TileMapUtils.tileMapToArray(tiledMap);
+		System.out.println(TileMapUtils.tileMapToString(tiledMap));
+
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 1, 1, 1);
 		camera.update();
+		Gdx.gl.glClearColor(1f,1f,1f,1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		orthogonalTiledMapRenderer.setView(camera);
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
 		chef.chefSprite.draw(batch);
 		batch.end();
+
+		orthogonalTiledMapRenderer.render();
+
 		chef.move();
 	}
 	
@@ -44,5 +73,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		chef.chefSprite.getTexture().dispose();
+		tiledMap.dispose();
+		orthogonalTiledMapRenderer.dispose();
 	}
 }

@@ -2,8 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.stations.Station;
@@ -18,7 +20,6 @@ public class Chef {
         DOWN,
         RIGHT;
     }
-
     private Facing facing = Facing.UP;
     private final int chefSize = 256;
     public Sprite chefSprite;
