@@ -33,7 +33,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
-	private boolean[][] walls;
+	private Node[][] walls;
+
+	private boolean isMouseMovement = true;
 
 	@Override
 	public void create () {
@@ -73,7 +75,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch.end();
 
 		orthogonalTiledMapRenderer.render();
-		chef.move(tiledMap, walls);
+		chef.move(tiledMap, walls, isMouseMovement, camera);
+		//Maybe return the worldCoords
+		//can we lerp in here?
 	}
 
 
