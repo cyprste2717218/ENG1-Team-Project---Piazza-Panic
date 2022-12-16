@@ -69,7 +69,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
-		chef.chefSprite.draw(batch);
+		chef.getChefSprite().draw(batch);
 		batch.end();
 
 		orthogonalTiledMapRenderer.render();
@@ -80,7 +80,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		chef.chefSprite.getTexture().dispose();
+		chef.getChefSprite().getTexture().dispose();
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
 	}
