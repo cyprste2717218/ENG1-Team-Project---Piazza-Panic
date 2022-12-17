@@ -9,7 +9,11 @@ public class PathfindingRunnable implements Runnable{
     private Node start;
     private Node end;
     private Node[][] walls;
-    public Vector2[] gridPath;
+    private Vector2[] gridPath;
+
+    public Vector2[] getGridPath(){
+        return gridPath;
+    }
 
     public PathfindingRunnable(Node start, Node end, Node[][] walls){
         this.start = start;

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
+import com.mygdx.game.utils.CollisionHandler;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
@@ -26,11 +27,9 @@ public class Chef implements IPathfinder {
     private Sprite chefSprite;
     private Stack<Food> foodStack;
     private int squareSize = 32;
-    private static final int COLLISION_BUFFER = 2;
     private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;
     final float speed = 100;
-
     private int pathfindingCounter = 0;
     @Override
     public void setPathCounter(int counter) {
@@ -67,117 +66,81 @@ public class Chef implements IPathfinder {
     }
 
 
-    public void move(TiledMap tiledMap, Node[][] walls, boolean isMouseMovement, Camera camera){
+    public void move(TiledMap tiledMap, Node[][] walls, Camera camera){
 
-        if(!isMouseMovement) keyBoardMovement(tiledMap, walls);
-        else{
-            mouseMovement(tiledMap, walls, camera);
-            if(worldPath != null){
-                PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
-                //PathfindingUtils.drawPath(worldPath, camera);
-            }
-        }
+        if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, walls);
+        else mouseMovement(tiledMap, walls, camera);
+
+        if(worldPath != null) PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
     }
 
     private void mouseMovement(TiledMap tiledMap, Node[][] walls, Camera camera){
-        //Get position of mouse in world on click
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            if(TimeUtils.millis() - 250 < mouseClickTime) return;
 
-            mouseClickTime = TimeUtils.millis();
-            float endWorldX = Gdx.input.getX();
-            float endWorldY = Gdx.input.getY();
-            Vector3 unprojectedCoord = camera.unproject(new Vector3(endWorldX, endWorldY, 0));
-            endWorldX = unprojectedCoord.x - 120;
-            endWorldY = unprojectedCoord.y - 120;
+        //Adds a delay between how often you can pathfind
+        if(TimeUtils.millis() - 250 < mouseClickTime) return;
+        mouseClickTime = TimeUtils.millis();
 
-            System.out.println("End Coord: (" + endWorldX + "," + endWorldY + ")");
+        //Convert world co-ords to grid co-ords
+        Node start = setStartCoords(tiledMap, walls);
+        Node end = setEndCoords(tiledMap, walls, camera);
 
-            float startWorldX = chefSprite.getX();
-            float startWorldY = chefSprite.getY();
+        //Set up thread to do pathfinding
+        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
+        Thread pathfindingThread = new Thread(pathfindingObj);
+        pathfindingThread.start();
+        while (pathfindingThread.isAlive()){}
+        //Gets the path from the thread in grid co-ordinates
+        Vector2[] gridPath = pathfindingObj.getGridPath();
 
-            //Convert world co-ords to grid co-ords
-            int endGridX = TileMapUtils.positionToCoord(endWorldX, tiledMap);
-            int endGridY = TileMapUtils.positionToCoord(endWorldY, tiledMap);
-            Node end = walls[endGridX][endGridY];
-
-            int startGridX = TileMapUtils.positionToCoord(startWorldX, tiledMap);
-            int startGridY = TileMapUtils.positionToCoord(startWorldY, tiledMap);
-            Node start = walls[startGridX][startGridY];
-
-            //Pathfind between chef and destination co-ords
-            PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
-            Thread pathfindingThread = new Thread(pathfindingObj);
-            pathfindingThread.start();
-            while (pathfindingThread.isAlive()){
-                System.out.println("Finding path");
-            }
-            Vector2[] gridPath = pathfindingObj.gridPath;
-
-            if(gridPath == null) return;
-            //Convert grid path to world path
-            worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
-            pathfindingCounter = 0;
-        }
+        if(gridPath == null) return;
+        //Convert grid co-ordinates to world co-ordinates
+        worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
+        pathfindingCounter = 0;
     }
 
     private void keyBoardMovement(TiledMap tiledMap, Node[][] walls){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         int tileWidth = layer.getTileWidth();
+        int collisionBuffer = 2;
+        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, walls, tiledMap, chefSprite, squareSize, collisionBuffer);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W) && !hasCollisionUp(tileWidth, walls, tiledMap)){
+        if(Gdx.input.isKeyPressed(Input.Keys.W) && !collisionHandler.hasCollisionUp()){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.UP);
+            worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.S) && !hasCollisionDown(tileWidth, walls, tiledMap) && TileMapUtils.positionToCoord(chefSprite.getY() + squareSize - 3, tiledMap) > 0){
+        else if(Gdx.input.isKeyPressed(Input.Keys.S) && !collisionHandler.hasCollisionDown() && TileMapUtils.positionToCoord(chefSprite.getY() + squareSize - 3, tiledMap) > 0){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.DOWN);
+            worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.A) && !hasCollisionLeft(tileWidth, walls, tiledMap)){
+        else if(Gdx.input.isKeyPressed(Input.Keys.A) && !collisionHandler.hasCollisionLeft()){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.LEFT);
+            worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.D) && !hasCollisionRight(tileWidth, walls, tiledMap)) {
+        else if(Gdx.input.isKeyPressed(Input.Keys.D) && !collisionHandler.hasCollisionRight()) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.RIGHT);
+            worldPath.clear();
         }
     }
 
-    private boolean hasCollisionUp(int tileWidth, Node[][] walls, TiledMap tiledMap){
-        boolean collides = false;
-        for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(chefSprite.getX() + step, chefSprite.getY() + squareSize + COLLISION_BUFFER, tiledMap, walls);
-            if(collides) return collides;
-        }
-        return collides;
-    }
-    private boolean hasCollisionDown(int tileWidth, Node[][] walls, TiledMap tiledMap){
-        boolean collides = false;
-        for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(chefSprite.getX() + step, chefSprite.getY() - COLLISION_BUFFER, tiledMap, walls);
-            if(collides) return collides;
-        }
-        return collides;
-    }
-    private boolean hasCollisionLeft(int tileWidth, Node[][] walls, TiledMap tiledMap){
-        boolean collides = false;
-        for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(chefSprite.getX() - COLLISION_BUFFER, chefSprite.getY() + step, tiledMap, walls);
-            if(collides) return collides;
-        }
-        return collides;
-    }
-    private boolean hasCollisionRight(int tileWidth, Node[][] walls, TiledMap tiledMap){
-        boolean collides = false;
-        for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(chefSprite.getX() + squareSize + COLLISION_BUFFER, chefSprite.getY() + step, tiledMap, walls);
-            if(collides) return collides;
-        }
-        return collides;
+    private Node setStartCoords(TiledMap tiledMap, Node[][] walls){
+        int startGridX = TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap);
+        int startGridY = TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap);
+        return walls[startGridX][startGridY];
     }
 
+    private Node setEndCoords(TiledMap tiledMap, Node[][] walls, Camera camera){
+        Vector3 unprojectedCoord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        float endWorldX = unprojectedCoord.x - 128;
+        float endWorldY = unprojectedCoord.y - 128;
+        int endGridX = TileMapUtils.positionToCoord(endWorldX, tiledMap);
+        int endGridY = TileMapUtils.positionToCoord(endWorldY, tiledMap);
 
-
+        return walls[endGridX][endGridY];
+    }
 
 
 
