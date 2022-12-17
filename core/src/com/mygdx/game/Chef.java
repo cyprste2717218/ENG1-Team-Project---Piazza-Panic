@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IPathfinder;
+import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
@@ -105,7 +106,14 @@ public class Chef implements IPathfinder {
             Node start = walls[startGridX][startGridY];
 
             //Pathfind between chef and destination co-ords
-            Vector2[] gridPath = PathfindingUtils.findPath(start, end, walls);
+            PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
+            Thread pathfindingThread = new Thread(pathfindingObj);
+            pathfindingThread.start();
+            while (pathfindingThread.isAlive()){
+                System.out.println("Finding path");
+            }
+            Vector2[] gridPath = pathfindingObj.gridPath;
+
             if(gridPath == null) return;
             //Convert grid path to world path
             worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
@@ -179,5 +187,4 @@ public class Chef implements IPathfinder {
         //Check for what is in that tile
         //Perform action
     }
-
 }
