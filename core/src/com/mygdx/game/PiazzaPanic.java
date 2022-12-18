@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.stations.Stations;
@@ -24,6 +25,7 @@ import com.mygdx.game.utils.TileMapUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.Random;
 
 
 public class PiazzaPanic extends ApplicationAdapter {
@@ -34,18 +36,20 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
 	private Node[][] walls;
+	private Array<Customer> customers;
+	private Long lastCustomerTime;
 
 	@Override
-	public void create () {
+	public void create() {
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth()/2.5f, Gdx.graphics.getHeight()/2, camera.position.z);
+		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
 		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
 		batch = new SpriteBatch();
 		Texture chefTexture = new Texture("chefSprite.png");
 		chef = new Chef(chefTexture);
 
-		for (Food food: FoodItems.finishedFoods) {
+		for (Food food : FoodItems.finishedFoods) {
 			System.out.println(food.name);
 		}
 		Stations.setUpStations();
@@ -56,6 +60,25 @@ public class PiazzaPanic extends ApplicationAdapter {
 		walls = TileMapUtils.tileMapToArray(tiledMap);
 		//System.out.println(TileMapUtils.tileMapToString(tiledMap));
 
+
+		// Customer spawning
+		customers = new Array<Customer>();
+		spawnCustomer();
+
+	}
+
+	private void spawnCustomer() {
+		Food order = orderGenerator();
+		Customer custom = new Customer(order, 60); //	order timer to be determined
+		//	code here for adding the sprite...
+		customers.add(custom);
+		lastCustomerTime = TimeUtils.nanoTime();
+
+	}
+	//	generates a random order for new customers
+	private Food orderGenerator() {
+		Random rand = new Random();
+		return FoodItems.menu.get(rand.nextInt(FoodItems.menu.size()));
 	}
 
 	@Override
@@ -74,6 +97,15 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		orthogonalTiledMapRenderer.render();
 		chef.move(tiledMap, walls, camera);
+
+	//	customer spawning - used a maximum of 5 for number of concurrent customers
+		if(customers.size < 5) {
+			if (TimeUtils.nanoTime() - lastCustomerTime > 5000000000L) {
+				spawnCustomer();
+
+			}
+		}
+
 	}
 
 

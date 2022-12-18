@@ -75,6 +75,20 @@ public class Chef implements IPathfinder {
             PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
             PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
         }
+
+        // make sure the chef stays on screen
+
+        int minWidth = 0; // placeholder for window width
+        int maxWidth = 800;
+        int minHeight = 0; // placeholder for window height
+        int maxHeight = 800;
+
+        //  x restrictions
+        if(chefSprite.getX() < minWidth) chefSprite.setX(minWidth);
+        if(chefSprite.getX() > maxWidth-64) chefSprite.setX(maxWidth);
+        //  y restrictions
+        if(chefSprite.getY() < minHeight) chefSprite.setY(minHeight);
+        if(chefSprite.getY() > maxHeight-64) chefSprite.setY(maxHeight);
     }
 
     private void mouseMovement(TiledMap tiledMap, Node[][] walls, Camera camera){
