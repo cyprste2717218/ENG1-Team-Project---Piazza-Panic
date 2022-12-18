@@ -1,6 +1,6 @@
 package com.mygdx.game;
 
-public class Node{
+public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
@@ -50,5 +50,12 @@ public class Node{
 
     public int getGridY(){
         return gridY;
+    }
+
+    @Override
+    public int compareTo(Node n) {
+        if(this.getF() < n.getF()) return -1;
+        if(this.getF() > n.getF()) return 1;
+        return 0;
     }
 }

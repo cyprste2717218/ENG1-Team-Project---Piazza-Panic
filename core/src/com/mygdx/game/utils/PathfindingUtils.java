@@ -28,16 +28,16 @@ public class PathfindingUtils {
         clearParents(walls);
 
 
-        List<Node> openList = new ArrayList<>();
+        PriorityQueue<Node> openList = new PriorityQueue<>();
         List<Node> closedList = new ArrayList<>();
 
         openList.add(start);
         while(openList.size() > 0){
-            Node current = getSmallestF(openList);
-            openList.remove(current);
+            Node current = openList.poll();
             Node[] neighbours = getNeighbours(current, walls);
             for(Node n : neighbours){
-                if(n.getGridX() == end.getGridX() && n.getGridY() == end.getGridY()) {
+                //Check if we have reached the end node
+                if(n == end) {
                     n.setParent(current);
                     return backTrackPath(n);
                 }
@@ -60,18 +60,6 @@ public class PathfindingUtils {
         return null;
     }
 
-    private static Node getSmallestF(List<Node> openList){
-        Node smallestNode = null;
-        float smallestF = 10000;
-        for(Node n : openList){
-            if(n.getF() < smallestF){
-                smallestF = n.getF();
-                smallestNode = n;
-            }
-        }
-        return smallestNode;
-    }
-
     //Converts a path in grid co-ordinates to world co-ordinates
     public static List<Vector2> convertGridPathToWorld(Vector2[] path, TiledMap tiledMap){
         List<Vector2> worldPath = new ArrayList<>();
@@ -83,6 +71,7 @@ public class PathfindingUtils {
         return worldPath;
     }
 
+    //Resets the parents of every Node
     private static void clearParents(Node[][] walls){
         for(int x = 0; x < walls.length; x++){
             for(int y = 0; y < walls.length; y++){
@@ -91,14 +80,17 @@ public class PathfindingUtils {
         }
     }
 
+    //Checks the node is on the grid
     private static boolean isValidNode(int gridX, int gridY, Node[][] walls){
         return gridY < walls.length && gridY >= 0 && gridX >= 0 && gridX < walls.length;
     }
 
-    //Get the neighbouring nodes of the current Node
+    //Gets the neighbouring nodes of the current Node
     private static Node[] getNeighbours(Node current, Node[][] walls){
-        int[] xMod = {1,-1,0,0, 1,1,-1,-1};
-        int[] yMod = {0,0,1,-1,1,-1,1,-1};
+        /*int[] xMod = {1,-1,0,0, 1,1,-1,-1};
+        int[] yMod = {0,0,1,-1,1,-1,1,-1};*/
+        int[] xMod = {1,-1,0,0};
+        int[] yMod = {0,0,1,-1};
         List<Node> neighbourList = new ArrayList<>();
 
         for(int i = 0; i < xMod.length; i++){
@@ -113,9 +105,11 @@ public class PathfindingUtils {
     }
 
     private static float calculateMoveCost(Node current, Node n){
-       return Math.abs(n.getGridX() - current.getGridX()) + Math.abs(n.getGridY() - current.getGridY()) == 2 ? 1.4142f : 1f;
+        return 1 + current.getG();
+       //return Math.abs(n.getGridX() - current.getGridX()) + Math.abs(n.getGridY() - current.getGridY()) == 2 ? 1.4142f : 1f;
     }
 
+    //Backtracks through the parents to get the complete path
     private static Vector2[] backTrackPath(Node end){
         List<Vector2> path = new ArrayList<>();
         Node current = end;
@@ -128,6 +122,7 @@ public class PathfindingUtils {
         return (Vector2[]) path.toArray(new Vector2[0]);
     }
 
+    //Makes the sprite follow the path
     public static void followPath(Sprite sprite, List<Vector2> path, float speed, IPathfinder pathfinder){
         int pointBuffer = 2;
 
@@ -156,19 +151,34 @@ public class PathfindingUtils {
         }
     }
 
-    public static void drawPath(List<Vector2> path, Camera camera){
+    public static void drawPath(List<Vector2> path, Camera camera, Sprite sprite, IPathfinder pathfinder){
+        if(path.size() < 1) return;
         ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        for(int i = 0; i < path.size() - 1; i++){
-            shapeRenderer.setProjectionMatrix(camera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
+        for(int i = pathfinder.getPathCounter(); i < path.size() - 1; i++){
 
-            Vector2 midpoint1 = new Vector2(256/2, 256/2);
-            Vector2 midpoint2 = new Vector2(256/2, 256/2);
-            shapeRenderer.line(midpoint1.add(path.get(i)), midpoint2.add(path.get(i + 1)));
-            shapeRenderer.end();
+            if(i == 0){
+                shapeRenderer.line(modifyVectorForDrawing(sprite.getX(),sprite.getY()),
+                    modifyVectorForDrawing(path.get(0)));
+            }
+            shapeRenderer.line(modifyVectorForDrawing(path.get(i)),
+                    modifyVectorForDrawing(path.get(i + 1)));
         }
+        shapeRenderer.end();
+        shapeRenderer.dispose();
+    }
+
+    private static Vector2 modifyVectorForDrawing(float inputX, float inputY){
+        Vector2 midpoint = new Vector2(256/2, 256/2);
+        return new Vector2(inputX + midpoint.x, inputY + midpoint.y);
+    }
+
+    private static Vector2 modifyVectorForDrawing(Vector2 inputVector){
+        Vector2 midpoint = new Vector2(256/2, 256/2);
+        return new Vector2(inputVector.x + midpoint.x, inputVector.y + midpoint.y);
     }
 
 }

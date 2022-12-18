@@ -71,7 +71,10 @@ public class Chef implements IPathfinder {
         if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, walls);
         else mouseMovement(tiledMap, walls, camera);
 
-        if(worldPath != null) PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
+        if(worldPath != null){
+            PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
+            PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
+        }
     }
 
     private void mouseMovement(TiledMap tiledMap, Node[][] walls, Camera camera){
