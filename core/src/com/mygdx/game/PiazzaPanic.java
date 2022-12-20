@@ -24,6 +24,7 @@ import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.TileMapUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
+
 import javax.swing.text.html.parser.Entity;
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
 	private Node[][] walls;
-	private Array<Customer> customers;
+	public static Array<Customer> customers;	// array of active customers
 	private Long lastCustomerTime;
 
 	@Override
@@ -98,11 +99,11 @@ public class PiazzaPanic extends ApplicationAdapter {
 		orthogonalTiledMapRenderer.render();
 		chef.move(tiledMap, walls, camera);
 
-	//	customer spawning - used a maximum of 5 for number of concurrent customers
+	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
 		if(customers.size < 5) {
 			if (TimeUtils.nanoTime() - lastCustomerTime > 5000000000L) {
 				spawnCustomer();
-
+				System.out.println("Spawning customer: " + customers.size);
 			}
 		}
 

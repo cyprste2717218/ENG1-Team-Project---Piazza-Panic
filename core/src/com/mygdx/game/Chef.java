@@ -141,6 +141,17 @@ public class Chef implements IPathfinder {
             setFacing(Facing.RIGHT);
             worldPath.clear();
         }
+
+
+        //  for testing purposes, pressing o will remove a customer from the list of active customers.
+        //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+
+            // if(chef interaction is with customer
+            PiazzaPanic.customers.removeIndex(0);   //  to be changed to remove correct customer from list
+
+            // else {interact with station}
+        }
     }
 
     private Node setStartCoords(TiledMap tiledMap, Node[][] walls){
