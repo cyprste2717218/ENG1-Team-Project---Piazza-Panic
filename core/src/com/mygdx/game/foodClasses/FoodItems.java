@@ -47,6 +47,4 @@ public class FoodItems {
 
     //We need tomatoes, cheese, dough, flour
 
-    //  menu for food orders
-    public static List<Food> menu = new ArrayList<>(Arrays.asList(SALAD,BURGER));
 }

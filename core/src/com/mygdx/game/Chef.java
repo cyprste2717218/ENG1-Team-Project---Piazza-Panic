@@ -76,19 +76,6 @@ public class Chef implements IPathfinder {
             PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
         }
 
-        // make sure the chef stays on screen
-
-        int minWidth = 0; // placeholder for window width
-        int maxWidth = 800;
-        int minHeight = 0; // placeholder for window height
-        int maxHeight = 800;
-
-        //  x restrictions
-        if(chefSprite.getX() < minWidth) chefSprite.setX(minWidth);
-        if(chefSprite.getX() > maxWidth-64) chefSprite.setX(maxWidth);
-        //  y restrictions
-        if(chefSprite.getY() < minHeight) chefSprite.setY(minHeight);
-        if(chefSprite.getY() > maxHeight-64) chefSprite.setY(maxHeight);
     }
 
     private void mouseMovement(TiledMap tiledMap, Node[][] walls, Camera camera){
@@ -146,10 +133,8 @@ public class Chef implements IPathfinder {
         //  for testing purposes, pressing o will remove a customer from the list of active customers.
         //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
         else if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-
             // if(chef interaction is with customer
             PiazzaPanic.customers.removeIndex(0);   //  to be changed to remove correct customer from list
-
             // else {interact with station}
         }
     }
