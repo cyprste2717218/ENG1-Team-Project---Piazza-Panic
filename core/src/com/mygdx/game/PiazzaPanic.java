@@ -69,17 +69,11 @@ public class PiazzaPanic extends ApplicationAdapter {
 	}
 
 	private void spawnCustomer() {
-		Food order = orderGenerator();
-		Customer custom = new Customer(order, 60); //	order timer to be determined
+		Customer custom = new Customer(50);
 		//	code here for adding the sprite...
 		customers.add(custom);
 		lastCustomerTime = TimeUtils.nanoTime();
 
-	}
-	//	generates a random order for new customers
-	private Food orderGenerator() {
-		Random rand = new Random();
-		return FoodItems.menu.get(rand.nextInt(FoodItems.menu.size()));
 	}
 
 	@Override
