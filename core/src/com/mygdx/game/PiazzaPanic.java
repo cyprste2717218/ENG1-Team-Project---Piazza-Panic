@@ -49,11 +49,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		Texture chefTexture = new Texture("chefSprite.png");
 		chef = new Chef(chefTexture);
-
+		Stations.createAllStations();
 		for (Food food : FoodItems.finishedFoods) {
 			System.out.println(food.name);
 		}
-		Stations.setUpStations();
 
 		tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -88,6 +87,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		batch.begin();
 		chef.getChefSprite().draw(batch);
+		Stations.renderAllStations(batch);
 		batch.end();
 
 		orthogonalTiledMapRenderer.render();
