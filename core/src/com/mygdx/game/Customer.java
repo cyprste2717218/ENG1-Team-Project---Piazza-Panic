@@ -28,6 +28,7 @@ public class Customer implements IInteractable, ITimer {
 
     @Override
     public void onInteract() {
+
     }
 
     @Override

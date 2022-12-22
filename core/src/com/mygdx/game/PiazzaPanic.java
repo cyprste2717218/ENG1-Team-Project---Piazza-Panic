@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,13 +33,15 @@ import java.util.Random;
 public class PiazzaPanic extends ApplicationAdapter {
 
 	private SpriteBatch batch;
-	private Chef chef;
 	private OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
 	private Node[][] walls;
 	public static Array<Customer> customers;	// array of active customers
 	private Long lastCustomerTime;
+	private Chef[] chefs;
+	private int selectedChef = 0;
+
 
 	@Override
 	public void create() {
@@ -46,9 +49,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
 		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
+		spawnChefs();
 		batch = new SpriteBatch();
-		Texture chefTexture = new Texture("chefSprite.png");
-		chef = new Chef(chefTexture);
+
 
 		for (Food food : FoodItems.finishedFoods) {
 			System.out.println(food.name);
@@ -68,12 +71,26 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 	}
 
+	private void spawnChefs(){
+		chefs = new Chef[2];
+		Texture chefTexture = new Texture("chefSprite.png");
+		chefs[0] = new Chef(chefTexture);
+
+		Texture chefTexture2 = new Texture("chefSprite.png");
+		chefs[1] = new Chef(chefTexture2);
+	}
+
+	private void swapChef(){
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			selectedChef = selectedChef == chefs.length - 1 ? 0 : selectedChef + 1;
+		}
+	}
+
 	private void spawnCustomer() {
 		Customer custom = new Customer(50);
 		//	code here for adding the sprite...
 		customers.add(custom);
 		lastCustomerTime = TimeUtils.nanoTime();
-
 	}
 
 	@Override
@@ -87,11 +104,15 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
-		chef.getChefSprite().draw(batch);
+		for(Chef chef: chefs){
+			chef.getChefSprite().draw(batch);
+		}
 		batch.end();
 
 		orthogonalTiledMapRenderer.render();
-		chef.move(tiledMap, walls, camera);
+
+		chefs[selectedChef].move(tiledMap, walls, camera);
+		swapChef();
 
 	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
 		if(customers.size < 5) {
@@ -107,7 +128,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		chef.getChefSprite().getTexture().dispose();
+		for(Chef chef : chefs){
+			chef.getChefSprite().getTexture().dispose();
+		}
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
 	}
