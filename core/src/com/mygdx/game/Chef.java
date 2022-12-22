@@ -161,9 +161,6 @@ public class Chef implements IPathfinder {
 
 
     public void interact(){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            Rectangle collisionDetector = new Rectangle(chefSprite.getX(),chefSprite.getY(), squareSize, squareSize);
-        }
         //Get facing direction
         //Get tile in front of Chef
         //Check for what is in that tile
