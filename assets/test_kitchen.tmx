@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="wall.tsx"/>
  <tileset firstgid="65" source="flooor.tsx"/>
  <tileset firstgid="129" source="Station.tsx"/>
- <layer id="6" name="WallLayer" width="16" height="16" tintcolor="#110000">
+ <layer id="6" name="WallLayer" width="16" height="16" tintcolor="#000000">
   <properties>
    <property name="wall" type="bool" value="true"/>
   </properties>
@@ -23,7 +23,7 @@
 51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
 51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
 51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51,
-51,51,51,51,51,51,51,0,0,0,51,51,51,51,51,51
+51,51,51,51,51,51,51,1610612840,1610612840,1610612840,51,51,51,51,51,51
 </data>
  </layer>
 </map>
