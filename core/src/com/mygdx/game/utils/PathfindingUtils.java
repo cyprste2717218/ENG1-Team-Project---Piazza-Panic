@@ -121,36 +121,21 @@ public class PathfindingUtils {
 
     //Makes the sprite follow the path
     public static void followPath(Sprite sprite, List<Vector2> path, float speed, IPathfinder pathfinder){
-        if(pathfinder.getPathCounter() >= path.size()) return;;
+
+        if(pathfinder.getPathCounter() >= path.size()) return;
+
         int pointBuffer = 2;
+
         //The direction from point a to point b = atan(bY-aY,bX-aX)
         float angle = (float) Math.atan2(path.get(pathfinder.getPathCounter()).y - sprite.getY(), path.get(pathfinder.getPathCounter()).x - sprite.getX());
         Vector2 movementDir = new Vector2((float)Math.cos(angle) * speed, (float)Math.sin(angle) * speed);
+        setPathfinderFacing(movementDir, pathfinder);
+        sprite.setPosition(sprite.getX() + movementDir.x * Gdx.graphics.getDeltaTime(), sprite.getY() + movementDir.y * Gdx.graphics.getDeltaTime());
 
-        if(pathfinder.getPathCounter() < path.size()){
-            if(pathfinder.getPathCounter() == 0){
-                setPathfinderFacing(new Vector2(movementDir.x, 0), pathfinder);
-                sprite.setPosition(sprite.getX() + movementDir.x + Gdx.graphics.getDeltaTime(), sprite.getY());
-                if(Math.abs(path.get(pathfinder.getPathCounter()).x - sprite.getX())  <= pointBuffer){
-
-                }
-
-                //Break diagonal vector into x and y components
-                //Move along x
-                //Check if reached goal on x axis
-                //Move along y
-                //Check if reached goal
-                //increment pathCounter
-            }
-            else{
-                setPathfinderFacing(movementDir, pathfinder);
-                sprite.setPosition(sprite.getX() + movementDir.x * Gdx.graphics.getDeltaTime(), sprite.getY() + movementDir.y * Gdx.graphics.getDeltaTime());
-            }
-            //Checks if the pathfinder has reached a point on the path
-            if(Math.abs(path.get(pathfinder.getPathCounter()).x - sprite.getX()) <= pointBuffer && Math.abs(path.get(pathfinder.getPathCounter()).y - sprite.getY()) <= pointBuffer){
-                pathfinder.setPathCounter(pathfinder.getPathCounter() + 1);
-            }
+        if(Math.abs(path.get(pathfinder.getPathCounter()).x - sprite.getX()) <= pointBuffer && Math.abs(path.get(pathfinder.getPathCounter()).y - sprite.getY()) <= pointBuffer){
+            pathfinder.setPathCounter(pathfinder.getPathCounter() + 1);
         }
+
     }
 
     private static void setPathfinderFacing(Vector2 movementDir, IPathfinder pathfinder){

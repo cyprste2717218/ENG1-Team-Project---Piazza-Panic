@@ -62,7 +62,6 @@ public class PiazzaPanic extends ApplicationAdapter {
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		walls = TileMapUtils.tileMapToArray(tiledMap);
-		//System.out.println(TileMapUtils.tileMapToString(tiledMap));
 
 
 		// Customer spawning
