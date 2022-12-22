@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IInteractable;
@@ -27,8 +30,15 @@ public class Customer implements IInteractable, ITimer {
 
 
     @Override
-    public void onInteract() {
+    public void onInteract(Chef chef) {
+        if(!chef.foodStack.isEmpty()) {
+            if (chef.foodStack.peek() == order) {
+                PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
+            }
+
+        }
     }
+
 
     @Override
     public float runTimer(float timerValue) {
@@ -37,4 +47,9 @@ public class Customer implements IInteractable, ITimer {
         }
         return timerValue--;
     }
+
+
+
+
+
 }

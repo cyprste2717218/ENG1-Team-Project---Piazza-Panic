@@ -25,7 +25,7 @@ import com.mygdx.game.Facing;
 public class Chef implements IPathfinder {
     private static final int CHEF_SIZE = 256;
     private Sprite chefSprite;
-    private Stack<Food> foodStack;
+    public Stack<Food> foodStack;
     private int squareSize = 32;
     private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;

@@ -2,9 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -40,9 +42,14 @@ public class PiazzaPanic extends ApplicationAdapter {
 	public static Array<Customer> customers;	// array of active customers
 	private Long lastCustomerTime;
 
+	public static int CUSTOMER_SERVED_COUNTER = 0;
+	private BitmapFont CustomerServedText;
+
 	@Override
 	public void create() {
 
+		CustomerServedText = new BitmapFont();
+		CustomerServedText.setColor(Color.BLACK);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
 		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
@@ -66,6 +73,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		customers = new Array<Customer>();
 		spawnCustomer();
 
+
 	}
 
 	private void spawnCustomer() {
@@ -82,16 +90,21 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1f,1f,1f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
 		orthogonalTiledMapRenderer.setView(camera);
 
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
 		chef.getChefSprite().draw(batch);
+		CustomerServedText.draw(batch,"Customer Served: " + CUSTOMER_SERVED_COUNTER, 35,450);
 		batch.end();
 
 		orthogonalTiledMapRenderer.render();
 		chef.move(tiledMap, walls, camera);
+
+
+
 
 	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
 		if(customers.size < 5) {
@@ -111,4 +124,5 @@ public class PiazzaPanic extends ApplicationAdapter {
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
 	}
+
 }
