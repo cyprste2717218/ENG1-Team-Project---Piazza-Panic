@@ -7,12 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
-import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.CollisionHandler;
@@ -22,7 +20,7 @@ import com.mygdx.game.utils.TileMapUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import com.mygdx.game.Facing;
+import com.mygdx.game.enums.Facing;
 
 public class Chef implements IPathfinder {
     private static final int CHEF_SIZE = 256;
@@ -33,6 +31,7 @@ public class Chef implements IPathfinder {
     long mouseClickTime = 0;
     final float speed = 100;
     private int pathfindingCounter = 0;
+    private boolean interactablePathEnd = false;
     @Override
     public void setPathCounter(int counter) {
         pathfindingCounter = counter;
@@ -76,6 +75,12 @@ public class Chef implements IPathfinder {
         if(!worldPath.isEmpty()){
             PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
             PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
+            //Interacts with anything at the end of the path
+            if(pathfindingCounter == worldPath.size() && interactablePathEnd) {
+                setFacing(Facing.UP);
+                interact();
+                interactablePathEnd = false;
+            }
         }
 
     }
@@ -90,6 +95,8 @@ public class Chef implements IPathfinder {
         Node start = setStartCoords(tiledMap, walls);
         Node end = setEndCoords(tiledMap, walls, camera);
 
+        if(start == null || end == null) return;
+
         //Set up thread to do pathfinding
         PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
         Thread pathfindingThread = new Thread(pathfindingObj);
@@ -103,6 +110,8 @@ public class Chef implements IPathfinder {
         //Convert grid co-ordinates to world co-ordinates
         worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
         pathfindingCounter = 0;
+        //Check if there is something to interact with at the end of the path
+        interactablePathEnd = end.getFood() || end.getStation();
     }
 
     private void keyBoardMovement(TiledMap tiledMap, Node[][] walls){
@@ -116,17 +125,17 @@ public class Chef implements IPathfinder {
             setFacing(Facing.UP);
             worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.S) && !collisionHandler.hasCollisionDown() && TileMapUtils.positionToCoord(chefSprite.getY() + squareSize - 3, tiledMap) > 0){
+        if(Gdx.input.isKeyPressed(Input.Keys.S) && !collisionHandler.hasCollisionDown()){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.DOWN);
             worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.A) && !collisionHandler.hasCollisionLeft()){
+        if(Gdx.input.isKeyPressed(Input.Keys.A) && !collisionHandler.hasCollisionLeft()){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.LEFT);
             worldPath.clear();
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.D) && !collisionHandler.hasCollisionRight()) {
+        if(Gdx.input.isKeyPressed(Input.Keys.D) && !collisionHandler.hasCollisionRight()) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.RIGHT);
             worldPath.clear();
@@ -145,6 +154,7 @@ public class Chef implements IPathfinder {
     private Node setStartCoords(TiledMap tiledMap, Node[][] walls){
         int startGridX = TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap);
         int startGridY = TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap);
+        if (!PathfindingUtils.isValidNode(startGridX, startGridY, walls)) return null;
         return walls[startGridX][startGridY];
     }
 
@@ -154,7 +164,7 @@ public class Chef implements IPathfinder {
         float endWorldY = unprojectedCoord.y - 128;
         int endGridX = TileMapUtils.positionToCoord(endWorldX, tiledMap);
         int endGridY = TileMapUtils.positionToCoord(endWorldY, tiledMap);
-
+        if (!PathfindingUtils.isValidNode(endGridX, endGridY, walls)) return null;
         return walls[endGridX][endGridY];
     }
 
@@ -165,5 +175,6 @@ public class Chef implements IPathfinder {
         //Get tile in front of Chef
         //Check for what is in that tile
         //Perform action
+        System.out.println("Interacting");
     }
 }

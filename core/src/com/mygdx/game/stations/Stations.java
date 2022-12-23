@@ -3,6 +3,8 @@ package com.mygdx.game.stations;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 
@@ -43,20 +45,20 @@ public class Stations {
     }
 
     // function to apply texture to station, then position it onto the tile map
-    public static void createAllStations(){
+    public static void createAllStations(Node[][] walls, TiledMap tiledMap){
         setUpStations();
 
         CHOPPING_BOARD.stationTexture = choppingBoardTexture;
-        CHOPPING_BOARD.setTileMapPosition(CHOPPING_BOARD.stationTexture, 340, 23);
+        CHOPPING_BOARD.setTileMapPosition(CHOPPING_BOARD.stationTexture, 2, 14, walls, tiledMap);
 
         FRYER.stationTexture = fryerTexture;
-        FRYER.setTileMapPosition(FRYER.stationTexture, 300, 23);
+        FRYER.setTileMapPosition(FRYER.stationTexture, 6, 14, walls, tiledMap);
 
 
         //Ingredient Stations - to be placed in the pantry
 
         LETTUCE_STATION.stationTexture = lettuceTexture;
-        LETTUCE_STATION.setTileMapPosition(LETTUCE_STATION.stationTexture, 340, 28);
+        LETTUCE_STATION.setTileMapPosition(LETTUCE_STATION.stationTexture, 5, 12, walls, tiledMap);
 /*
         TOMATO_STATION.stationTexture = tomatoTexture;
         TOMATO_STATION.setTileMapPosition(TOMATO_STATION.stationTexture, 300, 23);
@@ -82,9 +84,8 @@ public class Stations {
     public static void renderAllStations(SpriteBatch batch)  {
         CHOPPING_BOARD.stationSprite.draw(batch);
         FRYER.stationSprite.draw(batch);
-
-
         LETTUCE_STATION.stationSprite.draw(batch);
+
         /*
         TOMATO_STATION.stationSprite.draw(batch);
         ONION_STATION.stationSprite.draw(batch);

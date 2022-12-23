@@ -54,12 +54,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 		CustomerServedText = new BitmapFont();
 		CustomerServedText.setColor(Color.BLACK);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
-		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
+		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2f, camera.position.z);
 		spawnChefs();
 		batch = new SpriteBatch();
 
-		Stations.createAllStations();
 		for (Food food : FoodItems.finishedFoods) {
 			System.out.println(food.name);
 		}
@@ -68,7 +66,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		walls = TileMapUtils.tileMapToArray(tiledMap);
+		System.out.println(TileMapUtils.tileMapToString(tiledMap));
 
+		Stations.createAllStations(walls, tiledMap);
 
 		// Customer spawning
 		customers = new Array<Customer>();
