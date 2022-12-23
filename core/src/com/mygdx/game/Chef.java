@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.CollisionHandler;
@@ -71,7 +73,7 @@ public class Chef implements IPathfinder {
         if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, walls);
         else mouseMovement(tiledMap, walls, camera);
 
-        if(worldPath != null){
+        if(!worldPath.isEmpty()){
             PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
             PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
         }
@@ -92,11 +94,12 @@ public class Chef implements IPathfinder {
         PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
         Thread pathfindingThread = new Thread(pathfindingObj);
         pathfindingThread.start();
+        //Stalls the main thread until the pathfinding is complete
         while (pathfindingThread.isAlive()){}
         //Gets the path from the thread in grid co-ordinates
         Vector2[] gridPath = pathfindingObj.getGridPath();
 
-        if(gridPath == null) return;
+        if(gridPath.length == 0) return;
         //Convert grid co-ordinates to world co-ordinates
         worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
         pathfindingCounter = 0;

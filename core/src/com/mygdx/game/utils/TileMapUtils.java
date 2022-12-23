@@ -47,7 +47,7 @@ public class TileMapUtils {
     }
     public static int positionToCoord(float spriteCoord, TiledMap tiledMap){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        return (int)(spriteCoord + 240)/layer.getTileWidth() - 4;
+        return (int)(spriteCoord + 256)/layer.getTileWidth() - 4;
     }
 
     public static float coordToPosition(int coord, TiledMap tiledMap){

@@ -23,7 +23,7 @@ public class Customer implements IInteractable, ITimer {
     }
 
     private Food getRandomOrder() {
-        Random rnd = new  Random();
+        Random rnd = new Random();
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
         return FoodItems.finishedFoods.get(orderIndex);
     }
@@ -35,7 +35,6 @@ public class Customer implements IInteractable, ITimer {
             if (chef.foodStack.peek() == order) {
                 PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
             }
-
         }
     }
 
@@ -47,9 +46,4 @@ public class Customer implements IInteractable, ITimer {
         }
         return timerValue--;
     }
-
-
-
-
-
 }
