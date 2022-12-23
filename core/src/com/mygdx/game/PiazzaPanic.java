@@ -2,10 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -43,9 +45,14 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private int selectedChef = 0;
 
 
+	public static int CUSTOMER_SERVED_COUNTER = 0;
+	private BitmapFont CustomerServedText;
+
 	@Override
 	public void create() {
 
+		CustomerServedText = new BitmapFont();
+		CustomerServedText.setColor(Color.BLACK);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
 		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
@@ -66,6 +73,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		// Customer spawning
 		customers = new Array<Customer>();
 		spawnCustomer();
+
 
 	}
 
@@ -97,11 +105,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1f,1f,1f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
 		orthogonalTiledMapRenderer.setView(camera);
 
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
+		CustomerServedText.draw(batch,"Customer Served: " + CUSTOMER_SERVED_COUNTER, 35,450);
 		for(Chef chef: chefs){
 			chef.getChefSprite().draw(batch);
 		}
@@ -112,6 +122,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		chefs[selectedChef].move(tiledMap, walls, camera);
 		swapChef();
+
+
+
 
 	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
 		if(customers.size < 5) {
@@ -133,4 +146,5 @@ public class PiazzaPanic extends ApplicationAdapter {
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
 	}
+
 }

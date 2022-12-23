@@ -2,6 +2,7 @@ package com.mygdx.game.stations;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.Chef;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
 
@@ -24,7 +25,7 @@ public class Station implements IInteractable {
         this.stationSprite.setPosition(mapPosX - COLLISION_BUFFER,mapPosY - COLLISION_BUFFER);
     }
     @Override
-    public void onInteract() {
+    public void onInteract(Chef chef) {
 
     }
 }

@@ -1,6 +1,7 @@
 package com.mygdx.game.foodClasses;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.Chef;
 import com.mygdx.game.interfaces.IInteractable;
 
 public class Food implements IInteractable {
@@ -30,7 +31,7 @@ public class Food implements IInteractable {
     }
 
     @Override
-    public void onInteract() {
+    public void onInteract(Chef chef) {
 
     }
 
