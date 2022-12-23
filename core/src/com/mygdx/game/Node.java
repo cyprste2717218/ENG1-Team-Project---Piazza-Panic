@@ -4,7 +4,7 @@ public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
-    private boolean isWall;
+    private boolean isWall, isStation, isFood;
     private int gridX, gridY;
 
     public Node(int gridX, int gridY, boolean isWall){
@@ -12,6 +12,8 @@ public class Node implements Comparable<Node>{
         h = 0;
         parent = null;
         this.isWall = isWall;
+        this.isStation = false;
+        this.isFood = false;
         this.gridX = gridX;
         this.gridY = gridY;
     }
@@ -50,6 +52,18 @@ public class Node implements Comparable<Node>{
 
     public int getGridY(){
         return gridY;
+    }
+
+    public boolean getStation(){
+        return isStation;
+    }
+
+    public void setStation(boolean isStation){
+        this.isStation = isStation;
+    }
+
+    public boolean getFood(){
+        return isFood;
     }
 
     @Override

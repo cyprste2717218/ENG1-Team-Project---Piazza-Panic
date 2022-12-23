@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.Facing;
+import com.mygdx.game.enums.Facing;
 import com.mygdx.game.Node;
 import com.mygdx.game.interfaces.IPathfinder;
 import java.util.*;
@@ -22,6 +22,7 @@ public class PathfindingUtils {
         if(!isValidNode(end.getGridX(), end.getGridY(), walls)) return new Vector2[0];
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
         if(end.getWall()) return new Vector2[0];
+        if(end.getStation()) end = walls[end.getGridX()][end.getGridY() - 1];
         clearParents(walls);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
@@ -37,7 +38,7 @@ public class PathfindingUtils {
                     n.setParent(current);
                     return backTrackPath(n);
                 }
-                else if (!closedList.contains(n) && !n.getWall()){
+                else if (!closedList.contains(n) && !n.getWall() && !n.getStation()){
                     checkNeighbour(current, n, end, openList, closedList);
                 }
             }
@@ -81,7 +82,7 @@ public class PathfindingUtils {
     }
 
     //Checks the node is on the grid
-    private static boolean isValidNode(int gridX, int gridY, Node[][] walls){
+    public static boolean isValidNode(int gridX, int gridY, Node[][] walls){
         return gridY < walls.length && gridY >= 0 && gridX >= 0 && gridX < walls.length;
     }
 
@@ -135,7 +136,6 @@ public class PathfindingUtils {
         if(Math.abs(path.get(pathfinder.getPathCounter()).x - sprite.getX()) <= pointBuffer && Math.abs(path.get(pathfinder.getPathCounter()).y - sprite.getY()) <= pointBuffer){
             pathfinder.setPathCounter(pathfinder.getPathCounter() + 1);
         }
-
     }
 
     private static void setPathfinderFacing(Vector2 movementDir, IPathfinder pathfinder){

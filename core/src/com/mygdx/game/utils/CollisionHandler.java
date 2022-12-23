@@ -20,13 +20,12 @@ public class CollisionHandler {
         this.sprite = sprite;
         this.squareSize = squareSize;
         this.collisionBuffer = collisionBuffer;
-
     }
 
     public boolean hasCollisionUp(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + step, sprite.getY() + squareSize + collisionBuffer, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + step, sprite.getY() + squareSize + collisionBuffer, tiledMap, walls);
             if(collides) return collides;
         }
         return collides;
@@ -34,7 +33,7 @@ public class CollisionHandler {
     public boolean hasCollisionDown(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + step, sprite.getY() - collisionBuffer, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + step, sprite.getY() - collisionBuffer, tiledMap, walls);
             if(collides) return collides;
         }
         return collides;
@@ -42,7 +41,7 @@ public class CollisionHandler {
     public boolean hasCollisionLeft(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() - collisionBuffer, sprite.getY() + step, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() - collisionBuffer, sprite.getY() + step, tiledMap, walls);
             if(collides) return collides;
         }
         return collides;
@@ -50,7 +49,7 @@ public class CollisionHandler {
     public boolean hasCollisionRight(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + squareSize + collisionBuffer, sprite.getY() + step, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + squareSize + collisionBuffer, sprite.getY() + step, tiledMap, walls);
             if(collides) return collides;
         }
         return collides;
