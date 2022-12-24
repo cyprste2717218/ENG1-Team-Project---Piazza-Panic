@@ -78,7 +78,7 @@ public class Chef implements IPathfinder {
             //Interacts with anything at the end of the path
             if(pathfindingCounter == worldPath.size() && interactablePathEnd) {
                 setFacing(Facing.UP);
-                interact();
+                interact(walls, tiledMap);
                 interactablePathEnd = false;
             }
         }
@@ -170,11 +170,26 @@ public class Chef implements IPathfinder {
 
 
 
-    public void interact(){
-        //Get facing direction
-        //Get tile in front of Chef
-        //Check for what is in that tile
-        //Perform action
-        System.out.println("Interacting");
+    //Used to interact with other objects
+    public void interact(Node[][] walls, TiledMap tiledMap){
+        Node interactedNode;
+        switch(facing){
+            case UP:
+                interactedNode = walls[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap) + 1];
+                break;
+            case DOWN:
+                interactedNode = walls[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap) - 1];
+                break;
+            case LEFT:
+                interactedNode = walls[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap) - 1][TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap)];
+                break;
+            default:
+                interactedNode = walls[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap) + 1][TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap)];
+                break;
+        }
+
+        if(interactedNode.getInteractable() != null){
+            interactedNode.getInteractable().onInteract();
+        }
     }
 }

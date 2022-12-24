@@ -27,10 +27,11 @@ public class Station implements IInteractable {
         this.stationSprite.setScale(0.125f);
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
         walls[mapPosX][mapPosY].setStation(true);
+        walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     @Override
     public void onInteract() {
-
+        System.out.println("Interacting with a station");
     }
 }

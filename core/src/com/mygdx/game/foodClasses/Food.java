@@ -31,7 +31,7 @@ public class Food implements IInteractable {
 
     @Override
     public void onInteract() {
-
+        System.out.println("Interacting with Food");
     }
 
 
@@ -84,5 +84,4 @@ public class Food implements IInteractable {
             return new Food(this);
         }
     }
-
 }

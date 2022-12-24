@@ -54,10 +54,10 @@ public class TileMapUtils {
     }
 
     public static boolean getCollisionAtSprite(Sprite sprite, TiledMap tiledMap, Node[][] arrMap){
-        return arrMap[positionToCoord(sprite.getX(),tiledMap)][positionToCoord(sprite.getY(), tiledMap)].getWall()|| arrMap[positionToCoord(sprite.getX(),tiledMap)][positionToCoord(sprite.getY(), tiledMap)].getStation();
+        return arrMap[positionToCoord(sprite.getX(),tiledMap)][positionToCoord(sprite.getY(), tiledMap)].isCollidable();
     }
 
     public static boolean getCollisionAtSprite(float x, float y, TiledMap tiledMap, Node[][] arrMap){
-        return arrMap[positionToCoord(x - 16,tiledMap)][positionToCoord(y - 16, tiledMap)].getWall() || arrMap[positionToCoord(x - 16,tiledMap)][positionToCoord(y - 16, tiledMap)].getStation();
+        return arrMap[positionToCoord(x - 16,tiledMap)][positionToCoord(y - 16, tiledMap)].isCollidable();
     }
 }

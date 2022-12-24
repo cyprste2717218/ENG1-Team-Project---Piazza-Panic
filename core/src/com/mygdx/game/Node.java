@@ -1,11 +1,14 @@
 package com.mygdx.game;
 
+import com.mygdx.game.interfaces.IInteractable;
+
 public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
     private boolean isWall, isStation, isFood;
     private int gridX, gridY;
+    private IInteractable interactable;
 
     public Node(int gridX, int gridY, boolean isWall){
         g = 0;
@@ -16,6 +19,7 @@ public class Node implements Comparable<Node>{
         this.isFood = false;
         this.gridX = gridX;
         this.gridY = gridY;
+        interactable = null;
     }
 
     public float getF() {
@@ -65,6 +69,23 @@ public class Node implements Comparable<Node>{
     public boolean getFood(){
         return isFood;
     }
+
+    public boolean isInteractable(){
+        return isFood || isStation;
+    }
+
+    public boolean isCollidable(){
+        return isWall || isStation;
+    }
+
+    public IInteractable getInteractable() {
+        return interactable;
+    }
+
+    public void setInteractable(IInteractable interactable) {
+        this.interactable = interactable;
+    }
+
 
     @Override
     public int compareTo(Node n) {

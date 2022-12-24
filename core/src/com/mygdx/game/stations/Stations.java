@@ -51,6 +51,7 @@ public class Stations {
         CHOPPING_BOARD.stationTexture = choppingBoardTexture;
         CHOPPING_BOARD.setTileMapPosition(CHOPPING_BOARD.stationTexture, 2, 14, walls, tiledMap);
 
+
         FRYER.stationTexture = fryerTexture;
         FRYER.setTileMapPosition(FRYER.stationTexture, 6, 14, walls, tiledMap);
 
