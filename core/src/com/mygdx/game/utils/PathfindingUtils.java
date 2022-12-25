@@ -13,7 +13,6 @@ import com.mygdx.game.interfaces.IPathfinder;
 import java.util.*;
 
 public class PathfindingUtils {
-
     private PathfindingUtils(){}
 
     //Pathfinds between two grid co-ordinates
@@ -22,7 +21,7 @@ public class PathfindingUtils {
         if(!isValidNode(end.getGridX(), end.getGridY(), walls)) return new Vector2[0];
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
         if(end.getWall()) return new Vector2[0];
-        if(end.isInteractable()) end = walls[end.getGridX()][end.getGridY() - 1];
+        if(end.isInteractable()) end = findBestInteractingNode(start, end, walls);
         clearParents(walls);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
@@ -46,6 +45,39 @@ public class PathfindingUtils {
         }
         //Path not found
         return new Vector2[0];
+    }
+
+    public static Node findBestInteractingNode(Node start, Node end, Node[][] walls){
+        //For all 4 directions
+        //Check which is the most extreme distance to the node
+
+        double smallestDistance = 10000;
+        Node bestNode = null;
+
+        int[] xMod = {1, -1, 0, 0};
+        int[] yMod = {0, 0, -1, 1};
+
+        for(int i = 0; i < xMod.length; i++){
+            if(!isValidNode(end.getGridX() + xMod[i],end.getGridY() + yMod[i], walls)) continue;
+            Node current = walls[end.getGridX() + xMod[i]][end.getGridY() + yMod[i]];
+            if(current.isCollidable()) continue;
+
+            float biggestCurrentDistance = Math.max(Math.abs(start.getGridX() - current.getGridX()), Math.abs(start.getGridY() - current.getGridY()));
+
+            if(biggestCurrentDistance < smallestDistance){
+                bestNode = current;
+                smallestDistance = biggestCurrentDistance;
+            }
+
+        }
+        return bestNode;
+    }
+
+    public static Facing calculateFinalFacing(Node penultimate, Node end){
+        if(end.getGridY() > penultimate.getGridY()) return Facing.UP;
+        if(end.getGridY() < penultimate.getGridY()) return Facing.DOWN;
+        if(end.getGridX() < penultimate.getGridX()) return Facing.LEFT;
+        return Facing.RIGHT;
     }
 
     //Determines whether a neighbour should be in the open or closed list
@@ -172,9 +204,7 @@ public class PathfindingUtils {
 
     //Helper methods to convert world vectors into vectors to be drawn on the camera
     private static Vector2 modifyVectorForDrawing(float inputX, float inputY){
-        final float mid = (float)256/2;
-        Vector2 midpoint = new Vector2(mid, mid);
-        return new Vector2(inputX + midpoint.x, inputY + midpoint.y);
+        return modifyVectorForDrawing(new Vector2(inputX, inputY));
     }
 
     private static Vector2 modifyVectorForDrawing(Vector2 inputVector){
@@ -182,5 +212,4 @@ public class PathfindingUtils {
         Vector2 midpoint = new Vector2(mid, mid);
         return new Vector2(inputVector.x + midpoint.x, inputVector.y + midpoint.y);
     }
-
 }

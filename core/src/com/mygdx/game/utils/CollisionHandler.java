@@ -6,12 +6,12 @@ import com.mygdx.game.Node;
 
 public class CollisionHandler {
 
-    private int tileWidth;
-    private Node[][] walls;
-    private TiledMap tiledMap;
-    private Sprite sprite;
-    private int squareSize;
-    private int collisionBuffer;
+    private final int tileWidth;
+    private final Node[][] walls;
+    private final TiledMap tiledMap;
+    private final Sprite sprite;
+    private final int squareSize;
+    private final int collisionBuffer;
 
     public CollisionHandler(int tileWidth, Node[][] walls, TiledMap tiledMap, Sprite sprite, int squareSize, int collisionBuffer){
         this.tileWidth = tileWidth;

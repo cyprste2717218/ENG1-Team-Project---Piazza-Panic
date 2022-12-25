@@ -6,8 +6,13 @@ public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
-    private boolean isWall, isStation, isFood, isChef, isCustomer;
-    private int gridX, gridY;
+    private final boolean isWall;
+    private boolean isStation;
+    private boolean isFood;
+    private boolean isChef;
+    private boolean isCustomer;
+    private final int gridX;
+    private final int gridY;
     private IInteractable interactable;
 
     public Node(int gridX, int gridY, boolean isWall){

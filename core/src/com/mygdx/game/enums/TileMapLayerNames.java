@@ -5,11 +5,11 @@ public enum TileMapLayerNames {
     Stations ("Stations"),
     Foods ("Foods");
 
-    private String layerName;
+    private final String layerName;
 
-    private TileMapLayerNames(String layerName){
+    TileMapLayerNames(String layerName){
         this.layerName = layerName;
-    };
+    }
 
     @Override
     public String toString(){

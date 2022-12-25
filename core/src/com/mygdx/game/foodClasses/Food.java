@@ -68,8 +68,8 @@ public class Food implements IInteractable {
 
 
     public static class FoodBuilder{
-        private String name;
-        private Texture foodTexture;
+        private final String name;
+        private final Texture foodTexture;
         private boolean isFryable = false;
         private boolean isChoppable = false;
         private boolean isBakeable = false;

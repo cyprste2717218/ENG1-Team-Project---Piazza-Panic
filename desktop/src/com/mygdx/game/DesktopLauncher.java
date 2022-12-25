@@ -10,9 +10,9 @@ import com.mygdx.game.PiazzaPanic;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setForegroundFPS(config.getDisplayMode().refreshRate);
+		config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate);
 		config.setTitle("Piazza Panic");
-		config.setWindowSizeLimits(0,0, config.getDisplayMode().width, config.getDisplayMode().height);
+		config.setWindowSizeLimits(0,0, Lwjgl3ApplicationConfiguration.getDisplayMode().width, Lwjgl3ApplicationConfiguration.getDisplayMode().height);
 		new Lwjgl3Application(new PiazzaPanic(), config);
 	}
 }

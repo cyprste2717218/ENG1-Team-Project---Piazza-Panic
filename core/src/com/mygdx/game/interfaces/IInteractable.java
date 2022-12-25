@@ -6,8 +6,8 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 
 public interface IInteractable {
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap);
-    public Vector2 getPreviousGridPosition();
+    void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap);
+    Vector2 getPreviousGridPosition();
 
-    public void setCurrentGridPosition(Vector2 gridPos);
+    void setCurrentGridPosition(Vector2 gridPos);
 }

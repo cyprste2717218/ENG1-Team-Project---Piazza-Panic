@@ -6,9 +6,9 @@ import com.mygdx.game.utils.PathfindingUtils;
 
 public class PathfindingRunnable implements Runnable{
 
-    private Node start;
-    private Node end;
-    private Node[][] walls;
+    private final Node start;
+    private final Node end;
+    private final Node[][] walls;
     private Vector2[] gridPath;
 
     public Vector2[] getGridPath(){

@@ -25,14 +25,16 @@ import com.mygdx.game.enums.Facing;
 
 public class Chef implements IPathfinder, IInteractable {
     private static final int CHEF_SIZE = 256;
-    private Sprite chefSprite;
+    private final Sprite chefSprite;
     public Stack<Food> foodStack;
-    private int squareSize = 32;
+    private final int squareSize = 32;
     private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;
     final float speed = 100;
     private int pathfindingCounter = 0;
     private boolean interactablePathEnd = false;
+
+    public Facing finalFacing = Facing.UP;
 
     private Vector2 gridPosition;
     @Override
@@ -80,7 +82,7 @@ public class Chef implements IPathfinder, IInteractable {
             PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
             //Interacts with anything at the end of the path
             if(pathfindingCounter == worldPath.size() && interactablePathEnd) {
-                setFacing(Facing.UP);
+                setFacing(finalFacing);
                 interact(walls, tiledMap);
                 interactablePathEnd = false;
             }
@@ -115,6 +117,13 @@ public class Chef implements IPathfinder, IInteractable {
         pathfindingCounter = 0;
         //Check if there is something to interact with at the end of the path
         interactablePathEnd = end.isInteractable();
+        if(interactablePathEnd){
+            //Fix for a path of 1
+            if(gridPath.length > 1){
+                Node penultimateNode = PathfindingUtils.findBestInteractingNode(start, end, walls);
+                finalFacing = PathfindingUtils.calculateFinalFacing(penultimateNode, end);
+            }
+        }
     }
 
     private void keyBoardMovement(TiledMap tiledMap, Node[][] walls){

@@ -23,7 +23,7 @@ public class TileMapUtils {
             for (int x = 0; x < arrMap.length; x++){
                 Cell currentCell = layer.getCell(x,y);
                 if(currentCell != null)  arrMap[x][y] = new Node(x,y, true);
-                else arrMap[x][y] = new Node(x,y,false);;
+                else arrMap[x][y] = new Node(x,y,false);
             }
         }
         return arrMap;
