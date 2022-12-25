@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 // import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.Node;
+import com.mygdx.game.enums.Facing;
 import com.mygdx.game.enums.TileMapLayerNames;
 
 public class TileMapUtils {
@@ -29,20 +30,37 @@ public class TileMapUtils {
     }
 
     //A debug function to draw what the array thinks the map looks like
-    public static String tileMapToString(TiledMap tiledMap){
+    public static String tileMapToString(Node[][] arrMap){
         String output = "";
-        Node[][] arrMap = tileMapToArray(tiledMap);
         for (int y = arrMap.length - 1; y >= 0; y--){
             for (int x = 0; x < arrMap.length; x++){
                 if(arrMap[x][y].getWall()) output += "X";
                 else if(arrMap[x][y].getStation()) output += "S";
-                else if(arrMap[x][y].getFood()) output += "F";
+                else if(arrMap[x][y].isFood()) output += "F";
+                else if(arrMap[x][y].isChef()) output += "C";
+                else if(arrMap[x][y].isCustomer()) output += "B";
                 else output += " ";
             }
             output += "\n";
         }
         return  output;
     }
+
+    public static Node getNodeAtFacing(Facing facing, Node[][] grid, Node currentNode){
+        switch(facing){
+            case UP:
+                return grid[currentNode.getGridX()][currentNode.getGridY() + 1];
+            case DOWN:
+                return grid[currentNode.getGridX()][currentNode.getGridY() - 1];
+            case RIGHT:
+                return grid[currentNode.getGridX() + 1][currentNode.getGridY()];
+            case LEFT:
+                return grid[currentNode.getGridX() - 1][currentNode.getGridY()];
+        }
+        return null;
+    }
+
+
     public static int positionToCoord(float spriteCoord, TiledMap tiledMap){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         return (int)(spriteCoord + 256)/layer.getTileWidth() - 4;

@@ -3,6 +3,8 @@ package com.mygdx.game.stations;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
@@ -31,7 +33,17 @@ public class Station implements IInteractable {
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     @Override
-    public void onInteract() {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
         System.out.println("Interacting with a station");
+    }
+
+    @Override
+    public Vector2 getPreviousGridPosition() {
+        return null;
+    }
+
+    @Override
+    public void setCurrentGridPosition(Vector2 gridPos) {
+
     }
 }

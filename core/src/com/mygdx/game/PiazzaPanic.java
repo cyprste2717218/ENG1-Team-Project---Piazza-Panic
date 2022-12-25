@@ -2,10 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -21,12 +23,16 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
+import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.TileMapUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 
 import javax.swing.text.html.parser.Entity;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 
@@ -37,35 +43,44 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
 	private Node[][] walls;
-	public static Array<Customer> customers;	// array of active customers
+	public static List<Customer> customers;	// array of active customers
 	private Long lastCustomerTime;
 	private Chef[] chefs;
 	private int selectedChef = 0;
+	public static List<Food> RENDERED_FOODS;
 
+
+	public static int CUSTOMER_SERVED_COUNTER = 0;
+	private BitmapFont CustomerServedText;
 
 	@Override
 	public void create() {
 
+		CustomerServedText = new BitmapFont();
+		CustomerServedText.setColor(Color.BLACK);
+		RENDERED_FOODS = new ArrayList<>();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2f, camera.position.z);
-		spawnChefs();
 		batch = new SpriteBatch();
-
-		for (Food food : FoodItems.finishedFoods) {
-			System.out.println(food.name);
-		}
 
 		tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		walls = TileMapUtils.tileMapToArray(tiledMap);
-		System.out.println(TileMapUtils.tileMapToString(tiledMap));
+		System.out.println(TileMapUtils.tileMapToString(walls));
+
+		spawnChefs();
+
+		Food pizza = FoodItems.PIZZA;
+		pizza.setTileMapPosition(2,2, walls, tiledMap);
+		RENDERED_FOODS.add(pizza);
 
 		Stations.createAllStations(walls, tiledMap);
 
 		// Customer spawning
-		customers = new Array<Customer>();
+		customers = new ArrayList<>();
 		spawnCustomer();
+
 
 	}
 
@@ -97,13 +112,19 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1f,1f,1f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		updateGridInteractables(chefs, RENDERED_FOODS, customers);
+
 		orthogonalTiledMapRenderer.setView(camera);
 
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
+		CustomerServedText.draw(batch,"Customer Served: " + CUSTOMER_SERVED_COUNTER, 35,450);
 		for(Chef chef: chefs){
 			chef.getChefSprite().draw(batch);
+		}
+		for(Food food : RENDERED_FOODS){
+			food.foodSprite.draw(batch);
 		}
 		Stations.renderAllStations(batch);
 		batch.end();
@@ -111,16 +132,59 @@ public class PiazzaPanic extends ApplicationAdapter {
 		orthogonalTiledMapRenderer.render();
 
 		chefs[selectedChef].move(tiledMap, walls, camera);
+		if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
+			chefs[selectedChef].interact(walls, tiledMap);
+		}
 		swapChef();
+		System.out.println(TileMapUtils.tileMapToString(walls));
+
+
 
 	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
-		if(customers.size < 5) {
+		if(customers.size() < 5) {
 			if (TimeUtils.nanoTime() - lastCustomerTime > 5000000000L) {
 				spawnCustomer();
-				System.out.println("Spawning customer: " + customers.size);
+				System.out.println("Spawning customer: " + customers.size());
 			}
 		}
+	}
 
+	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
+		for(Chef chef : chefs){
+			if(chef.getPreviousGridPosition() != null){
+				Node oldNode = walls[(int)chef.getPreviousGridPosition().x][(int)chef.getPreviousGridPosition().y];
+				oldNode.setInteractable(null);
+				oldNode.setChef(false);
+			}
+			Node newNode = walls[TileMapUtils.positionToCoord(chef.getChefSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(chef.getChefSprite().getY(), tiledMap)];
+			newNode.setChef(true);
+			newNode.setInteractable(chef);
+			chef.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
+		}
+
+		for(Food food : renderedFoods){
+			if(food.getPreviousGridPosition() != null) {
+				Node oldNode = walls[(int) food.getPreviousGridPosition().x][(int) food.getPreviousGridPosition().y];
+				oldNode.setInteractable(null);
+				oldNode.setFood(false);
+			}
+			Node newNode = walls[TileMapUtils.positionToCoord(food.foodSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(food.foodSprite.getY(), tiledMap)];
+			newNode.setFood(true);
+			newNode.setInteractable(food);
+			food.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
+		}
+
+		for(Customer customer: customers){
+			if(customer.getPreviousGridPosition() != null){
+				Node oldNode = walls[(int)customer.getPreviousGridPosition().x][(int)customer.getPreviousGridPosition().y];
+				oldNode.setInteractable(null);
+				oldNode.setCustomer(false);
+			}
+			//Node newNode = walls[TileMapUtils.positionToCoord(customer.customerSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(customer.customerSprite.getY(), tiledMap)];
+			//newNode.setCustomer(true);
+			//newNode.setInteractable(customer);
+			//customer.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
+		}
 	}
 
 
@@ -133,4 +197,5 @@ public class PiazzaPanic extends ApplicationAdapter {
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
 	}
+
 }

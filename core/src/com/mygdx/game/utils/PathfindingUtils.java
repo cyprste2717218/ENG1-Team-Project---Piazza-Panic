@@ -22,7 +22,7 @@ public class PathfindingUtils {
         if(!isValidNode(end.getGridX(), end.getGridY(), walls)) return new Vector2[0];
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
         if(end.getWall()) return new Vector2[0];
-        if(end.getStation()) end = walls[end.getGridX()][end.getGridY() - 1];
+        if(end.isInteractable()) end = walls[end.getGridX()][end.getGridY() - 1];
         clearParents(walls);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
@@ -38,7 +38,7 @@ public class PathfindingUtils {
                     n.setParent(current);
                     return backTrackPath(n);
                 }
-                else if (!closedList.contains(n) && !n.getWall() && !n.getStation()){
+                else if (!closedList.contains(n) && !n.isCollidable()){
                     checkNeighbour(current, n, end, openList, closedList);
                 }
             }
