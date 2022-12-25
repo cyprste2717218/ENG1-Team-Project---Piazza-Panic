@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
+import com.mygdx.game.Chef;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
@@ -32,6 +33,7 @@ public class Station implements IInteractable {
         walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
+    
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
         System.out.println("Interacting with a station");
@@ -44,6 +46,5 @@ public class Station implements IInteractable {
 
     @Override
     public void setCurrentGridPosition(Vector2 gridPos) {
-
     }
 }

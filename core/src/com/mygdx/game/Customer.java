@@ -56,6 +56,7 @@ public class Customer implements IInteractable, ITimer {
         gridPosition = gridPos;
     }
 
+
     @Override
     public float runTimer(float timerValue) {
         if(timerValue == 0){
