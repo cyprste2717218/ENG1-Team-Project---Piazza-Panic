@@ -16,13 +16,13 @@ public class PathfindingUtils {
     private PathfindingUtils(){}
 
     //Pathfinds between two grid co-ordinates
-    public static Vector2[] findPath(Node start, Node end, Node[][] walls){
+    public static Vector2[] findPath(Node start, Node end, Node[][] grid){
 
-        if(!isValidNode(end.getGridX(), end.getGridY(), walls)) return new Vector2[0];
+        if(!isValidNode(end.getGridX(), end.getGridY(), grid)) return new Vector2[0];
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
         if(end.getWall()) return new Vector2[0];
-        if(end.isInteractable()) end = findBestInteractingNode(start, end, walls);
-        clearParents(walls);
+        if(end.isInteractable()) end = findBestInteractingNode(start, end, grid);
+        clearParents(grid);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
         List<Node> closedList = new ArrayList<>();
@@ -30,7 +30,7 @@ public class PathfindingUtils {
         openList.add(start);
         while(!openList.isEmpty()){
             Node current = openList.poll();
-            Node[] neighbours = getNeighbours(current, walls);
+            Node[] neighbours = getNeighbours(current, grid);
             for(Node n : neighbours){
                 //Check if we have reached the end node
                 if(n == end) {
@@ -47,10 +47,9 @@ public class PathfindingUtils {
         return new Vector2[0];
     }
 
-    public static Node findBestInteractingNode(Node start, Node end, Node[][] walls){
-        //For all 4 directions
-        //Check which is the most extreme distance to the node
-
+    //Finds the node next to an interactable node that should be pathfound to
+    //It finds the most extreme direction of the shortest node to path to
+    public static Node findBestInteractingNode(Node start, Node end, Node[][] grid){
         double smallestDistance = 10000;
         Node bestNode = null;
 
@@ -58,8 +57,8 @@ public class PathfindingUtils {
         int[] yMod = {0, 0, -1, 1};
 
         for(int i = 0; i < xMod.length; i++){
-            if(!isValidNode(end.getGridX() + xMod[i],end.getGridY() + yMod[i], walls)) continue;
-            Node current = walls[end.getGridX() + xMod[i]][end.getGridY() + yMod[i]];
+            if(!isValidNode(end.getGridX() + xMod[i],end.getGridY() + yMod[i], grid)) continue;
+            Node current = grid[end.getGridX() + xMod[i]][end.getGridY() + yMod[i]];
             if(current.isCollidable()) continue;
 
             float biggestCurrentDistance = Math.max(Math.abs(start.getGridX() - current.getGridX()), Math.abs(start.getGridY() - current.getGridY()));
@@ -73,6 +72,7 @@ public class PathfindingUtils {
         return bestNode;
     }
 
+    //Because all interactable objects path to one space before them, this function calculates the correct direction for the sprite to face to interact with the object on a neighbouring node
     public static Facing calculateFinalFacing(Node penultimate, Node end){
         if(end.getGridY() > penultimate.getGridY()) return Facing.UP;
         if(end.getGridY() < penultimate.getGridY()) return Facing.DOWN;
@@ -97,6 +97,7 @@ public class PathfindingUtils {
     public static List<Vector2> convertGridPathToWorld(Vector2[] path, TiledMap tiledMap){
         List<Vector2> worldPath = new ArrayList<>();
         for (Vector2 coordinate: path){
+            //The 16s are added to centre the sprite
             float worldX = TileMapUtils.coordToPosition((int)coordinate.x, tiledMap);
             float worldY = TileMapUtils.coordToPosition((int)coordinate.y, tiledMap);
             worldPath.add(new Vector2(worldX, worldY));
@@ -105,28 +106,28 @@ public class PathfindingUtils {
     }
 
     //Resets the parents of every Node
-    private static void clearParents(Node[][] walls){
-        for(int x = 0; x < walls.length; x++){
-            for(int y = 0; y < walls.length; y++){
-                walls[x][y].setParent(null);
+    private static void clearParents(Node[][] grid){
+        for(int x = 0; x < grid.length; x++){
+            for(int y = 0; y < grid.length; y++){
+                grid[x][y].setParent(null);
             }
         }
     }
 
     //Checks the node is on the grid
-    public static boolean isValidNode(int gridX, int gridY, Node[][] walls){
-        return gridY < walls.length && gridY >= 0 && gridX >= 0 && gridX < walls.length;
+    public static boolean isValidNode(int gridX, int gridY, Node[][] grid){
+        return gridY < grid.length && gridY >= 0 && gridX >= 0 && gridX < grid.length;
     }
 
     //Gets the neighbouring nodes of the current Node
-    private static Node[] getNeighbours(Node current, Node[][] walls){
+    private static Node[] getNeighbours(Node current, Node[][] grid){
         int[] xMod = {1,-1,0,0};
         int[] yMod = {0,0,1,-1};
         List<Node> neighbourList = new ArrayList<>();
 
         for(int i = 0; i < xMod.length; i++){
-            if(isValidNode(current.getGridX() + xMod[i], current.getGridY() + yMod[i], walls))
-                neighbourList.add(walls[current.getGridX() + xMod[i]][current.getGridY() + yMod[i]]);
+            if(isValidNode(current.getGridX() + xMod[i], current.getGridY() + yMod[i], grid))
+                neighbourList.add(grid[current.getGridX() + xMod[i]][current.getGridY() + yMod[i]]);
         }
         return neighbourList.toArray(new Node[0]);
     }
@@ -170,6 +171,7 @@ public class PathfindingUtils {
         }
     }
 
+    //This function controls the direction the sprite is facing during its pathfinding
     private static void setPathfinderFacing(Vector2 movementDir, IPathfinder pathfinder){
         //check which movement direction is the largest and face that way
         if(Math.abs(movementDir.x) > Math.abs(movementDir.y)){
@@ -182,6 +184,7 @@ public class PathfindingUtils {
         }
     }
 
+    //This function draws a line along the path to provide a visual indicator
     public static void drawPath(List<Vector2> path, Camera camera, Sprite sprite, IPathfinder pathfinder){
         if(path.isEmpty()) return;
         ShapeRenderer shapeRenderer = new ShapeRenderer();

@@ -72,10 +72,11 @@ public class Chef implements IPathfinder, IInteractable {
     }
 
 
-    public void move(TiledMap tiledMap, Node[][] walls, Camera camera){
+    //A function to handle all movement of the chef
+    public void move(TiledMap tiledMap, Node[][] grid, Camera camera){
 
-        if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, walls);
-        else mouseMovement(tiledMap, walls, camera);
+        if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, grid);
+        else mouseMovement(tiledMap, grid, camera);
 
         if(!worldPath.isEmpty()){
             PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
@@ -83,27 +84,28 @@ public class Chef implements IPathfinder, IInteractable {
             //Interacts with anything at the end of the path
             if(pathfindingCounter == worldPath.size() && interactablePathEnd) {
                 setFacing(finalFacing);
-                interact(walls, tiledMap);
+                interact(grid, tiledMap);
                 interactablePathEnd = false;
             }
         }
 
     }
-
-    private void mouseMovement(TiledMap tiledMap, Node[][] walls, Camera camera){
+    
+    //A function to handle movement with the mouse
+    private void mouseMovement(TiledMap tiledMap, Node[][] grid, Camera camera){
 
         //Adds a delay between how often you can pathfind
         if(TimeUtils.millis() - 250 < mouseClickTime) return;
         mouseClickTime = TimeUtils.millis();
 
         //Convert world co-ords to grid co-ords
-        Node start = setStartCoords(tiledMap, walls);
-        Node end = setEndCoords(tiledMap, walls, camera);
+        Node start = setStartCoords(tiledMap, grid);
+        Node end = setEndCoords(tiledMap, grid, camera);
 
         if(start == null || end == null) return;
 
         //Set up thread to do pathfinding
-        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, walls);
+        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, grid);
         Thread pathfindingThread = new Thread(pathfindingObj);
         pathfindingThread.start();
         //Stalls the main thread until the pathfinding is complete
@@ -120,17 +122,18 @@ public class Chef implements IPathfinder, IInteractable {
         if(interactablePathEnd){
             //Fix for a path of 1
             if(gridPath.length > 1){
-                Node penultimateNode = PathfindingUtils.findBestInteractingNode(start, end, walls);
+                Node penultimateNode = PathfindingUtils.findBestInteractingNode(start, end, grid);
                 finalFacing = PathfindingUtils.calculateFinalFacing(penultimateNode, end);
             }
         }
     }
 
-    private void keyBoardMovement(TiledMap tiledMap, Node[][] walls){
+    //A function to handle movement with the keyboard
+    private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         int tileWidth = layer.getTileWidth();
         int collisionBuffer = 2;
-        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, walls, tiledMap, chefSprite, squareSize, collisionBuffer);
+        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, collisionBuffer);
 
         if(Gdx.input.isKeyPressed(Input.Keys.W) && !collisionHandler.hasCollisionUp()){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
@@ -163,28 +166,28 @@ public class Chef implements IPathfinder, IInteractable {
         }
     }
 
-    private Node setStartCoords(TiledMap tiledMap, Node[][] walls){
+    private Node setStartCoords(TiledMap tiledMap, Node[][] grid){
         int startGridX = TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap);
         int startGridY = TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap);
-        if (!PathfindingUtils.isValidNode(startGridX, startGridY, walls)) return null;
-        return walls[startGridX][startGridY];
+        if (!PathfindingUtils.isValidNode(startGridX, startGridY, grid)) return null;
+        return grid[startGridX][startGridY];
     }
 
-    private Node setEndCoords(TiledMap tiledMap, Node[][] walls, Camera camera){
+    private Node setEndCoords(TiledMap tiledMap, Node[][] grid, Camera camera){
         Vector3 unprojectedCoord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         float endWorldX = unprojectedCoord.x - 128;
         float endWorldY = unprojectedCoord.y - 128;
         int endGridX = TileMapUtils.positionToCoord(endWorldX, tiledMap);
         int endGridY = TileMapUtils.positionToCoord(endWorldY, tiledMap);
-        if (!PathfindingUtils.isValidNode(endGridX, endGridY, walls)) return null;
-        return walls[endGridX][endGridY];
+        if (!PathfindingUtils.isValidNode(endGridX, endGridY, grid)) return null;
+        return grid[endGridX][endGridY];
     }
 
 
 
     //Used to interact with other objects
-    public void interact(Node[][] walls, TiledMap tiledMap){
-        Node interactedNode = getInteractedNode(walls, tiledMap);
+    public void interact(Node[][] grid, TiledMap tiledMap){
+        Node interactedNode = getInteractedNode(grid, tiledMap);
         if(interactedNode.getInteractable() != null){
             interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap);
             System.out.println("Found Interactable");
@@ -207,8 +210,8 @@ public class Chef implements IPathfinder, IInteractable {
         System.out.println("Interacting with a chef");
     }
 
-    private Node getInteractedNode(Node[][] walls, TiledMap tiledMap){
-        return TileMapUtils.getNodeAtFacing(facing, walls, walls[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(),tiledMap)]);
+    private Node getInteractedNode(Node[][] grid, TiledMap tiledMap){
+        return TileMapUtils.getNodeAtFacing(facing, grid, grid[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(),tiledMap)]);
     }
 
 

@@ -59,10 +59,10 @@ public class Food implements IInteractable {
         gridPosition = gridPos;
     }
 
-    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
-        if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
-        walls[mapPosX][mapPosY].setFood(true);
-        walls[mapPosX][mapPosY].setInteractable(this);
+    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
+        if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
+        grid[mapPosX][mapPosY].setFood(true);
+        grid[mapPosX][mapPosY].setInteractable(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
 

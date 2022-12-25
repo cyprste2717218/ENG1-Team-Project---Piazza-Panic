@@ -42,7 +42,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 	private TiledMap tiledMap;
-	private Node[][] walls;
+	private Node[][] grid;
 	public static List<Customer> customers;	// array of active customers
 	private Long lastCustomerTime;
 	private Chef[] chefs;
@@ -66,16 +66,16 @@ public class PiazzaPanic extends ApplicationAdapter {
 		tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
 		orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-		walls = TileMapUtils.tileMapToArray(tiledMap);
-		System.out.println(TileMapUtils.tileMapToString(walls));
+		grid = TileMapUtils.tileMapToArray(tiledMap);
+		System.out.println(TileMapUtils.tileMapToString(grid));
 
 		spawnChefs();
 
 		Food pizza = FoodItems.PIZZA;
-		pizza.setTileMapPosition(2,2, walls, tiledMap);
+		pizza.setTileMapPosition(2,2, grid, tiledMap);
 		RENDERED_FOODS.add(pizza);
 
-		Stations.createAllStations(walls, tiledMap);
+		Stations.createAllStations(grid, tiledMap);
 
 		// Customer spawning
 		customers = new ArrayList<>();
@@ -131,12 +131,12 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		orthogonalTiledMapRenderer.render();
 
-		chefs[selectedChef].move(tiledMap, walls, camera);
+		chefs[selectedChef].move(tiledMap, grid, camera);
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
-			chefs[selectedChef].interact(walls, tiledMap);
+			chefs[selectedChef].interact(grid, tiledMap);
 		}
 		swapChef();
-		System.out.println(TileMapUtils.tileMapToString(walls));
+		System.out.println(TileMapUtils.tileMapToString(grid));
 
 
 
@@ -152,11 +152,11 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
 		for(Chef chef : chefs){
 			if(chef.getPreviousGridPosition() != null){
-				Node oldNode = walls[(int)chef.getPreviousGridPosition().x][(int)chef.getPreviousGridPosition().y];
+				Node oldNode = grid[(int)chef.getPreviousGridPosition().x][(int)chef.getPreviousGridPosition().y];
 				oldNode.setInteractable(null);
 				oldNode.setChef(false);
 			}
-			Node newNode = walls[TileMapUtils.positionToCoord(chef.getChefSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(chef.getChefSprite().getY(), tiledMap)];
+			Node newNode = grid[TileMapUtils.positionToCoord(chef.getChefSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(chef.getChefSprite().getY(), tiledMap)];
 			newNode.setChef(true);
 			newNode.setInteractable(chef);
 			chef.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
@@ -164,11 +164,11 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		for(Food food : renderedFoods){
 			if(food.getPreviousGridPosition() != null) {
-				Node oldNode = walls[(int) food.getPreviousGridPosition().x][(int) food.getPreviousGridPosition().y];
+				Node oldNode = grid[(int) food.getPreviousGridPosition().x][(int) food.getPreviousGridPosition().y];
 				oldNode.setInteractable(null);
 				oldNode.setFood(false);
 			}
-			Node newNode = walls[TileMapUtils.positionToCoord(food.foodSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(food.foodSprite.getY(), tiledMap)];
+			Node newNode = grid[TileMapUtils.positionToCoord(food.foodSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(food.foodSprite.getY(), tiledMap)];
 			newNode.setFood(true);
 			newNode.setInteractable(food);
 			food.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
@@ -176,11 +176,11 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		for(Customer customer: customers){
 			if(customer.getPreviousGridPosition() != null){
-				Node oldNode = walls[(int)customer.getPreviousGridPosition().x][(int)customer.getPreviousGridPosition().y];
+				Node oldNode = grid[(int)customer.getPreviousGridPosition().x][(int)customer.getPreviousGridPosition().y];
 				oldNode.setInteractable(null);
 				oldNode.setCustomer(false);
 			}
-			//Node newNode = walls[TileMapUtils.positionToCoord(customer.customerSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(customer.customerSprite.getY(), tiledMap)];
+			//Node newNode = grid[TileMapUtils.positionToCoord(customer.customerSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(customer.customerSprite.getY(), tiledMap)];
 			//newNode.setCustomer(true);
 			//newNode.setInteractable(customer);
 			//customer.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));

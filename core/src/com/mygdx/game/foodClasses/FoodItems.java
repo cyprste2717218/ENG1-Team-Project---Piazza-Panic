@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FoodItems {
+    //A list of finished foods, e.g. Burger, which has any Food with a reward automatically added to it
     public static List<Food> finishedFoods = new ArrayList<>();
 
 
