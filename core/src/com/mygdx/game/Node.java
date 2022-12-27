@@ -1,11 +1,19 @@
 package com.mygdx.game;
 
+import com.mygdx.game.interfaces.IInteractable;
+
 public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
-    private boolean isWall, isStation, isFood;
-    private int gridX, gridY;
+    private final boolean isWall;
+    private boolean isStation;
+    private boolean isFood;
+    private boolean isChef;
+    private boolean isCustomer;
+    private final int gridX;
+    private final int gridY;
+    private IInteractable interactable;
 
     public Node(int gridX, int gridY, boolean isWall){
         g = 0;
@@ -16,6 +24,7 @@ public class Node implements Comparable<Node>{
         this.isFood = false;
         this.gridX = gridX;
         this.gridY = gridY;
+        interactable = null;
     }
 
     public float getF() {
@@ -62,9 +71,46 @@ public class Node implements Comparable<Node>{
         this.isStation = isStation;
     }
 
-    public boolean getFood(){
+    public boolean isFood(){
         return isFood;
     }
+
+    public void setFood(boolean isFood){
+        this.isFood = isFood;
+    }
+
+    public boolean isChef() {
+        return isChef;
+    }
+
+    public void setChef(boolean chef) {
+        isChef = chef;
+    }
+
+    public boolean isCustomer() {
+        return isCustomer;
+    }
+
+    public void setCustomer(boolean customer) {
+        isCustomer = customer;
+    }
+
+    public boolean isInteractable(){
+        return isFood || isStation || isChef || isCustomer;
+    }
+
+    public boolean isCollidable(){
+        return isWall || isStation || isFood;
+    }
+
+    public IInteractable getInteractable() {
+        return interactable;
+    }
+
+    public void setInteractable(IInteractable interactable) {
+        this.interactable = interactable;
+    }
+
 
     @Override
     public int compareTo(Node n) {
