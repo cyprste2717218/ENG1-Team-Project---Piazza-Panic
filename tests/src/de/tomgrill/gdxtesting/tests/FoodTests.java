@@ -19,10 +19,12 @@ public class FoodTests {
     @Test
     public void testFullFoodBuilder() {
 
-        //It was intended to test the reward functionality in this class, however,because it is connected to the FoodItems class, it loads textures, breaking the testing environment
+        //It was intended to test the reward functionality as a part of this, but this initialises the FoodItems class, causing rendering errors
 
+        // Create a mock Texture object using Mockito
         Texture texture = Mockito.mock(Texture.class);
 
+        // Use the FoodBuilder to create a Food object with all optional attributes set to true
         Food food = new Food.FoodBuilder("Pizza", texture)
                 .setFryable()
                 .setChoppable()
@@ -31,6 +33,7 @@ public class FoodTests {
                 .setToastable()
                 .build();
 
+        // Assert that the values of the Food object's attributes are as expected
         assertEquals("Pizza", food.name);
         assertTrue(food.isFryable);
         assertTrue(food.isChoppable);
@@ -42,11 +45,13 @@ public class FoodTests {
 
     @Test
     public void testEmptyFoodBuilder() {
-
+        // Create a mock Texture object using Mockito
         Texture texture = Mockito.mock(Texture.class);
 
+        // Use the FoodBuilder to create a Food object with no optional attributes set
         Food food = new Food.FoodBuilder("Pasta", texture).build();
 
+        // Assert that the values of the Food object's attributes are as expected
         assertEquals("Pasta", food.name);
         assertFalse(food.isFryable);
         assertFalse(food.isChoppable);
