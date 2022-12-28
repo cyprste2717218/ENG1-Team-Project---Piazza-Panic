@@ -121,10 +121,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 		batch.begin();
 		CustomerServedText.draw(batch,"Customer Served: " + CUSTOMER_SERVED_COUNTER, 35,450);
 		for(Chef chef: chefs){
-			chef.getChefSprite().draw(batch);
+			chef.getSprite().draw(batch);
 		}
 		for(Food food : RENDERED_FOODS){
-			food.foodSprite.draw(batch);
+			food.getSprite().draw(batch);
 		}
 		Stations.renderAllStations(batch);
 		batch.end();
@@ -150,40 +150,21 @@ public class PiazzaPanic extends ApplicationAdapter {
 	}
 
 	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
-		for(Chef chef : chefs){
-			if(chef.getPreviousGridPosition() != null){
-				Node oldNode = grid[(int)chef.getPreviousGridPosition().x][(int)chef.getPreviousGridPosition().y];
+		List<IInteractable> interactables = new ArrayList<>();
+		interactables.addAll(Arrays.asList(chefs));
+		interactables.addAll(renderedFoods);
+		//interactables.addAll(customers);
+
+		for(IInteractable interactable : interactables){
+			if(interactable.getPreviousGridPosition() != null){
+				Node oldNode = grid[(int)interactable.getPreviousGridPosition().x][(int)interactable.getPreviousGridPosition().y];
 				oldNode.setInteractable(null);
 				oldNode.setChef(false);
 			}
-			Node newNode = grid[TileMapUtils.positionToCoord(chef.getChefSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(chef.getChefSprite().getY(), tiledMap)];
+			Node newNode = grid[TileMapUtils.positionToCoord(interactable.getSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(interactable.getSprite().getY(), tiledMap)];
 			newNode.setChef(true);
-			newNode.setInteractable(chef);
-			chef.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
-		}
-
-		for(Food food : renderedFoods){
-			if(food.getPreviousGridPosition() != null) {
-				Node oldNode = grid[(int) food.getPreviousGridPosition().x][(int) food.getPreviousGridPosition().y];
-				oldNode.setInteractable(null);
-				oldNode.setFood(false);
-			}
-			Node newNode = grid[TileMapUtils.positionToCoord(food.foodSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(food.foodSprite.getY(), tiledMap)];
-			newNode.setFood(true);
-			newNode.setInteractable(food);
-			food.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
-		}
-
-		for(Customer customer: customers){
-			if(customer.getPreviousGridPosition() != null){
-				Node oldNode = grid[(int)customer.getPreviousGridPosition().x][(int)customer.getPreviousGridPosition().y];
-				oldNode.setInteractable(null);
-				oldNode.setCustomer(false);
-			}
-			//Node newNode = grid[TileMapUtils.positionToCoord(customer.customerSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(customer.customerSprite.getY(), tiledMap)];
-			//newNode.setCustomer(true);
-			//newNode.setInteractable(customer);
-			//customer.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
+			newNode.setInteractable(interactable);
+			interactable.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
 		}
 	}
 
@@ -192,7 +173,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		for(Chef chef : chefs){
-			chef.getChefSprite().getTexture().dispose();
+			chef.getSprite().getTexture().dispose();
 		}
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();

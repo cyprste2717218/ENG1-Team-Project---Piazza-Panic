@@ -67,7 +67,8 @@ public class Chef implements IPathfinder, IInteractable {
         foodStack = new Stack<>();
     }
 
-    public Sprite getChefSprite(){
+    @Override
+    public Sprite getSprite(){
         return chefSprite;
     }
 
@@ -194,7 +195,7 @@ public class Chef implements IPathfinder, IInteractable {
         }
         else if(!foodStack.isEmpty()){
             Food currentFood = this.foodStack.pop();
-            currentFood.foodSprite.setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
+            currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
             PiazzaPanic.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
         }

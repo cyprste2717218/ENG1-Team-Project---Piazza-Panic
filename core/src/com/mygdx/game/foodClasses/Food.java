@@ -14,7 +14,7 @@ import com.mygdx.game.utils.TileMapUtils;
 public class Food implements IInteractable {
 
     public String name;
-    public Sprite foodSprite;
+    private Sprite foodSprite;
     public boolean isFryable;
     public boolean isChoppable;
     public boolean isBakeable;
@@ -38,6 +38,11 @@ public class Food implements IInteractable {
         if(reward > 0){
             FoodItems.finishedFoods.add(this);
         }
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return foodSprite;
     }
 
     @Override

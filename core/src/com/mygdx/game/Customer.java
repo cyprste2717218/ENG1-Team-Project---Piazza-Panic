@@ -17,7 +17,7 @@ import java.util.Random;
 public class Customer implements IInteractable, ITimer {
     boolean beenServed;
 
-    public Sprite customerSprite;
+    private Sprite customerSprite;
     Food order;
     float orderTimer;
 
@@ -44,6 +44,11 @@ public class Customer implements IInteractable, ITimer {
                 PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
             }
         }
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return customerSprite;
     }
 
     @Override

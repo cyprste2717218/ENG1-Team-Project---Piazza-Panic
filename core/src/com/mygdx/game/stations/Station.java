@@ -17,7 +17,7 @@ public class Station implements IInteractable {
     private static final int STATION_SIZE = 256;
     private static final int COLLISION_BUFFER = 6;
     public Stack<Food> inventory;
-    public Sprite stationSprite;
+    private Sprite stationSprite;
     public Texture stationTexture;
 
     public Station(Stack<Food> inventory){
@@ -35,6 +35,11 @@ public class Station implements IInteractable {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
         System.out.println("Interacting with a station");
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return stationSprite;
     }
 
     @Override
