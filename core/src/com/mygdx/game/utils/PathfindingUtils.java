@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.enums.Facing;
 import com.mygdx.game.Node;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IPathfinder;
 import java.util.*;
 
@@ -20,7 +21,7 @@ public class PathfindingUtils {
 
         if(!isValidNode(end.getGridX(), end.getGridY(), grid)) return new Vector2[0];
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
-        if(end.getWall()) return new Vector2[0];
+        if(end.getNodeType() == NodeType.WALL) return new Vector2[0];
         if(end.isInteractable()) end = findBestInteractingNode(start, end, grid);
         clearParents(grid);
 
@@ -117,6 +118,10 @@ public class PathfindingUtils {
     //Checks the node is on the grid
     public static boolean isValidNode(int gridX, int gridY, Node[][] grid){
         return gridY < grid.length && gridY >= 0 && gridX >= 0 && gridX < grid.length;
+    }
+
+    public static boolean isValidNode(Node node, Node[][] grid){
+        return isValidNode(node.getGridX(), node.getGridY(), grid);
     }
 
     //Gets the neighbouring nodes of the current Node

@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IInteractable;
@@ -159,10 +160,12 @@ public class PiazzaPanic extends ApplicationAdapter {
 			if(interactable.getPreviousGridPosition() != null){
 				Node oldNode = grid[(int)interactable.getPreviousGridPosition().x][(int)interactable.getPreviousGridPosition().y];
 				oldNode.setInteractable(null);
-				oldNode.setChef(false);
+				oldNode.setNodeType(NodeType.EMPTY);
 			}
 			Node newNode = grid[TileMapUtils.positionToCoord(interactable.getSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(interactable.getSprite().getY(), tiledMap)];
-			newNode.setChef(true);
+			if(interactable instanceof Chef) newNode.setNodeType(NodeType.CHEF);
+			else if(interactable instanceof Food) newNode.setNodeType(NodeType.FOOD);
+			else if(interactable instanceof Customer) newNode.setNodeType(NodeType.CUSTOMER);
 			newNode.setInteractable(interactable);
 			interactable.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
 		}

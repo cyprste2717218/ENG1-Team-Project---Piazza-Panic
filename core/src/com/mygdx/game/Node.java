@@ -1,30 +1,35 @@
 package com.mygdx.game;
 
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IInteractable;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Node implements Comparable<Node>{
 
     private float g, h;
     private Node parent;
-    private final boolean isWall;
-    private boolean isStation;
-    private boolean isFood;
-    private boolean isChef;
-    private boolean isCustomer;
+    private NodeType nodeType;
     private final int gridX;
     private final int gridY;
     private IInteractable interactable;
+    private static final Set<NodeType> INTERACTABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.CHEF, NodeType.CUSTOMER, NodeType.STATION, NodeType.FOOD));
+    private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.FOOD));
 
-    public Node(int gridX, int gridY, boolean isWall){
+    public Node(int gridX, int gridY, NodeType nodeType){
         g = 0;
         h = 0;
         parent = null;
-        this.isWall = isWall;
-        this.isStation = false;
-        this.isFood = false;
+        this.nodeType = nodeType;
         this.gridX = gridX;
         this.gridY = gridY;
         interactable = null;
+    }
+
+    public Node(int gridX, int gridY){
+        this(gridX, gridY, NodeType.EMPTY);
     }
 
     public float getF() {
@@ -51,10 +56,6 @@ public class Node implements Comparable<Node>{
         parent = p;
     }
 
-    public boolean getWall(){
-        return isWall;
-    }
-
     public int getGridX(){
         return gridX;
     }
@@ -63,44 +64,20 @@ public class Node implements Comparable<Node>{
         return gridY;
     }
 
-    public boolean getStation(){
-        return isStation;
+    public NodeType getNodeType(){
+        return nodeType;
     }
 
-    public void setStation(boolean isStation){
-        this.isStation = isStation;
-    }
-
-    public boolean isFood(){
-        return isFood;
-    }
-
-    public void setFood(boolean isFood){
-        this.isFood = isFood;
-    }
-
-    public boolean isChef() {
-        return isChef;
-    }
-
-    public void setChef(boolean chef) {
-        isChef = chef;
-    }
-
-    public boolean isCustomer() {
-        return isCustomer;
-    }
-
-    public void setCustomer(boolean customer) {
-        isCustomer = customer;
+    public void setNodeType(NodeType nodeType){
+        this.nodeType = nodeType;
     }
 
     public boolean isInteractable(){
-        return isFood || isStation || isChef || isCustomer;
+        return INTERACTABLE_NODE_TYPES.contains(nodeType);
     }
 
     public boolean isCollidable(){
-        return isWall || isStation || isFood;
+        return COLLIDABLE_NODE_TYPES.contains(nodeType);
     }
 
     public IInteractable getInteractable() {
@@ -110,7 +87,6 @@ public class Node implements Comparable<Node>{
     public void setInteractable(IInteractable interactable) {
         this.interactable = interactable;
     }
-
 
     @Override
     public int compareTo(Node n) {

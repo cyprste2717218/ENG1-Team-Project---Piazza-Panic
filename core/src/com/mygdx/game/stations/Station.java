@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
@@ -28,7 +29,7 @@ public class Station implements IInteractable {
         this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
         this.stationSprite.setScale(0.125f);
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
-        walls[mapPosX][mapPosY].setStation(true);
+        walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
         walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }

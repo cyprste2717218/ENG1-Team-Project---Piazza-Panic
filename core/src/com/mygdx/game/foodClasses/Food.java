@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
@@ -50,7 +51,7 @@ public class Food implements IInteractable {
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
         interactedNode.setInteractable(null);
-        interactedNode.setFood(false);
+        interactedNode.setNodeType(NodeType.EMPTY);
         System.out.println("Interacting with Food");
     }
 
@@ -66,7 +67,7 @@ public class Food implements IInteractable {
 
     public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
-        grid[mapPosX][mapPosY].setFood(true);
+        grid[mapPosX][mapPosY].setNodeType(NodeType.FOOD);
         grid[mapPosX][mapPosY].setInteractable(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
