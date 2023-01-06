@@ -41,13 +41,26 @@ public class Food implements IInteractable {
         }
     }
 
+    public Food(Food foodSettings){
+        name = foodSettings.name;
+        foodSprite = new Sprite(foodSettings.foodSprite.getTexture(), 256, 256);
+        foodSprite.setScale(0.125f);
+        isFryable = foodSettings.isFryable;
+        isBakeable = foodSettings.isBakeable;
+        isChoppable = foodSettings.isChoppable;
+        isFormable = foodSettings.isFormable;
+        isToastable = foodSettings.isToastable;
+        reward = foodSettings.reward;
+
+    }
+
     @Override
     public Sprite getSprite() {
         return foodSprite;
     }
 
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
         interactedNode.setInteractable(null);

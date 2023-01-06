@@ -72,9 +72,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		spawnChefs();
 
-		Food pizza = FoodItems.PIZZA;
+		Food pizza = new Food(FoodItems.PIZZA);
 		pizza.setTileMapPosition(2,2, grid, tiledMap);
 		RENDERED_FOODS.add(pizza);
+
+		Food pizza2 = new Food(FoodItems.PIZZA);
+		pizza2.setTileMapPosition(6,6, grid, tiledMap);
+		RENDERED_FOODS.add(pizza2);
 
 		Stations.createAllStations(grid, tiledMap);
 
@@ -101,9 +105,12 @@ public class PiazzaPanic extends ApplicationAdapter {
 	}
 
 	private void spawnCustomer() {
-		Customer custom = new Customer(50);
+		Texture customerTexture = new Texture("badlogic.jpg");
+		Customer customer = new Customer(customerTexture, 50);
+		customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
+		customers.add(customer);
+		customer.onSpawn(grid, tiledMap);
 		//	code here for adding the sprite...
-		customers.add(custom);
 		lastCustomerTime = TimeUtils.nanoTime();
 	}
 
@@ -127,6 +134,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 		for(Food food : RENDERED_FOODS){
 			food.getSprite().draw(batch);
 		}
+
+		List<Customer> copy = new ArrayList<>(customers);
+		for(Customer customer: copy){
+			customer.getSprite().draw(batch);
+			customer.orderSprite.draw(batch);
+			customer.moveCustomer();
+		}
 		Stations.renderAllStations(batch);
 		batch.end();
 
@@ -137,13 +151,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 			chefs[selectedChef].interact(grid, tiledMap);
 		}
 		swapChef();
-		System.out.println(TileMapUtils.tileMapToString(grid));
+		//System.out.println(TileMapUtils.tileMapToString(grid));
 
 
 
-	//	customer spawning - used a maximum of 5 for number of concurrent customers with 5 seconds delay
+	//	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
 		if(customers.size() < 5) {
-			if (TimeUtils.nanoTime() - lastCustomerTime > 5000000000L) {
+			if (TimeUtils.nanoTime() - lastCustomerTime > 10000000000L) {
 				spawnCustomer();
 				System.out.println("Spawning customer: " + customers.size());
 			}
@@ -154,7 +168,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		List<IInteractable> interactables = new ArrayList<>();
 		interactables.addAll(Arrays.asList(chefs));
 		interactables.addAll(renderedFoods);
-		//interactables.addAll(customers);
+		interactables.addAll(customers);
 
 		for(IInteractable interactable : interactables){
 			if(interactable.getPreviousGridPosition() != null){

@@ -24,6 +24,7 @@ public class Station implements IInteractable {
     public Station(Stack<Food> inventory){
         this.inventory = inventory;
     }
+
     // sets coords for the sprite on the tile map
     public void setTileMapPosition(Texture stationTexture, int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
         this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
@@ -34,7 +35,7 @@ public class Station implements IInteractable {
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         System.out.println("Interacting with a station");
     }
 

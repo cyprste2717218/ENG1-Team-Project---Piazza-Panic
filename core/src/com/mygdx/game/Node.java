@@ -16,7 +16,7 @@ public class Node implements Comparable<Node>{
     private final int gridY;
     private IInteractable interactable;
     private static final Set<NodeType> INTERACTABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.CHEF, NodeType.CUSTOMER, NodeType.STATION, NodeType.FOOD));
-    private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.FOOD));
+    private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.FOOD, NodeType.CUSTOMER));
 
     public Node(int gridX, int gridY, NodeType nodeType){
         g = 0;

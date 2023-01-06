@@ -14,6 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
+//This class can be found at https://github.com/TomGrill/gdx-testing
+
 package de.tomgrill.gdxtesting;
 
 import java.util.HashMap;
