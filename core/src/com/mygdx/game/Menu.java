@@ -58,11 +58,3 @@ public class Menu extends ApplicationAdapter {
 		playGreenImage.dispose();
 	}
 }
-
-//	class variables
-//	private BitmapFont playFont;
-//	private GlyphLayout play;
-//		in create()
-//		playFont = new BitmapFont(Gdx.files.internal("fonts/playfont.fnt"));
-//		play = new GlyphLayout(playFont,"PLAY");
-//		playFont.draw(batch, "PLAY", 400, 240 + playFont.getCapHeight()/2);   in render()
