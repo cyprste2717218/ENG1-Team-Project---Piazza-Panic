@@ -57,7 +57,7 @@ public class Customer implements IInteractable, ITimer, IPathfinder {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(!chef.foodStack.isEmpty()) {
-            if (chef.foodStack.peek() == order) {
+            if (chef.foodStack.peek().equals(order)) {
                 PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
                 //Have customer leave by pathfinding from their current position to the bottom of the screen and then being deleted
 

@@ -53,6 +53,9 @@ public class Food implements IInteractable {
         reward = foodSettings.reward;
 
     }
+    public boolean equals(Food f) {
+        return this.name == f.name;
+    }
 
     @Override
     public Sprite getSprite() {
