@@ -43,13 +43,19 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private Long lastCustomerTime;
 
 	public static int CUSTOMER_SERVED_COUNTER = 0;
+
+	public static int CUSTOMER_TARGET_SCORE = 0;
+
 	private BitmapFont CustomerServedText;
+
+	private DifficultyLevel difficultyLevel = DifficultyLevel.EASY;
 
 	@Override
 	public void create() {
 
 		CustomerServedText = new BitmapFont();
 		CustomerServedText.setColor(Color.BLACK);
+
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.5f, Gdx.graphics.getHeight() / 2, camera.position.z);
 		//System.out.println("Camera pos: (" + camera.position.x + "," + camera.position.y + ")");
@@ -74,6 +80,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 		spawnCustomer();
 
 
+	}
+	public void setDifficultyLevel(DifficultyLevel level){
+		this.difficultyLevel = level;
+	}
+
+	public DifficultyLevel getDifficultyLevel() {
+		return difficultyLevel;
 	}
 
 	private void spawnCustomer() {
@@ -102,6 +115,19 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		orthogonalTiledMapRenderer.render();
 		chef.move(tiledMap, walls, camera);
+
+		switch(difficultyLevel){
+			case EASY:
+				//easy difficulty settings
+				//possibly set the CUSTOMER SERVED COUNTER == 5
+				break;
+			case MEDIUM:
+				//medium difficulty settings
+				break;
+			case HARD:
+				//hard difficulty settings
+				break;
+		}
 
 
 

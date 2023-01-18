@@ -10,6 +10,7 @@ import com.mygdx.game.interfaces.ITimer;
 
 import java.util.Random;
 
+
 public class Customer implements IInteractable, ITimer {
     boolean beenServed;
     Food order;
@@ -20,6 +21,7 @@ public class Customer implements IInteractable, ITimer {
         beenServed = false;
         order = getRandomOrder();
         this.orderTimer = orderTimer;
+
     }
 
     private Food getRandomOrder() {
@@ -27,6 +29,8 @@ public class Customer implements IInteractable, ITimer {
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
         return FoodItems.finishedFoods.get(orderIndex);
     }
+
+
 
 
     @Override
