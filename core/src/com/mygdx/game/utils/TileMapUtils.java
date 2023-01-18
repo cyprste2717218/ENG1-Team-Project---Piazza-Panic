@@ -4,25 +4,25 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-// import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.Node;
 import com.mygdx.game.enums.Facing;
+import com.mygdx.game.enums.NodeType;
 
 public class TileMapUtils {
-
-    public final static int tileMapSize = 16;
 
     //Function that takes the tileMap and converts it to a 2d array showing where the walls are
     public static Node[][] tileMapToArray(TiledMap tiledMap){
 
-        Node[][] arrMap = new Node[16][16];
         //This applies to both the tileMap and the nodeProperties array
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Walls");
-        for (int y = 0; y < arrMap.length; y++){
-            for (int x = 0; x < arrMap.length; x++){
+
+        Node[][] arrMap = new Node[layer.getWidth()][layer.getHeight()];
+
+        for (int y = 0; y < layer.getHeight(); y++){
+            for (int x = 0; x < layer.getWidth(); x++){
                 Cell currentCell = layer.getCell(x,y);
-                if(currentCell != null)  arrMap[x][y] = new Node(x,y, true);
-                else arrMap[x][y] = new Node(x,y,false);
+                if(currentCell != null)  arrMap[x][y] = new Node(x,y, NodeType.WALL);
+                else arrMap[x][y] = new Node(x,y);
             }
         }
         return arrMap;
@@ -30,34 +30,36 @@ public class TileMapUtils {
 
     //A debug function to draw what the array thinks the map looks like
     public static String tileMapToString(Node[][] arrMap){
-        String output = "";
+        StringBuilder sB = new StringBuilder();
         for (int y = arrMap.length - 1; y >= 0; y--){
             for (int x = 0; x < arrMap.length; x++){
-                if(arrMap[x][y].getWall()) output += "X";
-                else if(arrMap[x][y].getStation()) output += "S";
-                else if(arrMap[x][y].isFood()) output += "F";
-                else if(arrMap[x][y].isChef()) output += "C";
-                else if(arrMap[x][y].isCustomer()) output += "B";
-                else output += " ";
+                sB.append(arrMap[x][y].getNodeType().toString());
             }
-            output += "\n";
+            if(y != 0){
+                sB.append("\n");
+            }
         }
-        return  output;
+        return sB.toString();
     }
 
     //A function that gets the node in front of the chef
     public static Node getNodeAtFacing(Facing facing, Node[][] grid, Node currentNode){
+        if(!PathfindingUtils.isValidNode(currentNode, grid)) return null;
+        boolean valid = false;
         switch(facing){
             case UP:
-                return grid[currentNode.getGridX()][currentNode.getGridY() + 1];
+                valid = PathfindingUtils.isValidNode(currentNode.getGridX(),currentNode.getGridY() + 1, grid);
+                return valid ? grid[currentNode.getGridX()][currentNode.getGridY() + 1] : null;
             case DOWN:
-                return grid[currentNode.getGridX()][currentNode.getGridY() - 1];
+                valid = PathfindingUtils.isValidNode(currentNode.getGridX(),currentNode.getGridY() - 1, grid);
+                return valid ? grid[currentNode.getGridX()][currentNode.getGridY() - 1] : null;
             case RIGHT:
-                return grid[currentNode.getGridX() + 1][currentNode.getGridY()];
-            case LEFT:
-                return grid[currentNode.getGridX() - 1][currentNode.getGridY()];
+                valid = PathfindingUtils.isValidNode(currentNode.getGridX() + 1,currentNode.getGridY(), grid);
+                return valid ? grid[currentNode.getGridX() + 1][currentNode.getGridY()] : null;
+            default:
+                valid = PathfindingUtils.isValidNode(currentNode.getGridX() - 1,currentNode.getGridY(), grid);
+                return valid ? grid[currentNode.getGridX() - 1][currentNode.getGridY()] : null;
         }
-        return null;
     }
 
     //A function to convert a world position to a grid position
@@ -80,7 +82,7 @@ public class TileMapUtils {
 
     //Checks for a collision at the location of a sprite
     public static boolean getCollisionAtSprite(Sprite sprite, TiledMap tiledMap, Node[][] arrMap){
-        return arrMap[positionToCoord(sprite.getX(),tiledMap)][positionToCoord(sprite.getY(), tiledMap)].isCollidable();
+        return getCollisionAtSprite(sprite.getX(), sprite.getY(),tiledMap, arrMap);
     }
 
     public static boolean getCollisionAtSprite(float x, float y, TiledMap tiledMap, Node[][] arrMap){

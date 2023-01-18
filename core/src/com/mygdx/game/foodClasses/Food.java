@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
@@ -14,7 +15,7 @@ import com.mygdx.game.utils.TileMapUtils;
 public class Food implements IInteractable {
 
     public String name;
-    public Sprite foodSprite;
+    private Sprite foodSprite;
     public boolean isFryable;
     public boolean isChoppable;
     public boolean isBakeable;
@@ -40,12 +41,33 @@ public class Food implements IInteractable {
         }
     }
 
+    public Food(Food foodSettings){
+        name = foodSettings.name;
+        foodSprite = new Sprite(foodSettings.foodSprite.getTexture(), 256, 256);
+        foodSprite.setScale(0.125f);
+        isFryable = foodSettings.isFryable;
+        isBakeable = foodSettings.isBakeable;
+        isChoppable = foodSettings.isChoppable;
+        isFormable = foodSettings.isFormable;
+        isToastable = foodSettings.isToastable;
+        reward = foodSettings.reward;
+
+    }
+    public boolean equals(Food f) {
+        return this.name == f.name;
+    }
+
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
+    public Sprite getSprite() {
+        return foodSprite;
+    }
+
+    @Override
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
         interactedNode.setInteractable(null);
-        interactedNode.setFood(false);
+        interactedNode.setNodeType(NodeType.EMPTY);
         System.out.println("Interacting with Food");
     }
 
@@ -61,7 +83,7 @@ public class Food implements IInteractable {
 
     public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
-        grid[mapPosX][mapPosY].setFood(true);
+        grid[mapPosX][mapPosY].setNodeType(NodeType.FOOD);
         grid[mapPosX][mapPosY].setInteractable(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }

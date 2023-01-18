@@ -68,7 +68,8 @@ public class Chef implements IPathfinder, IInteractable {
         foodStack = new Stack<>();
     }
 
-    public Sprite getChefSprite(){
+    @Override
+    public Sprite getSprite(){
         return chefSprite;
     }
 
@@ -132,29 +133,34 @@ public class Chef implements IPathfinder, IInteractable {
     //A function to handle movement with the keyboard
     private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        Vector2 previousPosition = new Vector2(chefSprite.getX(), chefSprite.getY()).cpy();
         int tileWidth = layer.getTileWidth();
-        int collisionBuffer = 2;
-        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, collisionBuffer);
+        float speed = 100f;
+        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, speed);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W) && !collisionHandler.hasCollisionUp()){
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.UP);
             worldPath.clear();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S) && !collisionHandler.hasCollisionDown()){
+        else if(Gdx.input.isKeyPressed(Input.Keys.S)){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.DOWN);
             worldPath.clear();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A) && !collisionHandler.hasCollisionLeft()){
+        else if(Gdx.input.isKeyPressed(Input.Keys.A)){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.LEFT);
             worldPath.clear();
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.D) && !collisionHandler.hasCollisionRight()) {
+        else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
             setFacing(Facing.RIGHT);
             worldPath.clear();
+        }
+
+        if(collisionHandler.hasCollision()){
+            chefSprite.setPosition(previousPosition.x, previousPosition.y);
         }
 
 
@@ -190,12 +196,12 @@ public class Chef implements IPathfinder, IInteractable {
     public void interact(Node[][] grid, TiledMap tiledMap){
         Node interactedNode = getInteractedNode(grid, tiledMap);
         if(interactedNode.getInteractable() != null){
-            interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap);
+            interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap, grid);
             System.out.println("Found Interactable");
         }
         else if(!foodStack.isEmpty()){
             Food currentFood = this.foodStack.pop();
-            currentFood.foodSprite.setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
+            currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
             PiazzaPanic.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
         }
@@ -204,7 +210,7 @@ public class Chef implements IPathfinder, IInteractable {
     //This function allows your chef to give the interacted chef some food
     //Keep in mind that the parameter chef refers to the chef who is giving, and interactedChef refers to the chef who is receiving
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(chef.foodStack.isEmpty()) return;
         Chef interactedChef = (Chef)interactedNode.getInteractable();
         interactedChef.foodStack.push(chef.foodStack.pop());

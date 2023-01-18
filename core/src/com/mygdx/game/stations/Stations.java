@@ -83,9 +83,9 @@ public class Stations {
 
     }
     public static void renderAllStations(SpriteBatch batch)  {
-        CHOPPING_BOARD.stationSprite.draw(batch);
-        FRYER.stationSprite.draw(batch);
-        LETTUCE_STATION.stationSprite.draw(batch);
+        CHOPPING_BOARD.getSprite().draw(batch);
+        FRYER.getSprite().draw(batch);
+        LETTUCE_STATION.getSprite().draw(batch);
 
         /*
         TOMATO_STATION.stationSprite.draw(batch);
