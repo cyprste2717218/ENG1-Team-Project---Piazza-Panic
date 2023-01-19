@@ -86,7 +86,6 @@ public class PiazzaPanic extends ApplicationAdapter {
 		customers = new ArrayList<>();
 		spawnCustomer();
 
-
 	}
 
 	private void spawnChefs(){
@@ -162,6 +161,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 				System.out.println("Spawning customer: " + customers.size());
 			}
 		}
+		//TileMapUtils.displayGrid(grid, camera, tiledMap);
 	}
 
 	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
