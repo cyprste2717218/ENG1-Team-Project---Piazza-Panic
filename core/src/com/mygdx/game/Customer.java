@@ -16,6 +16,7 @@ import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.PathfindingUtils;
+import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.ArrayList;
@@ -58,6 +59,8 @@ public class Customer implements IInteractable, ITimer, IPathfinder {
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(!chef.foodStack.isEmpty()) {
             if (chef.foodStack.peek().equals(order)) {
+                chef.foodStack.pop();
+                SoundUtils.getCorrectOrderSound().play();
                 PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
                 //Have customer leave by pathfinding from their current position to the bottom of the screen and then being deleted
 
@@ -75,6 +78,9 @@ public class Customer implements IInteractable, ITimer, IPathfinder {
                 Vector2[] gridPath = pathfindingObj.getGridPath();
                 worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
                 beenServed = true;
+            }
+            else{
+                SoundUtils.getFailureSound().play();
             }
         }
     }
