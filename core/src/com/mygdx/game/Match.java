@@ -20,6 +20,7 @@ public class Match {
         mode = modeOptions[1];
         reputationPoints = 3;
         customerServed = 0;
+        maxCustomers = 0;
         status = true;
     }
 
@@ -77,15 +78,8 @@ public class Match {
      *         false boolean otherwise
      */
     public boolean isWin(){
-        if (mode.equals(modeOptions[1])) {
-            if (reputationPoints == 0) {
-                status = false;
-                return false;
-            }
-        }
         if (reputationPoints <= 0 || (timer==0 && customerServed<maxCustomers)) {
             status = false;
-            return false;
         } else if (timer==0 && customerServed>=maxCustomers) {
             status = false;
             return true;
