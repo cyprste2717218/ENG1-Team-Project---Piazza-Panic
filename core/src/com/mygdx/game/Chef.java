@@ -28,6 +28,7 @@ public class Chef implements IPathfinder, IInteractable {
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
     private final int squareSize = 32;
+
     private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;
     final float speed = 100;
