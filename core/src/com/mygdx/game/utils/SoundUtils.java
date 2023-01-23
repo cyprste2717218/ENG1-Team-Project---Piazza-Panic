@@ -37,19 +37,15 @@ public class SoundUtils {
         return Gdx.audio.newSound(Gdx.files.internal("timer_finished.mp3"));
     }
 
-    //Need sounds for the different stations
-    //Cutting Station
-    //Making Station
-    //More...
+    public static Sound getFryerSound(){
+        return Gdx.audio.newSound(Gdx.files.internal("fryer_sound.mp3"));
+    }
 
+    public static Sound getCuttingSound(){
+        return Gdx.audio.newSound(Gdx.files.internal("chopping.mp3"));
+    }
 
-    public static void disposeSounds(){
-        getBackgroundMusic().dispose();
-        getFailureSound().dispose();
-        getCustomerSpawnSound().dispose();
-        getChefSwitchSound().dispose();
-        getItemPickupSound().dispose();
-        getCorrectOrderSound().dispose();
-        getTimerFinishedSound().dispose();
+    public static Sound getFormingSound(){
+        return Gdx.audio.newSound(Gdx.files.internal("making.mp3"));
     }
 }
