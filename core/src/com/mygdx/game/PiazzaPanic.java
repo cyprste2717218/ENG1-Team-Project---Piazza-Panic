@@ -1,3 +1,4 @@
+
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
@@ -12,3 +13,4 @@ public class PiazzaPanic extends Game {
         this.setScreen(new MainMenu(this));
     }
 }
+

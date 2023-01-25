@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 public class Customer implements IInteractable, ITimer, IPathfinder {
     boolean beenServed;
     private Sprite customerSprite;
@@ -43,9 +44,11 @@ public class Customer implements IInteractable, ITimer, IPathfinder {
         order = getRandomOrder();
         this.orderTimer = orderTimer;
 
+
         orderSprite = new Sprite(order.getSprite().getTexture(), CUSTOMER_SIZE, CUSTOMER_SIZE);
         orderSprite.setScale(0.0625f);
         orderSprite.setPosition(customerSprite.getX() + 16, customerSprite.getY() + 16);
+
     }
 
     private Food getRandomOrder() {
@@ -53,6 +56,8 @@ public class Customer implements IInteractable, ITimer, IPathfinder {
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
         return FoodItems.finishedFoods.get(orderIndex);
     }
+
+
 
 
     @Override
