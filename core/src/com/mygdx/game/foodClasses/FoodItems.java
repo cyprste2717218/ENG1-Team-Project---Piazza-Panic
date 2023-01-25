@@ -49,7 +49,7 @@ public class FoodItems {
             new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
 
     public static Food BUN = new Food(new Food.FoodBuilder("Bun",
-            new Texture(Gdx.files.internal("badlogic.jpg"))).setToastable());
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setToastable().setFormable());
 
     public static Food TOASTED_BUN = new Food(new Food.FoodBuilder("Toasted Bun",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
@@ -68,6 +68,9 @@ public class FoodItems {
 
     public static Food PIZZA = new Food(new Food.FoodBuilder("Pizza",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setReward(50));
+
+    public static Food WATER_BUCKET = new Food(new Food.FoodBuilder("Water Bucket",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
 
     //We need tomatoes, dough, flour
 

@@ -1,5 +1,6 @@
 package com.mygdx.game.stations;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,11 +9,15 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 public class Stations {
     static Texture choppingBoardTexture = new Texture("stationSprite.png");
     static Texture fryerTexture = new Texture("stationSprite.png");
+    static Texture prepAreaTexture = new Texture("stationSprite.png");
     static Texture lettuceTexture = new Texture("stationSprite.png");
     static Texture tomatoTexture = new Texture("stationSprite.png");
     static Texture onionTexture = new Texture("stationSprite.png");
@@ -21,19 +26,26 @@ public class Stations {
     static Texture cheeseTexture = new Texture("stationSprite.png");
 
 
-    public static CuttingStation CHOPPING_BOARD = new CuttingStation(new Stack<Food>(), 500, true);
-    public static CookingStation FRYER = new CuttingStation(new Stack<Food>(), 500, true);
+    public static CuttingStation CHOPPING_BOARD = new CuttingStation(500, true);
+    public static CookingStation FRYER = new CuttingStation(500, true);
+    public static FormingStation PREP_AREA = new FormingStation(500, true);
+    public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE);
+ /*
+    public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO);
+    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.LETTUCE);
+    public static IngredientStation BEEF_MINCE_STATION = new IngredientStation(FoodItems.BEEF_MINCE);
+    public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN);
+    public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE);
 
-    public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE, 500, true);
-    public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO, 500, true);
-    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.LETTUCE, 500, true);
-    public static IngredientStation BEEF_MINCE_STATION = new IngredientStation(FoodItems.BEEF_MINCE, 500, true);
-    public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, 500, true);
-    public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, 500, true);
+     */
 
 
     //creates the lookup tables for each station
     private static void setUpStations(){
+        // finished food ingredients
+        List<Food> burgerIngredients = Arrays.asList(FoodItems.TOASTED_BUN, FoodItems.COOKED_PATTY);
+        List<Food> saladIngredients = Arrays.asList(FoodItems.CHOPPED_LETTUCE, FoodItems.CHOPPED_TOMATO, FoodItems.CHOPPED_ONION);
+
         CHOPPING_BOARD.operationLookupTable.put(FoodItems.LETTUCE, FoodItems.CHOPPED_LETTUCE);
         CHOPPING_BOARD.operationLookupTable.put(FoodItems.ONION, FoodItems.CHOPPED_ONION);
         CHOPPING_BOARD.operationLookupTable.put(FoodItems.TOMATO, FoodItems.CHOPPED_TOMATO);
@@ -42,6 +54,10 @@ public class Stations {
 
         FRYER.operationLookupTable.put(FoodItems.BUN, FoodItems.TOASTED_BUN);
         FRYER.operationLookupTable.put(FoodItems.RAW_PATTY, FoodItems.COOKED_PATTY);
+
+        PREP_AREA.operationLookupTable_Forming.put(burgerIngredients, FoodItems.BURGER);
+        PREP_AREA.operationLookupTable_Forming.put(saladIngredients, FoodItems.SALAD);
+
     }
 
     // function to apply texture to station, then position it onto the tile map
@@ -55,11 +71,13 @@ public class Stations {
         FRYER.stationTexture = fryerTexture;
         FRYER.setTileMapPosition(FRYER.stationTexture, 6, 14, walls, tiledMap);
 
+        PREP_AREA.stationTexture = prepAreaTexture;
+        PREP_AREA.setTileMapPosition(PREP_AREA.stationTexture, 4,14, walls, tiledMap);
 
         //Ingredient Stations - to be placed in the pantry
 
         LETTUCE_STATION.stationTexture = lettuceTexture;
-        LETTUCE_STATION.setTileMapPosition(LETTUCE_STATION.stationTexture, 5, 12, walls, tiledMap);
+        LETTUCE_STATION.setTileMapPosition(LETTUCE_STATION.stationTexture, 8, 14, walls, tiledMap);
 /*
         TOMATO_STATION.stationTexture = tomatoTexture;
         TOMATO_STATION.setTileMapPosition(TOMATO_STATION.stationTexture, 300, 23);
@@ -86,6 +104,7 @@ public class Stations {
         CHOPPING_BOARD.getSprite().draw(batch);
         FRYER.getSprite().draw(batch);
         LETTUCE_STATION.getSprite().draw(batch);
+        PREP_AREA.getSprite().draw(batch);
 
         /*
         TOMATO_STATION.stationSprite.draw(batch);

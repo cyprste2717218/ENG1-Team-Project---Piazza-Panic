@@ -17,13 +17,14 @@ import java.util.Stack;
 public class Station implements IInteractable {
     private static final int STATION_SIZE = 256;
     private static final int COLLISION_BUFFER = 6;
-    public Stack<Food> inventory;
+    public Food stock;
     private Sprite stationSprite;
     public Texture stationTexture;
 
-    public Station(Stack<Food> inventory){
-        this.inventory = inventory;
+    public Station(Food inventory){
+        this.stock = inventory;
     }
+    public Station() {}
 
     // sets coords for the sprite on the tile map
     public void setTileMapPosition(Texture stationTexture, int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
