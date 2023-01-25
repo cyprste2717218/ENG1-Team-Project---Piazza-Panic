@@ -198,7 +198,5 @@ public class PiazzaPanic extends ApplicationAdapter {
 		}
 		tiledMap.dispose();
 		orthogonalTiledMapRenderer.dispose();
-		SoundUtils.disposeSounds();
 	}
-
 }
