@@ -3,18 +3,26 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.ITimer;
+import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.Random;
 
 
 public class Customer implements IInteractable, ITimer {
     boolean beenServed;
+
+    public Sprite customerSprite;
     Food order;
     float orderTimer;
+
+    private Vector2 gridPosition;
 
 
     public Customer(float orderTimer){
@@ -25,7 +33,7 @@ public class Customer implements IInteractable, ITimer {
     }
 
     private Food getRandomOrder() {
-        Random rnd = new  Random();
+        Random rnd = new Random();
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
         return FoodItems.finishedFoods.get(orderIndex);
     }
@@ -34,13 +42,22 @@ public class Customer implements IInteractable, ITimer {
 
 
     @Override
-    public void onInteract(Chef chef) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap) {
         if(!chef.foodStack.isEmpty()) {
             if (chef.foodStack.peek() == order) {
                 PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
             }
-
         }
+    }
+
+    @Override
+    public Vector2 getPreviousGridPosition() {
+        return gridPosition;
+    }
+
+    @Override
+    public void setCurrentGridPosition(Vector2 gridPos) {
+        gridPosition = gridPos;
     }
 
 
@@ -51,9 +68,4 @@ public class Customer implements IInteractable, ITimer {
         }
         return timerValue--;
     }
-
-
-
-
-
 }

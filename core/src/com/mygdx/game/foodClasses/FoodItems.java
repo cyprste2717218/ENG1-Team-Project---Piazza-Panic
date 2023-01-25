@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FoodItems {
+    //A list of finished foods, e.g. Burger, which has any Food with a reward automatically added to it
     public static List<Food> finishedFoods = new ArrayList<>();
 
 
@@ -17,24 +18,47 @@ public class FoodItems {
     public static Food LETTUCE = new Food(new Food.FoodBuilder("Lettuce",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setChoppable());
 
+    public static Food CHOPPED_LETTUCE = new Food(new Food.FoodBuilder("Chopped Lettuce",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
+
     public static Food TOMATO = new Food(new Food.FoodBuilder("Tomato",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setChoppable());
+
+    public static Food CHOPPED_TOMATO = new Food(new Food.FoodBuilder("Chopped Tomato",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
 
     public static Food ONION = new Food(new Food.FoodBuilder("Onion",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setChoppable());
 
+    public static Food CHOPPED_ONION = new Food(new Food.FoodBuilder("Chopped Onion",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
+
     public static Food BURGER = new Food(new Food.FoodBuilder("Burger",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setReward(25));
 
-    //Maybe rename to beef mince - alternatively we can create just a patty item that is formable and fryable and do our logical checks later
-    public static Food UNFORMED_PATTY = new Food(new Food.FoodBuilder("Unformed Patty",
-            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
+    //renamed to beef mince - so can be chopped into burgers
+    //if set to formable instead, then it could've been made into burger before cooked
+    // could be worked around
+    public static Food BEEF_MINCE = new Food(new Food.FoodBuilder("Beef Mince",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setChoppable());
 
-    public static Food PATTY = new Food(new Food.FoodBuilder("Patty",
+    public static Food RAW_PATTY = new Food(new Food.FoodBuilder("Raw Patty",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setFryable());
+
+    public static Food COOKED_PATTY = new Food(new Food.FoodBuilder("Cooked Patty",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
 
     public static Food BUN = new Food(new Food.FoodBuilder("Bun",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setToastable());
+
+    public static Food TOASTED_BUN = new Food(new Food.FoodBuilder("Toasted Bun",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
+
+    public static Food CHEESE = new Food(new Food.FoodBuilder("Cheese",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setChoppable());
+
+    public static Food SLICED_CHEESE = new Food(new Food.FoodBuilder("Sliced Cheese",
+            new Texture(Gdx.files.internal("badlogic.jpg"))).setFormable());
 
     public static Food JACKET_POTATO = new Food(new Food.FoodBuilder("Jacket Potato",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setReward(10));
@@ -45,6 +69,6 @@ public class FoodItems {
     public static Food PIZZA = new Food(new Food.FoodBuilder("Pizza",
             new Texture(Gdx.files.internal("badlogic.jpg"))).setReward(50));
 
-    //We need tomatoes, cheese, dough, flour
+    //We need tomatoes, dough, flour
 
 }

@@ -3,7 +3,9 @@ package com.mygdx.game;
 public enum DifficultyLevel {
     EASY(5),
     MEDIUM(10),
-    HARD(15);
+    HARD(15),
+
+    EXPERT(20);
     int CUSTOMER_TARGET;
 
     public int getCustomerTarget(){

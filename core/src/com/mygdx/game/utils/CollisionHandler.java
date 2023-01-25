@@ -6,27 +6,28 @@ import com.mygdx.game.Node;
 
 public class CollisionHandler {
 
-    private int tileWidth;
-    private Node[][] walls;
-    private TiledMap tiledMap;
-    private Sprite sprite;
-    private int squareSize;
-    private int collisionBuffer;
+    //This class handles collisions of moving objects
+    private final int tileWidth;
+    private final Node[][] grid;
+    private final TiledMap tiledMap;
+    private final Sprite sprite;
+    private final int squareSize;
+    private final int collisionBuffer;
 
-    public CollisionHandler(int tileWidth, Node[][] walls, TiledMap tiledMap, Sprite sprite, int squareSize, int collisionBuffer){
+    public CollisionHandler(int tileWidth, Node[][] grid, TiledMap tiledMap, Sprite sprite, int squareSize, int collisionBuffer){
         this.tileWidth = tileWidth;
-        this.walls = walls;
+        this.grid = grid;
         this.tiledMap = tiledMap;
         this.sprite = sprite;
         this.squareSize = squareSize;
         this.collisionBuffer = collisionBuffer;
-
     }
 
+    //These methods check for a collision on a specific side of the sprite
     public boolean hasCollisionUp(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + step, sprite.getY() + squareSize + collisionBuffer, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + step, sprite.getY() + squareSize + collisionBuffer, tiledMap, grid);
             if(collides) return collides;
         }
         return collides;
@@ -34,7 +35,7 @@ public class CollisionHandler {
     public boolean hasCollisionDown(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + step, sprite.getY() - collisionBuffer, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + step, sprite.getY() - collisionBuffer, tiledMap, grid);
             if(collides) return collides;
         }
         return collides;
@@ -42,7 +43,7 @@ public class CollisionHandler {
     public boolean hasCollisionLeft(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() - collisionBuffer, sprite.getY() + step, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() - collisionBuffer, sprite.getY() + step, tiledMap, grid);
             if(collides) return collides;
         }
         return collides;
@@ -50,7 +51,7 @@ public class CollisionHandler {
     public boolean hasCollisionRight(){
         boolean collides = false;
         for (float step = 0; step <= squareSize; step += (double)tileWidth/4){
-            collides = TileMapUtils.getWallAtSprite(sprite.getX() + squareSize + collisionBuffer, sprite.getY() + step, tiledMap, walls);
+            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + squareSize + collisionBuffer, sprite.getY() + step, tiledMap, grid);
             if(collides) return collides;
         }
         return collides;
