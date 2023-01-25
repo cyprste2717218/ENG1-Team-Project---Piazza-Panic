@@ -10,6 +10,7 @@ import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
+import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 public class Food implements IInteractable {
@@ -64,6 +65,7 @@ public class Food implements IInteractable {
 
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
+        SoundUtils.getItemPickupSound().play();
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
         interactedNode.setInteractable(null);
