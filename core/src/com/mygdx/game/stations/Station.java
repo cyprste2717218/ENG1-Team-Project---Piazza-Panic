@@ -34,6 +34,7 @@ public class Station implements IInteractable {
         walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
+    
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         System.out.println("Interacting with a station");
@@ -51,6 +52,5 @@ public class Station implements IInteractable {
 
     @Override
     public void setCurrentGridPosition(Vector2 gridPos) {
-
     }
 }

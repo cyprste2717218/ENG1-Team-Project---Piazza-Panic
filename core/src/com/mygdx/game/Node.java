@@ -27,7 +27,6 @@ public class Node implements Comparable<Node>{
         this.gridY = gridY;
         interactable = null;
     }
-
     public Node(int gridX, int gridY){
         this(gridX, gridY, NodeType.EMPTY);
     }

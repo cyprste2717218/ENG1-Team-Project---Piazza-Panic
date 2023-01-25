@@ -30,6 +30,7 @@ public class Chef implements IPathfinder, IInteractable {
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
     private final int squareSize = 32;
+
     private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;
     final float speed = 100;
@@ -133,9 +134,9 @@ public class Chef implements IPathfinder, IInteractable {
     //A function to handle movement with the keyboard
     private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        Vector2 previousPosition = new Vector2(chefSprite.getX(), chefSprite.getY()).cpy();
         int tileWidth = layer.getTileWidth();
         float speed = 100f;
+        Vector2 oldPos = new Vector2(chefSprite.getX(), chefSprite.getY());
         CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, speed);
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
@@ -160,9 +161,9 @@ public class Chef implements IPathfinder, IInteractable {
         }
 
         if(collisionHandler.hasCollision()){
-            chefSprite.setPosition(previousPosition.x, previousPosition.y);
+            chefSprite.setX(oldPos.x);
+            chefSprite.setY(oldPos.y);
         }
-
 
         //  for testing purposes, pressing o will remove a customer from the list of active customers.
         //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
