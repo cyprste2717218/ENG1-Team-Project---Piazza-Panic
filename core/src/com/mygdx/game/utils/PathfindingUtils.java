@@ -20,9 +20,9 @@ public class PathfindingUtils {
     public static Vector2[] findPath(Node start, Node end, Node[][] grid){
 
         if(!isValidNode(end.getGridX(), end.getGridY(), grid)) return new Vector2[0];
+        if(end.isInteractable()) end =  findBestInteractingNode(start, end, grid);
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
         if(end.getNodeType() == NodeType.WALL) return new Vector2[0];
-        if(end.isInteractable()) end = findBestInteractingNode(start, end, grid);
         clearParents(grid);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
