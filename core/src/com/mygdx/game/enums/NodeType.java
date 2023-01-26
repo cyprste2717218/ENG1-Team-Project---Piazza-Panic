@@ -1,10 +1,12 @@
 package com.mygdx.game.enums;
 
+//An enum detailing every kind of node on the pathfinding grid
+//The letters are used in the representGridAsString() method in PathfindingUtils
 public enum NodeType {
     EMPTY (" "),
     WALL ("X"),
     CHEF ("C"),
-    CUSTOMER ("B"),
+    CUSTOMER ("B"), //B for Buyer?
     STATION ("S"),
     FOOD ("F");
 

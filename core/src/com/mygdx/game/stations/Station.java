@@ -8,29 +8,28 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-import java.util.Stack;
+public class Station implements IInteractable, IGridEntity {
+    protected static final int STATION_SIZE = 256;
+    public Food stock;
+    private Sprite stationSprite;;
 
-public class Station implements IInteractable {
-    private static final int STATION_SIZE = 256;
-    private static final int COLLISION_BUFFER = 6;
-    public Stack<Food> inventory;
-    private Sprite stationSprite;
-    public Texture stationTexture;
-
-    public Station(Stack<Food> inventory){
-        this.inventory = inventory;
-    }
-
-    // sets coords for the sprite on the tile map
-    public void setTileMapPosition(Texture stationTexture, int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
+    public Station(Food inventory, Texture stationTexture){
+        this.stock = inventory;
         this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
         this.stationSprite.setScale(0.125f);
+    }
+    public Station() {}
+
+    // sets coords for the sprite on the tile map
+    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
         walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
+        walls[mapPosX][mapPosY].setGridEntity(this);
         walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }

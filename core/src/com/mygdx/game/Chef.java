@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.CollisionHandler;
@@ -24,7 +25,8 @@ import java.util.List;
 import java.util.Stack;
 import com.mygdx.game.enums.Facing;
 
-public class Chef implements IInteractable {
+public class Chef implements IInteractable, IGridEntity {
+
     private static final int CHEF_SIZE = 256;
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
@@ -38,7 +40,9 @@ public class Chef implements IInteractable {
     public Facing finalFacing = Facing.UP;
 
     private Vector2 gridPosition;
+    
     PathfindingActor pathfindingActor;
+
 
     public Chef(Texture chefTexture){
         chefSprite = new Sprite(chefTexture, CHEF_SIZE, CHEF_SIZE);
@@ -131,9 +135,9 @@ public class Chef implements IInteractable {
         }
 
         if(collisionHandler.hasCollision()){
-            chefSprite.setX(oldPos.x);
-            chefSprite.setY(oldPos.y);
+            chefSprite.setPosition(oldPos.x, oldPos.y);
         }
+
 
         //  for testing purposes, pressing o will remove a customer from the list of active customers.
         //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
@@ -166,13 +170,13 @@ public class Chef implements IInteractable {
     //Used to interact with other objects
     public void interact(Node[][] grid, TiledMap tiledMap){
         Node interactedNode = getInteractedNode(grid, tiledMap);
-
         if(interactedNode.getInteractable() != null){
-            interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap, grid);
+            IInteractable interactableEntity = interactedNode.getInteractable();
+            interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
             System.out.println("Found Interactable");
             return;
         }
-        if(foodStack.isEmpty()){
+        else if(foodStack.isEmpty()){
             SoundUtils.getFailureSound().play();
             return;
         }
@@ -189,11 +193,12 @@ public class Chef implements IInteractable {
     //Keep in mind that the parameter chef refers to the chef who is giving, and interactedChef refers to the chef who is receiving
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
+        if(chef.foodStack.isEmpty()) return;
+        Chef interactedChef = (Chef)interactedNode.getGridEntity();
         if(chef.foodStack.isEmpty()){
             SoundUtils.getFailureSound().play();
             return;
         }
-        Chef interactedChef = (Chef)interactedNode.getInteractable();
         interactedChef.foodStack.push(chef.foodStack.pop());
         System.out.println("Interacting with a chef");
         SoundUtils.getItemPickupSound().play();
