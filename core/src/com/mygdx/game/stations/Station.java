@@ -8,14 +8,13 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-import java.util.Stack;
-
-public class Station implements IInteractable {
-    private static final int STATION_SIZE = 256;
+public class Station implements IInteractable, IGridEntity {
+    protected static final int STATION_SIZE = 256;
     public Food stock;
     private Sprite stationSprite;;
 
@@ -30,7 +29,7 @@ public class Station implements IInteractable {
     public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
         walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
-        walls[mapPosX][mapPosY].setInteractable(this);
+        walls[mapPosX][mapPosY].setGridEntity(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     

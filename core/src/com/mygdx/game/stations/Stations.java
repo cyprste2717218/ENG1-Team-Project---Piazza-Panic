@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class Stations {
+
+    public static List<ServingStation> servingStations = new ArrayList<>();
     public static CuttingStation CHOPPING_BOARD = new CuttingStation(500, true, new Texture("stationSprite.png"));
     public static FryingStation FRYER = new FryingStation(500, true, new Texture("stationSprite.png"));
     public static FormingStation PREP_AREA = new FormingStation(500, true, new Texture("stationSprite.png"));
@@ -25,25 +27,34 @@ public class Stations {
     public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("stationSprite.png"));
     public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
     public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("stationSprite.png"));
+    private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
+        SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
+        SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);
+    }
 
 
     // function to apply texture to station, then position it onto the tile map
-    public static void createAllStations(Node[][] walls, TiledMap tiledMap){
-        CHOPPING_BOARD.setTileMapPosition(2, 14, walls, tiledMap);
-        FRYER.setTileMapPosition(6, 14, walls, tiledMap);
-        PREP_AREA.setTileMapPosition(4,14, walls, tiledMap);
+    public static void createAllStations(Node[][] grid, TiledMap tiledMap){
+        CHOPPING_BOARD.setTileMapPosition(2, 14, grid, tiledMap);
+        FRYER.setTileMapPosition(6, 14, grid, tiledMap);
+        PREP_AREA.setTileMapPosition(4,14, grid, tiledMap);
 
         //Ingredient Stations - to be placed in the pantry
-        LETTUCE_STATION.setTileMapPosition(12, 6, walls, tiledMap);
-        TOMATO_STATION.setTileMapPosition(14, 14, walls, tiledMap);
-        ONION_STATION.setTileMapPosition(14, 12, walls, tiledMap);
-        BEEF_MINCE_STATION.setTileMapPosition(14, 10, walls, tiledMap);
-        BURGER_BUN_STATION.setTileMapPosition(14, 8, walls, tiledMap);
-        CHEESE_STATION.setTileMapPosition(14, 6, walls, tiledMap);
-        WATER_BUCKET_STATION.setTileMapPosition(8, 14, walls, tiledMap);
+        LETTUCE_STATION.setTileMapPosition(12, 6, grid, tiledMap);
+        TOMATO_STATION.setTileMapPosition(14, 14, grid, tiledMap);
+        ONION_STATION.setTileMapPosition(14, 12, grid, tiledMap);
+        BEEF_MINCE_STATION.setTileMapPosition(14, 10, grid, tiledMap);
+        BURGER_BUN_STATION.setTileMapPosition(14, 8, grid, tiledMap);
+        CHEESE_STATION.setTileMapPosition(14, 6, grid, tiledMap);
+        WATER_BUCKET_STATION.setTileMapPosition(8, 14, grid, tiledMap);
+
+        createAllServingStations(grid, tiledMap);
 
         System.out.print("Stations Created\n");
     }
+
     public static void renderAllStations(SpriteBatch batch)  {
         CHOPPING_BOARD.getSprite().draw(batch);
         FRYER.getSprite().draw(batch);
@@ -56,6 +67,13 @@ public class Stations {
         BURGER_BUN_STATION.getSprite().draw(batch);
         CHEESE_STATION.getSprite().draw(batch);
         WATER_BUCKET_STATION.getSprite().draw(batch);
+
+        for(ServingStation servingStation: servingStations){
+            servingStation.getSprite().draw(batch);
+            if(servingStation.getOrderSprite() != null){
+                servingStation.getOrderSprite().draw(batch);
+            }
+        }
     }
 
 }

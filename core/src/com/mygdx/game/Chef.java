@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Stack;
 import com.mygdx.game.enums.Facing;
 
-public class Chef implements IPathfinder, IInteractable {
+public class Chef implements IPathfinder, IInteractable, IGridEntity {
     private static final int CHEF_SIZE = 256;
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
@@ -195,9 +196,12 @@ public class Chef implements IPathfinder, IInteractable {
     //Used to interact with other objects
     public void interact(Node[][] grid, TiledMap tiledMap){
         Node interactedNode = getInteractedNode(grid, tiledMap);
-        if(interactedNode.getInteractable() != null){
-            interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap, grid);
-            System.out.println("Found Interactable");
+        if(interactedNode.getGridEntity() != null){
+            if(interactedNode.getGridEntity() instanceof IInteractable){
+                IInteractable interactableEntity = (IInteractable)interactedNode.getGridEntity();
+                interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
+                System.out.println("Found Interactable");
+            }
         }
         else if(!foodStack.isEmpty()){
             Food currentFood = this.foodStack.pop();
@@ -212,7 +216,7 @@ public class Chef implements IPathfinder, IInteractable {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(chef.foodStack.isEmpty()) return;
-        Chef interactedChef = (Chef)interactedNode.getInteractable();
+        Chef interactedChef = (Chef)interactedNode.getGridEntity();
         interactedChef.foodStack.push(chef.foodStack.pop());
         System.out.println("Interacting with a chef");
     }

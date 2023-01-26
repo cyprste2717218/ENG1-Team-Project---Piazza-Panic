@@ -8,11 +8,12 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.NodeType;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-public class Food implements IInteractable {
+public class Food implements IInteractable, IGridEntity {
 
     public String name;
     private Sprite foodSprite;
@@ -53,7 +54,7 @@ public class Food implements IInteractable {
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
-        interactedNode.setInteractable(null);
+        interactedNode.setGridEntity(null);
         interactedNode.setNodeType(NodeType.EMPTY);
         System.out.println("Interacting with Food");
     }
@@ -71,7 +72,7 @@ public class Food implements IInteractable {
     public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
         grid[mapPosX][mapPosY].setNodeType(NodeType.FOOD);
-        grid[mapPosX][mapPosY].setInteractable(this);
+        grid[mapPosX][mapPosY].setGridEntity(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
 }

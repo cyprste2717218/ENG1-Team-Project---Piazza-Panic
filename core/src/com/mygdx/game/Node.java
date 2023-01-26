@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 import com.mygdx.game.enums.NodeType;
-import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.interfaces.IGridEntity;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ public class Node implements Comparable<Node>{
     private NodeType nodeType;
     private final int gridX;
     private final int gridY;
-    private IInteractable interactable;
+    private IGridEntity gridEntity;
     private static final Set<NodeType> INTERACTABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.CHEF, NodeType.CUSTOMER, NodeType.STATION, NodeType.FOOD));
     private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.FOOD, NodeType.CUSTOMER));
 
@@ -25,7 +25,7 @@ public class Node implements Comparable<Node>{
         this.nodeType = nodeType;
         this.gridX = gridX;
         this.gridY = gridY;
-        interactable = null;
+        gridEntity = null;
     }
 
     public Node(int gridX, int gridY){
@@ -80,12 +80,12 @@ public class Node implements Comparable<Node>{
         return COLLIDABLE_NODE_TYPES.contains(nodeType);
     }
 
-    public IInteractable getInteractable() {
-        return interactable;
+    public IGridEntity getGridEntity() {
+        return gridEntity;
     }
 
-    public void setInteractable(IInteractable interactable) {
-        this.interactable = interactable;
+    public void setGridEntity(IGridEntity gridEntity) {
+        this.gridEntity = gridEntity;
     }
 
     @Override
