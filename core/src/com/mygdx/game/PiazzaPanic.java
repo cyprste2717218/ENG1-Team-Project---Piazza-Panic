@@ -100,6 +100,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 	private void swapChef(){
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+			chefs[selectedChef].getPathfindingActor().getWorldPath().clear();
 			selectedChef = selectedChef == chefs.length - 1 ? 0 : selectedChef + 1;
 			SoundUtils.getChefSwitchSound().play();
 		}
