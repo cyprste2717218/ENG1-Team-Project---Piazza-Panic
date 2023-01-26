@@ -1,5 +1,6 @@
 package com.mygdx.game.stations;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
@@ -12,10 +13,16 @@ public class FormingStation extends CookingStation {
     public Stack inventory;
     public HashMap<List<Food>, Food> operationLookupTable_Forming;
 
-    public FormingStation(float operationTimer, boolean canLeaveUnattended) {
-        super(operationTimer, canLeaveUnattended);
+    public FormingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
+        super(operationTimer, canLeaveUnattended, stationTexture);
         operationLookupTable_Forming = new HashMap<>();
         this.inventory = new Stack<>();
+
+        // finished food ingredients
+        List<Food> burgerIngredients = Arrays.asList(FoodItems.TOASTED_BUN, FoodItems.COOKED_PATTY);
+        List<Food> saladIngredients = Arrays.asList(FoodItems.CHOPPED_LETTUCE, FoodItems.CHOPPED_TOMATO, FoodItems.CHOPPED_ONION);
+        operationLookupTable_Forming.put(burgerIngredients, FoodItems.BURGER);
+        operationLookupTable_Forming.put(saladIngredients, FoodItems.SALAD);
     }
     // A function that loops through the stack of the forming station and
     // performs a hash map swap converting the group of items into one finished item
@@ -60,6 +67,7 @@ public class FormingStation extends CookingStation {
         if(chef.foodStack.peek() == FoodItems.WATER_BUCKET) {
             chef.foodStack.pop();
             this.inventory.clear();
+            return;
         }
 
         // if the inventory is empty, then we just push an item, do not check hash map swap

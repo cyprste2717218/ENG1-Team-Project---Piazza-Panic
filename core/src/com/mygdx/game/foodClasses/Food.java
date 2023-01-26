@@ -16,25 +16,17 @@ public class Food implements IInteractable {
 
     public String name;
     private Sprite foodSprite;
-    public boolean isFryable;
-    public boolean isChoppable;
-    public boolean isBakeable;
     public boolean isFormable;
-    public boolean isToastable;
     public int reward;
 
     private Vector2 gridPosition;
 
-    public Food(FoodBuilder builder){
-        name = builder.name;
-        foodSprite = new Sprite(builder.foodTexture, 256, 256);
+    public Food(String name, Texture foodTexture, boolean isFormable, int reward){
+        name = this.name;
+        foodSprite = new Sprite(foodTexture, 256, 256);
         foodSprite.setScale(0.125f);
-        isFryable = builder.isFryable;
-        isBakeable = builder.isBakeable;
-        isChoppable = builder.isChoppable;
-        isFormable = builder.isFormable;
-        isToastable = builder.isToastable;
-        reward = builder.reward;
+        this.isFormable = isFormable;
+        this.reward = reward;
 
         if(reward > 0){
             FoodItems.finishedFoods.add(this);
@@ -45,13 +37,8 @@ public class Food implements IInteractable {
         name = foodSettings.name;
         foodSprite = new Sprite(foodSettings.foodSprite.getTexture(), 256, 256);
         foodSprite.setScale(0.125f);
-        isFryable = foodSettings.isFryable;
-        isBakeable = foodSettings.isBakeable;
-        isChoppable = foodSettings.isChoppable;
         isFormable = foodSettings.isFormable;
-        isToastable = foodSettings.isToastable;
         reward = foodSettings.reward;
-
     }
     public boolean equals(Food f) {
         return this.name == f.name;
@@ -87,56 +74,4 @@ public class Food implements IInteractable {
         grid[mapPosX][mapPosY].setInteractable(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
-
-
-    public static class FoodBuilder{
-        private final String name;
-        private final Texture foodTexture;
-        private boolean isFryable = false;
-        private boolean isChoppable = false;
-        private boolean isBakeable = false;
-        private boolean isFormable = false;
-        private boolean isToastable = false;
-        private int reward = 0;
-
-        public FoodBuilder(String name, Texture foodTexture){
-            this.name = name;
-            this.foodTexture = foodTexture;
-        }
-
-        public FoodBuilder setFryable(){
-            isFryable = true;
-            return this;
-        }
-
-        public FoodBuilder setChoppable(){
-            isChoppable = true;
-            return this;
-        }
-
-        public FoodBuilder setBakeable(){
-            isBakeable = true;
-            return this;
-        }
-
-        public FoodBuilder setFormable(){
-            isFormable = true;
-            return this;
-        }
-
-        public FoodBuilder setToastable(){
-            isToastable = true;
-            return this;
-        }
-
-        public FoodBuilder setReward(int reward){
-            this.reward = reward;
-            return this;
-        }
-
-        public Food build(){
-            return new Food(this);
-        }
-    }
-
 }

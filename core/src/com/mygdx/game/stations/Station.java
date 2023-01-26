@@ -16,20 +16,18 @@ import java.util.Stack;
 
 public class Station implements IInteractable {
     private static final int STATION_SIZE = 256;
-    private static final int COLLISION_BUFFER = 6;
     public Food stock;
-    private Sprite stationSprite;
-    public Texture stationTexture;
+    private Sprite stationSprite;;
 
-    public Station(Food inventory){
+    public Station(Food inventory, Texture stationTexture){
         this.stock = inventory;
+        this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
+        this.stationSprite.setScale(0.125f);
     }
     public Station() {}
 
     // sets coords for the sprite on the tile map
-    public void setTileMapPosition(Texture stationTexture, int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
-        this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
-        this.stationSprite.setScale(0.125f);
+    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
         walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
         walls[mapPosX][mapPosY].setInteractable(this);

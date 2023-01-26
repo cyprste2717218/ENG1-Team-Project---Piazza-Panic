@@ -9,6 +9,7 @@ public enum NodeType {
     FOOD ("F");
 
     private String representation;
+    private int timeMultiplier;
 
     NodeType(String representation){
         this.representation = representation;

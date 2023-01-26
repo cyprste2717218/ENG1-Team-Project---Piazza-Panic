@@ -1,5 +1,6 @@
 package com.mygdx.game.stations;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
@@ -8,8 +9,8 @@ import com.mygdx.game.foodClasses.FoodItems;
 
 //Ingredient station is used to push a specific uncut/uncooked FoodItem onto the chefs stack
 public class IngredientStation extends Station   {
-    public IngredientStation (Food stock) {
-        super(stock);
+    public IngredientStation (Food stock, Texture stationTexture) {
+        super(stock, stationTexture);
     }
 
 

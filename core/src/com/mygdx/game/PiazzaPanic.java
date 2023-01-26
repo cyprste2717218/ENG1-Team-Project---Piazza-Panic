@@ -25,6 +25,7 @@ import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.TileMapUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -38,7 +39,6 @@ import java.util.Random;
 
 
 public class PiazzaPanic extends ApplicationAdapter {
-
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
@@ -184,7 +184,6 @@ public class PiazzaPanic extends ApplicationAdapter {
 			interactable.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
 		}
 	}
-
 
 	@Override
 	public void dispose () {
