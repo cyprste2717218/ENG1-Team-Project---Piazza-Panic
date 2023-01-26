@@ -30,6 +30,7 @@ public class Station implements IInteractable, IGridEntity {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
         walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
         walls[mapPosX][mapPosY].setGridEntity(this);
+        walls[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     

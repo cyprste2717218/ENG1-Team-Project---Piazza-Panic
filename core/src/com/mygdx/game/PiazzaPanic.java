@@ -20,6 +20,7 @@ import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
+import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.SoundUtils;
@@ -65,13 +66,13 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 		spawnChefs();
 
-		Food pizza = new Food(FoodItems.PIZZA);
-		pizza.setTileMapPosition(2,2, grid, tiledMap);
-		RENDERED_FOODS.add(pizza);
+		Food salad = new Food(FoodItems.SALAD);
+		salad.setTileMapPosition(2,2, grid, tiledMap);
+		RENDERED_FOODS.add(salad);
 
-		Food pizza2 = new Food(FoodItems.BURGER);
-		pizza2.setTileMapPosition(6,6, grid, tiledMap);
-		RENDERED_FOODS.add(pizza2);
+		Food burger = new Food(FoodItems.BURGER);
+		burger.setTileMapPosition(6,6, grid, tiledMap);
+		RENDERED_FOODS.add(burger);
 
 		Stations.createAllStations(grid, tiledMap);
 
@@ -103,9 +104,9 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Texture customerTexture = new Texture("badlogic.jpg");
 		Customer customer = new Customer(customerTexture, 50);
 		customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
-		System.out.println("Customer spawned with order: "+ customer.order.name);
 		customers.add(customer);
 		customer.onSpawn(grid, tiledMap);
+		System.out.println("Customer spawned with order: "+ customer.order.name);
 		SoundUtils.getCustomerSpawnSound().play();
 		//	code here for adding the sprite...
 	}
@@ -116,7 +117,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1f,1f,1f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		updateGridInteractables(chefs, RENDERED_FOODS, customers);
+		updateGridEntities(chefs, RENDERED_FOODS, customers);
 
 		orthogonalTiledMapRenderer.setView(camera);
 
@@ -161,7 +162,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		//TileMapUtils.displayGrid(grid, camera, tiledMap);
 	}
 
-	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
+	private void updateGridEntities(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){
 		List<IGridEntity> gridEntities = new ArrayList<>();
 		gridEntities.addAll(Arrays.asList(chefs));
 		gridEntities.addAll(renderedFoods);
@@ -171,6 +172,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 			if(gridEntity.getPreviousGridPosition() != null){
 				Node oldNode = grid[(int)gridEntity.getPreviousGridPosition().x][(int)gridEntity.getPreviousGridPosition().y];
 				oldNode.setGridEntity(null);
+				oldNode.setInteractable(null);
 				oldNode.setNodeType(NodeType.EMPTY);
 			}
 			Node newNode = grid[TileMapUtils.positionToCoord(gridEntity.getSprite().getX(), tiledMap)][TileMapUtils.positionToCoord(gridEntity.getSprite().getY(), tiledMap)];
@@ -178,6 +180,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 			else if(gridEntity instanceof Food) newNode.setNodeType(NodeType.FOOD);
 			else if(gridEntity instanceof Customer) newNode.setNodeType(NodeType.CUSTOMER);
 			newNode.setGridEntity(gridEntity);
+			if(newNode.isInteractable()){
+				newNode.setInteractable((IInteractable) gridEntity);
+				//System.out.println("Set Interactable of" + gridEntity.getClass());
+			}
 			gridEntity.setCurrentGridPosition(new Vector2(newNode.getGridX(), newNode.getGridY()));
 		}
 	}

@@ -33,8 +33,8 @@ public class FoodItems {
 
 
     //Not creatable yet
-    public static Food JACKET_POTATO = new Food("Jacket Potato", new Texture("badlogic.jpg"), false, 10);
-    public static Food RAW_POTATO = new Food("Raw Potato", new Texture("badlogic.jpg"), false, 0);
-    public static Food PIZZA = new Food("Pizza", new Texture("badlogic.jpg"), false, 50);
+    //public static Food JACKET_POTATO = new Food("Jacket Potato", new Texture("badlogic.jpg"), false, 10);
+    //public static Food RAW_POTATO = new Food("Raw Potato", new Texture("badlogic.jpg"), false, 0);
+    //public static Food PIZZA = new Food("Pizza", new Texture("badlogic.jpg"), false, 50);
 
 }

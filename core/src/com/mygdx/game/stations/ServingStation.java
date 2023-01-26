@@ -8,6 +8,7 @@ import com.mygdx.game.Customer;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.utils.SoundUtils;
 
 public class ServingStation extends Station{
 
@@ -42,32 +43,18 @@ public class ServingStation extends Station{
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         super.onInteract(chef, interactedNode, tiledMap, grid);
-        if(stock != null){
-            replaceFoodInStation(chef);
+        if(currentCustomer == null || chef.foodStack.isEmpty()){
+            SoundUtils.getFailureSound().play();
             return;
         }
-        if(chef.foodStack.isEmpty()) return;
-        stock = chef.foodStack.pop();
-        if(currentCustomer == null) return;
-        if(stock.equals(currentCustomer.getOrder())){
+        if(currentCustomer.getOrder().equals(chef.foodStack.peek())){
             completeCustomerOrder(grid, tiledMap);
         }
-    }
-
-    private void replaceFoodInStation(Chef chef){
-        if(chef.foodStack.isEmpty()){
-            chef.foodStack.push(stock);
-            stock = null;
-        }
-        else{
-            Food temp = chef.foodStack.pop();
-            chef.foodStack.push(stock);
-            stock = temp;
-        }
+        else SoundUtils.getFailureSound().play();
     }
 
     private void completeCustomerOrder(Node[][] grid, TiledMap tiledMap){
-        stock = null;
+        SoundUtils.getCorrectOrderSound().play();
         PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
         currentCustomer.customerLeave(grid, tiledMap);
         currentCustomer = null;

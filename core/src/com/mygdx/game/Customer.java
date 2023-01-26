@@ -43,6 +43,7 @@ public class Customer implements ITimer, IPathfinder, IGridEntity {
     private Food getRandomOrder() {
         Random rnd = new Random();
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
+        System.out.println(FoodItems.finishedFoods.get(orderIndex).name);
         return FoodItems.finishedFoods.get(orderIndex);
     }
 

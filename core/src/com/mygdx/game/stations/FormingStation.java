@@ -6,6 +6,7 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
+import com.mygdx.game.utils.SoundUtils;
 
 import java.util.*;
 
@@ -70,6 +71,7 @@ public class FormingStation extends CookingStation {
             return;
         }
 
+        SoundUtils.getFormingSound().play();
         // if the inventory is empty, then we just push an item, do not check hash map swap
         // this is because there are no recipes that form one item into a finished food
         if (this.inventory.isEmpty()) {
@@ -90,5 +92,6 @@ public class FormingStation extends CookingStation {
                 chef.foodStack.push(newFood);
             }
         }
+        SoundUtils.getFormingSound().stop();
     }
 }

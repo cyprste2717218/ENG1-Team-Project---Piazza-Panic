@@ -198,14 +198,13 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
     //Used to interact with other objects
     public void interact(Node[][] grid, TiledMap tiledMap){
         Node interactedNode = getInteractedNode(grid, tiledMap);
-        if(interactedNode.getGridEntity() != null){
-            if(interactedNode.getGridEntity() instanceof IInteractable){
-                IInteractable interactableEntity = (IInteractable)interactedNode.getGridEntity();
-                interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
-                System.out.println("Found Interactable");
-            }
+        if(interactedNode.getInteractable() != null){
+            IInteractable interactableEntity = interactedNode.getInteractable();
+            interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
+            System.out.println("Found Interactable");
+            return;
         }
-        if(foodStack.isEmpty()){
+        else if(foodStack.isEmpty()){
             SoundUtils.getFailureSound().play();
             return;
         }
@@ -228,7 +227,6 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
             SoundUtils.getFailureSound().play();
             return;
         }
-        Chef interactedChef = (Chef)interactedNode.getGridEntity();
         interactedChef.foodStack.push(chef.foodStack.pop());
         System.out.println("Interacting with a chef");
         SoundUtils.getItemPickupSound().play();
