@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +22,7 @@ import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
+import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 
@@ -45,7 +48,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-
+		SoundUtils.getBackgroundMusic().play();
 		CustomerServedText = new BitmapFont();
 		CustomerServedText.setColor(Color.BLACK);
 		RENDERED_FOODS = new ArrayList<>();
@@ -66,7 +69,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		pizza.setTileMapPosition(2,2, grid, tiledMap);
 		RENDERED_FOODS.add(pizza);
 
-		Food pizza2 = new Food(FoodItems.PIZZA);
+		Food pizza2 = new Food(FoodItems.BURGER);
 		pizza2.setTileMapPosition(6,6, grid, tiledMap);
 		RENDERED_FOODS.add(pizza2);
 
@@ -76,6 +79,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 		customers = new ArrayList<>();
 		lastCustomerTime = TimeUtils.nanoTime();
 		spawnCustomer();
+
 	}
 
 	private void spawnChefs(){
@@ -90,6 +94,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private void swapChef(){
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			selectedChef = selectedChef == chefs.length - 1 ? 0 : selectedChef + 1;
+			SoundUtils.getChefSwitchSound().play();
 		}
 	}
 
@@ -98,8 +103,10 @@ public class PiazzaPanic extends ApplicationAdapter {
 		Texture customerTexture = new Texture("badlogic.jpg");
 		Customer customer = new Customer(customerTexture, 50);
 		customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
+		System.out.println("Customer spawned with order: "+ customer.order.name);
 		customers.add(customer);
 		customer.onSpawn(grid, tiledMap);
+		SoundUtils.getCustomerSpawnSound().play();
 		//	code here for adding the sprite...
 	}
 
@@ -151,6 +158,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 				System.out.println("Spawning customer: " + customers.size());
 			}
 		}
+		//TileMapUtils.displayGrid(grid, camera, tiledMap);
 	}
 
 	private void updateGridInteractables(Chef[] chefs, List<Food> renderedFoods, List<Customer> customers){

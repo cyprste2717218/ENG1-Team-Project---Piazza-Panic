@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,6 +18,7 @@ import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.CollisionHandler;
 import com.mygdx.game.utils.PathfindingUtils;
+import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.ArrayList;
@@ -134,9 +136,9 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
     //A function to handle movement with the keyboard
     private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        Vector2 previousPosition = new Vector2(chefSprite.getX(), chefSprite.getY()).cpy();
         int tileWidth = layer.getTileWidth();
         float speed = 100f;
+        Vector2 oldPos = new Vector2(chefSprite.getX(), chefSprite.getY());
         CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, speed);
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
@@ -161,7 +163,7 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
         }
 
         if(collisionHandler.hasCollision()){
-            chefSprite.setPosition(previousPosition.x, previousPosition.y);
+            chefSprite.setPosition(oldPos.x, oldPos.y);
         }
 
 
@@ -203,11 +205,16 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
                 System.out.println("Found Interactable");
             }
         }
-        else if(!foodStack.isEmpty()){
+        if(foodStack.isEmpty()){
+            SoundUtils.getFailureSound().play();
+            return;
+        }
+        else{
             Food currentFood = this.foodStack.pop();
             currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
             PiazzaPanic.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
+            SoundUtils.getItemPickupSound().play();
         }
     }
 
@@ -217,8 +224,15 @@ public class Chef implements IPathfinder, IInteractable, IGridEntity {
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(chef.foodStack.isEmpty()) return;
         Chef interactedChef = (Chef)interactedNode.getGridEntity();
+        if(chef.foodStack.isEmpty()){
+            SoundUtils.getFailureSound().play();
+            return;
+        }
+        Chef interactedChef = (Chef)interactedNode.getGridEntity();
         interactedChef.foodStack.push(chef.foodStack.pop());
         System.out.println("Interacting with a chef");
+        SoundUtils.getItemPickupSound().play();
+
     }
 
     private Node getInteractedNode(Node[][] grid, TiledMap tiledMap){

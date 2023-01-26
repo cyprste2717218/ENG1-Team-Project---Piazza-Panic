@@ -18,6 +18,7 @@ public class CollisionHandler {
     private final Sprite sprite;
     private final int squareSize;
     private final float speed;
+    //private final Rectangle spriteRectangle;
 
     public CollisionHandler(int tileWidth, Node[][] grid, TiledMap tiledMap, Sprite sprite, int squareSize, float speed){
         this.tileWidth = tileWidth;
@@ -26,49 +27,32 @@ public class CollisionHandler {
         this.sprite = sprite;
         this.squareSize = squareSize;
         this.speed = speed;
+        //spriteRectangle = new Rectangle(0,0,sprite.getWidth(), sprite.getHeight());
     }
+
 
     public boolean hasCollision(){
-        return hasCollisionUp() || hasCollisionDown() || hasCollisionRight() || hasCollisionLeft();
+        return hasCollisionVertical() || hasCollisionHorizontal();
     }
 
-    //These methods check for a collision on a specific side of the sprite
-    //They do this by checking where they would be next frame at every 4 pixels along the side
+    public boolean hasCollisionVertical(){
+        for(int step = -squareSize/2; step <= squareSize/2; step++){
+            int playerX = TileMapUtils.positionToCoord(sprite.getX() + step, tiledMap);
+            int playerY = TileMapUtils.positionToCoord(sprite.getY(), tiledMap);
 
-    //Cant go left or right with something above
-    public boolean hasCollisionUp(){
+            if(grid[playerX][playerY].isCollidable()) return true;
+        }
+        return false;
+    }
 
-        boolean collides = false;
-        for (int i = -16; i < squareSize; i += 4){
-            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + i, sprite.getY()  + (squareSize/2f + (speed * Gdx.graphics.getDeltaTime())), tiledMap, grid);
-            if(collides) return collides;
+    public boolean hasCollisionHorizontal(){
+        for(int step = -squareSize/2; step <= squareSize/2; step++){
+            int playerX = TileMapUtils.positionToCoord(sprite.getX(), tiledMap);
+            int playerY = TileMapUtils.positionToCoord(sprite.getY() + step, tiledMap);
+
+            if(grid[playerX][playerY].isCollidable()) return true;
         }
-        return collides;
-    }
-    public boolean hasCollisionDown(){
-        boolean collides = false;
-        for (int i = -16; i < squareSize; i += 4){
-            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + i, sprite.getY() - (squareSize/2f + (speed * Gdx.graphics.getDeltaTime())), tiledMap, grid);
-            if(collides) return collides;
-        }
-        return collides;
-    }
-    public boolean hasCollisionLeft(){
-        boolean collides = false;
-        for (int i = -16; i < squareSize; i += 4){
-            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() - (squareSize/2f + (speed * Gdx.graphics.getDeltaTime())), sprite.getY() + i, tiledMap, grid);
-            if(collides) return collides;
-        }
-        return collides;
-    }
-    //Cant go up and down with something on the right
-    public boolean hasCollisionRight(){
-        boolean collides = false;
-        for (int i = -16; i < squareSize; i += 4){
-            collides = TileMapUtils.getCollisionAtSprite(sprite.getX() + (speed * Gdx.graphics.getDeltaTime()), sprite.getY() + i, tiledMap, grid);
-            if(collides) return collides;
-        }
-        return collides;
+        return false;
     }
 
     //We need a new function that checks every part of the grid that the player is in
