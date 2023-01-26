@@ -1,5 +1,6 @@
 package com.mygdx.game.stations;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,95 +9,71 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 public class Stations {
-    static Texture choppingBoardTexture = new Texture("stationSprite.png");
-    static Texture fryerTexture = new Texture("stationSprite.png");
-    static Texture lettuceTexture = new Texture("stationSprite.png");
-    static Texture tomatoTexture = new Texture("stationSprite.png");
-    static Texture onionTexture = new Texture("stationSprite.png");
-    static Texture beefMinceTexture = new Texture("stationSprite.png");
-    static Texture burgerBunTexture = new Texture("stationSprite.png");
-    static Texture cheeseTexture = new Texture("stationSprite.png");
 
-
-    public static CuttingStation CHOPPING_BOARD = new CuttingStation(new Stack<Food>(), 500, true);
-    public static CookingStation FRYER = new CuttingStation(new Stack<Food>(), 500, true);
-
-    public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE, 500, true);
-    public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO, 500, true);
-    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.LETTUCE, 500, true);
-    public static IngredientStation BEEF_MINCE_STATION = new IngredientStation(FoodItems.BEEF_MINCE, 500, true);
-    public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, 500, true);
-    public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, 500, true);
-
-
-    //creates the lookup tables for each station
-    private static void setUpStations(){
-        CHOPPING_BOARD.operationLookupTable.put(FoodItems.LETTUCE, FoodItems.CHOPPED_LETTUCE);
-        CHOPPING_BOARD.operationLookupTable.put(FoodItems.ONION, FoodItems.CHOPPED_ONION);
-        CHOPPING_BOARD.operationLookupTable.put(FoodItems.TOMATO, FoodItems.CHOPPED_TOMATO);
-        CHOPPING_BOARD.operationLookupTable.put(FoodItems.CHEESE, FoodItems.SLICED_CHEESE);
-        CHOPPING_BOARD.operationLookupTable.put(FoodItems.BEEF_MINCE, FoodItems.RAW_PATTY);
-
-        FRYER.operationLookupTable.put(FoodItems.BUN, FoodItems.TOASTED_BUN);
-        FRYER.operationLookupTable.put(FoodItems.RAW_PATTY, FoodItems.COOKED_PATTY);
+    public static List<ServingStation> servingStations = new ArrayList<>();
+    public static CuttingStation CHOPPING_BOARD = new CuttingStation(500, true, new Texture("stationSprite.png"));
+    public static FryingStation FRYER = new FryingStation(500, true, new Texture("stationSprite.png"));
+    public static FormingStation PREP_AREA = new FormingStation(500, true, new Texture("stationSprite.png"));
+    public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE, new Texture("stationSprite.png"));
+    public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO, new Texture("stationSprite.png"));
+    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.LETTUCE, new Texture("stationSprite.png"));
+    public static IngredientStation BEEF_MINCE_STATION = new IngredientStation(FoodItems.BEEF_MINCE, new Texture("stationSprite.png"));
+    public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("stationSprite.png"));
+    public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
+    public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("stationSprite.png"));
+    private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
+        SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
+        SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);
     }
+
 
     // function to apply texture to station, then position it onto the tile map
-    public static void createAllStations(Node[][] walls, TiledMap tiledMap){
-        setUpStations();
-
-        CHOPPING_BOARD.stationTexture = choppingBoardTexture;
-        CHOPPING_BOARD.setTileMapPosition(CHOPPING_BOARD.stationTexture, 2, 14, walls, tiledMap);
-
-
-        FRYER.stationTexture = fryerTexture;
-        FRYER.setTileMapPosition(FRYER.stationTexture, 6, 14, walls, tiledMap);
-
+    public static void createAllStations(Node[][] grid, TiledMap tiledMap){
+        CHOPPING_BOARD.setTileMapPosition(2, 14, grid, tiledMap);
+        FRYER.setTileMapPosition(6, 14, grid, tiledMap);
+        PREP_AREA.setTileMapPosition(4,14, grid, tiledMap);
 
         //Ingredient Stations - to be placed in the pantry
+        LETTUCE_STATION.setTileMapPosition(12, 6, grid, tiledMap);
+        TOMATO_STATION.setTileMapPosition(14, 14, grid, tiledMap);
+        ONION_STATION.setTileMapPosition(14, 12, grid, tiledMap);
+        BEEF_MINCE_STATION.setTileMapPosition(14, 10, grid, tiledMap);
+        BURGER_BUN_STATION.setTileMapPosition(14, 8, grid, tiledMap);
+        CHEESE_STATION.setTileMapPosition(14, 6, grid, tiledMap);
+        WATER_BUCKET_STATION.setTileMapPosition(8, 14, grid, tiledMap);
 
-        LETTUCE_STATION.stationTexture = lettuceTexture;
-        LETTUCE_STATION.setTileMapPosition(LETTUCE_STATION.stationTexture, 5, 12, walls, tiledMap);
-/*
-        TOMATO_STATION.stationTexture = tomatoTexture;
-        TOMATO_STATION.setTileMapPosition(TOMATO_STATION.stationTexture, 300, 23);
-
-        ONION_STATION.stationTexture = onionTexture;
-        ONION_STATION.setTileMapPosition(ONION_STATION.stationTexture, 300, 23);
-
-        BEEF_MINCE_STATION.stationTexture = beefMinceTexture;
-        BEEF_MINCE_STATION.setTileMapPosition(BEEF_MINCE_STATION.stationTexture, 300, 23);
-
-        BURGER_BUN_STATION.stationTexture = burgerBunTexture;
-        BURGER_BUN_STATION.setTileMapPosition(BURGER_BUN_STATION.stationTexture, 300, 23);
-
-        CHEESE_STATION.stationTexture = cheeseTexture;
-        CHEESE_STATION.setTileMapPosition(CHEESE_STATION.stationTexture, 300, 23);
-        */
-
+        createAllServingStations(grid, tiledMap);
 
         System.out.print("Stations Created\n");
-
-
     }
+
     public static void renderAllStations(SpriteBatch batch)  {
         CHOPPING_BOARD.getSprite().draw(batch);
         FRYER.getSprite().draw(batch);
         LETTUCE_STATION.getSprite().draw(batch);
+        PREP_AREA.getSprite().draw(batch);
 
-        /*
-        TOMATO_STATION.stationSprite.draw(batch);
-        ONION_STATION.stationSprite.draw(batch);
-        BEEF_MINCE_STATION.stationSprite.draw(batch);
-        BURGER_BUN_STATION.stationSprite.draw(batch);
-        CHEESE_STATION.stationSprite.draw(batch);
+        TOMATO_STATION.getSprite().draw(batch);
+        ONION_STATION.getSprite().draw(batch);
+        BEEF_MINCE_STATION.getSprite().draw(batch);
+        BURGER_BUN_STATION.getSprite().draw(batch);
+        CHEESE_STATION.getSprite().draw(batch);
+        WATER_BUCKET_STATION.getSprite().draw(batch);
 
-         */
-
-
+        for(ServingStation servingStation: servingStations){
+            servingStation.getSprite().draw(batch);
+            if(servingStation.getOrderSprite() != null){
+                servingStation.getOrderSprite().draw(batch);
+            }
+        }
     }
 
 }

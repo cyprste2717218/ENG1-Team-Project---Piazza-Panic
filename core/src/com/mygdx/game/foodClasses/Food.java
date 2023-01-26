@@ -8,54 +8,46 @@ import com.mygdx.game.Chef;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.NodeType;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-public class Food implements IInteractable {
+public class Food implements IInteractable, IGridEntity {
 
-    public String name;
-    private Sprite foodSprite;
-    public boolean isFryable;
-    public boolean isChoppable;
-    public boolean isBakeable;
-    public boolean isFormable;
-    public boolean isToastable;
-    public int reward;
+    public String name; //The name of the food
+    private Sprite foodSprite; //The sprite of the food
+    public boolean isFormable; //Whether the food can be used in the FormingStation
+    public int reward; //The monetary reward for making the food
+    private Vector2 gridPosition; //Used to keep track of the gridPosition of the food for the updateGridEntities() method in PiazzaPanic
 
-    private Vector2 gridPosition;
-
-    public Food(FoodBuilder builder){
-        name = builder.name;
-        foodSprite = new Sprite(builder.foodTexture, 256, 256);
+    public Food(String name, Texture foodTexture, boolean isFormable, int reward){
+        this.name = name;
+        foodSprite = new Sprite(foodTexture, 256, 256);
         foodSprite.setScale(0.125f);
-        isFryable = builder.isFryable;
-        isBakeable = builder.isBakeable;
-        isChoppable = builder.isChoppable;
-        isFormable = builder.isFormable;
-        isToastable = builder.isToastable;
-        reward = builder.reward;
+        this.isFormable = isFormable;
+        this.reward = reward;
 
+        //If the food has a monetary reward, it is automatically added to the list of foodItems that the customers can used
         if(reward > 0){
             FoodItems.finishedFoods.add(this);
+            System.out.println(name + " was added to finished Foods");
         }
     }
 
+    //A secondary constructor to create foodItems from the pre-established settings in the FoodItems class
     public Food(Food foodSettings){
         name = foodSettings.name;
         foodSprite = new Sprite(foodSettings.foodSprite.getTexture(), 256, 256);
         foodSprite.setScale(0.125f);
-        isFryable = foodSettings.isFryable;
-        isBakeable = foodSettings.isBakeable;
-        isChoppable = foodSettings.isChoppable;
         isFormable = foodSettings.isFormable;
-        isToastable = foodSettings.isToastable;
         reward = foodSettings.reward;
-
     }
+
+    //A function to compare two food items
     public boolean equals(Food f) {
-        return this.name == f.name;
+        return name == f.name;
     }
 
     @Override
@@ -63,16 +55,19 @@ public class Food implements IInteractable {
         return foodSprite;
     }
 
+    //Caused the foodItem to be picked up by the chef when it is interacted with
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         SoundUtils.getItemPickupSound().play();
         PiazzaPanic.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
+        interactedNode.setGridEntity(null);
         interactedNode.setInteractable(null);
         interactedNode.setNodeType(NodeType.EMPTY);
         System.out.println("Interacting with Food");
     }
 
+    //Two helper functions for the updateGridEntities() method in PiazzaPanic
     @Override
     public Vector2 getPreviousGridPosition() {
         return gridPosition;
@@ -83,62 +78,11 @@ public class Food implements IInteractable {
         gridPosition = gridPos;
     }
 
+    //Places the foodItems down on the grid
     public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
         if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
         grid[mapPosX][mapPosY].setNodeType(NodeType.FOOD);
-        grid[mapPosX][mapPosY].setInteractable(this);
+        grid[mapPosX][mapPosY].setGridEntity(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
-
-
-    public static class FoodBuilder{
-        private final String name;
-        private final Texture foodTexture;
-        private boolean isFryable = false;
-        private boolean isChoppable = false;
-        private boolean isBakeable = false;
-        private boolean isFormable = false;
-        private boolean isToastable = false;
-        private int reward = 0;
-
-        public FoodBuilder(String name, Texture foodTexture){
-            this.name = name;
-            this.foodTexture = foodTexture;
-        }
-
-        public FoodBuilder setFryable(){
-            isFryable = true;
-            return this;
-        }
-
-        public FoodBuilder setChoppable(){
-            isChoppable = true;
-            return this;
-        }
-
-        public FoodBuilder setBakeable(){
-            isBakeable = true;
-            return this;
-        }
-
-        public FoodBuilder setFormable(){
-            isFormable = true;
-            return this;
-        }
-
-        public FoodBuilder setToastable(){
-            isToastable = true;
-            return this;
-        }
-
-        public FoodBuilder setReward(int reward){
-            this.reward = reward;
-            return this;
-        }
-
-        public Food build(){
-            return new Food(this);
-        }
-    }
-
 }
