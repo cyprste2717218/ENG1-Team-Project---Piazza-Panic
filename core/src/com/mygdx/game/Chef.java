@@ -34,7 +34,6 @@ public class Chef implements IInteractable, IGridEntity {
 
     long mouseClickTime = 0;
     final float speed = 100;
-    private int pathfindingCounter = 0;
     private boolean interactablePathEnd = false;
 
     public Facing finalFacing = Facing.UP;
@@ -71,7 +70,8 @@ public class Chef implements IInteractable, IGridEntity {
             pathfindingActor.drawPath(camera, chefSprite);
             pathfindingActor.followPath(chefSprite, speed);
             //Interacts with anything at the end of the path
-            if(pathfindingCounter == pathfindingActor.getWorldPath().size() && interactablePathEnd) {
+            if(getPathfindingActor().getPathfindingCounter() == pathfindingActor.getWorldPath().size() && interactablePathEnd) {
+                System.out.println("Interactable Path End");
                 pathfindingActor.setFacing(chefSprite, finalFacing);
                 interact(grid, tiledMap);
                 interactablePathEnd = false;
@@ -93,7 +93,7 @@ public class Chef implements IInteractable, IGridEntity {
         pathfindingActor = new PathfindingActor(start, end, grid, tiledMap);
         pathfindingActor.createThreadAndPathfind();
         if(pathfindingActor.getWorldPath().size() == 0) return;
-        pathfindingCounter = 0;
+        pathfindingActor.setPathfindingCounter(0);
         //Check if there is something to interact with at the end of the path
         interactablePathEnd = end.isInteractable();
         if(interactablePathEnd){
@@ -143,7 +143,7 @@ public class Chef implements IInteractable, IGridEntity {
         //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
         else if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             // if(chef interaction is with customer
-            PiazzaPanic.customers.remove(0);   //  to be changed to remove correct customer from list
+            GameScreen.customers.remove(0);   //  to be changed to remove correct customer from list
             // else {interact with station}
         }
     }
@@ -183,7 +183,7 @@ public class Chef implements IInteractable, IGridEntity {
         else{
             Food currentFood = this.foodStack.pop();
             currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
-            PiazzaPanic.RENDERED_FOODS.add(currentFood);
+            GameScreen.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
             SoundUtils.getItemPickupSound().play();
         }

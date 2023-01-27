@@ -76,8 +76,8 @@ public class Customer implements ITimer, IGridEntity {
     private Node getAvailableServingStation(Node[][] grid, TiledMap tiledMap){
         //Choose random available serving station
         Random rnd = new Random();
-        ServingStation servingStation = PiazzaPanic.availableServingStations.get(rnd.nextInt(PiazzaPanic.availableServingStations.size()));
-        PiazzaPanic.availableServingStations.remove(servingStation);
+        ServingStation servingStation = GameScreen.availableServingStations.get(rnd.nextInt(GameScreen.availableServingStations.size()));
+        GameScreen.availableServingStations.remove(servingStation);
         servingStation.setCurrentCustomer(this);
         //Get grid position of serving station
         int xPos = TileMapUtils.positionToCoord(servingStation.getSprite().getX(), tiledMap);
@@ -101,7 +101,7 @@ public class Customer implements ITimer, IGridEntity {
         pathfindingActor.followPath(customerSprite, 100f);
         if(pathfindingActor.getPathfindingCounter() == pathfindingActor.getWorldPath().size()){
             if(beenServed){
-                PiazzaPanic.customers.remove(this);
+                GameScreen.customers.remove(this);
                 customerSprite.setPosition(1000,1000);
             }
             else{

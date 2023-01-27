@@ -3,10 +3,7 @@ package com.mygdx.game.stations;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.mygdx.game.Chef;
-import com.mygdx.game.Customer;
-import com.mygdx.game.Node;
-import com.mygdx.game.PiazzaPanic;
+import com.mygdx.game.*;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.utils.SoundUtils;
 
@@ -19,7 +16,7 @@ public class ServingStation extends Station{
     public ServingStation(Texture stationTexture){
         super(null, stationTexture);
         currentCustomer = null;
-        PiazzaPanic.availableServingStations.add(this);
+        GameScreen.availableServingStations.add(this);
         orderSprite = null;
         Stations.servingStations.add(this);
     }
@@ -48,19 +45,20 @@ public class ServingStation extends Station{
             return;
         }
         if(currentCustomer.getOrder().equals(chef.foodStack.peek())){
-            completeCustomerOrder(grid, tiledMap);
+            completeCustomerOrder(chef, grid, tiledMap);
         }
         else SoundUtils.getFailureSound().play();
     }
 
-    private void completeCustomerOrder(Node[][] grid, TiledMap tiledMap){
+    private void completeCustomerOrder(Chef chef, Node[][] grid, TiledMap tiledMap){
+        chef.foodStack.pop();
         SoundUtils.getCorrectOrderSound().play();
-        PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
+        GameScreen.CUSTOMER_SERVED_COUNTER++;
         currentCustomer.setBeenServed(true);
         currentCustomer.customerLeave(grid, tiledMap);
         currentCustomer = null;
         orderSprite = null;
-        PiazzaPanic.availableServingStations.add(this);
+        GameScreen.availableServingStations.add(this);
     }
 
 
