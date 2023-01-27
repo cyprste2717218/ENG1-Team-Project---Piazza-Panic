@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Customer implements IInteractable, ITimer, IGridEntity {
+public class Customer implements ITimer, IGridEntity {
     boolean beenServed;
     private Sprite customerSprite;
     Food order;
     float orderTimer;
     private static int CUSTOMER_SIZE = 256;
     private Vector2 gridPosition;
-    public Sprite orderSprite;
     PathfindingActor pathfindingActor;
 
     public Customer(Texture customerTexture, float orderTimer){
@@ -42,13 +41,17 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
 
     private Food getRandomOrder() {
         Random rnd = new Random();
-        int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
+        int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size());
         System.out.println(FoodItems.finishedFoods.get(orderIndex).name);
         return FoodItems.finishedFoods.get(orderIndex);
     }
 
     public Food getOrder(){
         return order;
+    }
+
+    public void setBeenServed(boolean hasBeenServed){
+        beenServed = hasBeenServed;
     }
 
 
@@ -115,5 +118,20 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
             //FAILURE CONDITION
         }
         return timerValue--;
+    }
+
+    @Override
+    public Vector2 getPreviousGridPosition() {
+        return gridPosition;
+    }
+
+    @Override
+    public void setCurrentGridPosition(Vector2 gridPos) {
+        gridPosition = gridPos;
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return customerSprite;
     }
 }

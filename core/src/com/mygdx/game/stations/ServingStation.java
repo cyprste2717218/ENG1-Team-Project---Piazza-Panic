@@ -56,11 +56,13 @@ public class ServingStation extends Station{
     private void completeCustomerOrder(Node[][] grid, TiledMap tiledMap){
         SoundUtils.getCorrectOrderSound().play();
         PiazzaPanic.CUSTOMER_SERVED_COUNTER++;
+        currentCustomer.setBeenServed(true);
         currentCustomer.customerLeave(grid, tiledMap);
         currentCustomer = null;
         orderSprite = null;
         PiazzaPanic.availableServingStations.add(this);
     }
+
 
     //A customer will spawn in and pathfind to one of these
     //This station will then display their order

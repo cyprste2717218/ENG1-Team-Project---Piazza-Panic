@@ -12,3 +12,4 @@ public interface IInteractable {
     //Performs the interaction operation when it is called
     void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid);
 }
+
