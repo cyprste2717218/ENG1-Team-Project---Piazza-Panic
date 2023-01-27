@@ -8,8 +8,9 @@ import com.mygdx.game.enums.Facing;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
+import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.interfaces.IGridEntity;
-import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.threads.PathfindingRunnable;
@@ -21,16 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Customer implements ITimer, IPathfinder, IGridEntity {
+public class Customer implements IInteractable, ITimer, IGridEntity {
     boolean beenServed;
     private Sprite customerSprite;
     Food order;
     float orderTimer;
     private static int CUSTOMER_SIZE = 256;
     private Vector2 gridPosition;
-    private List<Vector2> worldPath = new ArrayList<>();
-    private int pathfindingCounter = 0;
-    private Facing facing = Facing.UP;
+    public Sprite orderSprite;
+    PathfindingActor pathfindingActor;
 
     public Customer(Texture customerTexture, float orderTimer){
         customerSprite = new Sprite(customerTexture, CUSTOMER_SIZE, CUSTOMER_SIZE);
@@ -58,33 +58,16 @@ public class Customer implements ITimer, IPathfinder, IGridEntity {
                 [TileMapUtils.positionToCoord(customerSprite.getY(), tiledMap)];
         Node end = grid[8][1];
 
-        //Set up thread to do pathfinding
-        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, grid);
-        Thread pathfindingThread = new Thread(pathfindingObj);
-        pathfindingThread.start();
-        //Stalls the main thread until the pathfinding is complete
-        while (pathfindingThread.isAlive()){}
-        //Gets the path from the thread in grid co-ordinates
-        Vector2[] gridPath = pathfindingObj.getGridPath();
-        worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
-        beenServed = true;
+        pathfindingActor = new PathfindingActor(start, end, grid, tiledMap);
+        pathfindingActor.createThreadAndPathfind();
     }
 
     public void onSpawn(Node[][] grid, TiledMap tiledMap){
         Node start = grid[8][1];
         Node end = getAvailableServingStation(grid, tiledMap);
 
-        if(end == null) return;
-
-        //Set up thread to do pathfinding
-        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, grid);
-        Thread pathfindingThread = new Thread(pathfindingObj);
-        pathfindingThread.start();
-        //Stalls the main thread until the pathfinding is complete
-        while (pathfindingThread.isAlive()){}
-        //Gets the path from the thread in grid co-ordinates
-        Vector2[] gridPath = pathfindingObj.getGridPath();
-        worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
+        pathfindingActor = new PathfindingActor(start, end, grid, tiledMap);
+        pathfindingActor.createThreadAndPathfind();
     }
 
     private Node getAvailableServingStation(Node[][] grid, TiledMap tiledMap){
@@ -111,16 +94,17 @@ public class Customer implements ITimer, IPathfinder, IGridEntity {
 
 
     public void moveCustomer(){
-        if(worldPath.isEmpty()) return;
-        PathfindingUtils.followPath(customerSprite, worldPath, 100f, this);
-        if(getPathCounter() == worldPath.size()){
+        if(pathfindingActor.getWorldPath().isEmpty()) return;
+        pathfindingActor.followPath(customerSprite, 100f);
+        if(pathfindingActor.getPathfindingCounter() == pathfindingActor.getWorldPath().size()){
             if(beenServed){
                 PiazzaPanic.customers.remove(this);
                 customerSprite.setPosition(1000,1000);
             }
             else{
-                worldPath.clear();
-                setPathCounter(0);
+                pathfindingActor.setFacing(customerSprite, Facing.UP);
+                pathfindingActor.getWorldPath().clear();
+                pathfindingActor.setPathfindingCounter(0);
             }
         }
     }
@@ -131,37 +115,5 @@ public class Customer implements ITimer, IPathfinder, IGridEntity {
             //FAILURE CONDITION
         }
         return timerValue--;
-    }
-
-    @Override
-    public void setPathCounter(int counter) {
-        pathfindingCounter = counter;
-    }
-
-    @Override
-    public int getPathCounter() {
-        return pathfindingCounter;
-    }
-
-    @Override
-    public void setFacing(Facing direction) {
-        facing = direction;
-    }
-
-    @Override
-    public Facing getFacing() {
-        return facing;
-    }
-
-    public Sprite getSprite(){ return customerSprite;}
-
-    @Override
-    public Vector2 getPreviousGridPosition() {
-        return gridPosition;
-    }
-
-    @Override
-    public void setCurrentGridPosition(Vector2 gridPos) {
-        gridPosition = gridPos;
     }
 }
