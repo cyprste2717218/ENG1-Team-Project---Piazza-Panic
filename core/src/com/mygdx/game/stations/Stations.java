@@ -71,6 +71,7 @@ public class Stations {
         for(ServingStation servingStation: servingStations){
             servingStation.getSprite().draw(batch);
             if(servingStation.getOrderSprite() != null){
+                batch.draw(servingStation.getOrderSprite().getTexture(), servingStation.getOrderSprite().getX() + 96, servingStation.getOrderSprite().getY() + 96);
                 servingStation.getOrderSprite().draw(batch);
             }
         }

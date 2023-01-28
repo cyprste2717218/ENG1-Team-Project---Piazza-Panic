@@ -2,12 +2,12 @@ package com.mygdx.game.foodClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
-import com.mygdx.game.GameScreen;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.Node;
-import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
@@ -25,8 +25,7 @@ public class Food implements IInteractable, IGridEntity {
 
     public Food(String name, Texture foodTexture, boolean isFormable, int reward){
         this.name = name;
-        foodSprite = new Sprite(foodTexture, 256, 256);
-        foodSprite.setScale(0.125f);
+        foodSprite = new Sprite(foodTexture);
         this.isFormable = isFormable;
         this.reward = reward;
 
@@ -40,8 +39,10 @@ public class Food implements IInteractable, IGridEntity {
     //A secondary constructor to create foodItems from the pre-established settings in the FoodItems class
     public Food(Food foodSettings){
         name = foodSettings.name;
-        foodSprite = new Sprite(foodSettings.foodSprite.getTexture(), 256, 256);
-        foodSprite.setScale(0.125f);
+        TextureRegion textureRegion = new TextureRegion(foodSettings.foodSprite.getTexture(), 0,0,64,64);
+        foodSprite = new Sprite(textureRegion.getTexture());
+        foodSprite.setSize(64,64);
+        foodSprite.setScale(0.75f);
         isFormable = foodSettings.isFormable;
         reward = foodSettings.reward;
     }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.*;
-import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.utils.SoundUtils;
 
 public class ServingStation extends Station{
