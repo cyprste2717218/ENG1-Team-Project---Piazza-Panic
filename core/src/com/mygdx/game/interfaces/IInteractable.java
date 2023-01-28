@@ -11,11 +11,5 @@ import com.mygdx.game.Node;
 public interface IInteractable {
     //Performs the interaction operation when it is called
     void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid);
-
-    //A function that returns the sprite of the object
-    public Sprite getSprite();
-
-    //These two functions are used to keep track of where all interactable objects are on the grid
-    Vector2 getPreviousGridPosition();
-    void setCurrentGridPosition(Vector2 gridPos);
 }
+

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,11 +12,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
-import com.mygdx.game.interfaces.IPathfinder;
 import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.CollisionHandler;
 import com.mygdx.game.utils.PathfindingUtils;
+import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.ArrayList;
@@ -23,54 +25,38 @@ import java.util.List;
 import java.util.Stack;
 import com.mygdx.game.enums.Facing;
 
-public class Chef implements IPathfinder, IInteractable {
+public class Chef implements IInteractable, IGridEntity {
+
     private static final int CHEF_SIZE = 256;
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
     private final int squareSize = 32;
 
-    private List<Vector2> worldPath = new ArrayList<>();
     long mouseClickTime = 0;
     final float speed = 100;
-    private int pathfindingCounter = 0;
     private boolean interactablePathEnd = false;
 
     public Facing finalFacing = Facing.UP;
 
     private Vector2 gridPosition;
-    @Override
-    public void setPathCounter(int counter) {
-        pathfindingCounter = counter;
-    }
-
-    @Override
-    public int getPathCounter() {
-        return pathfindingCounter;
-    }
-
-    private Facing facing = Facing.UP;
-
-    @Override
-    public void setFacing(Facing direction) {
-        facing = direction;
-        chefSprite.setRotation(90f * getFacing().ordinal());
-    }
-
-    @Override
-    public Facing getFacing() {
-        return facing;
-    }
+    
+    PathfindingActor pathfindingActor;
 
 
     public Chef(Texture chefTexture){
         chefSprite = new Sprite(chefTexture, CHEF_SIZE, CHEF_SIZE);
         this.chefSprite.setScale(0.125f);
         foodStack = new Stack<>();
+        pathfindingActor = new PathfindingActor(null, null, null,null);
     }
 
     @Override
     public Sprite getSprite(){
         return chefSprite;
+    }
+
+    public PathfindingActor getPathfindingActor(){
+        return pathfindingActor;
     }
 
 
@@ -80,12 +66,13 @@ public class Chef implements IPathfinder, IInteractable {
         if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, grid);
         else mouseMovement(tiledMap, grid, camera);
 
-        if(!worldPath.isEmpty()){
-            PathfindingUtils.drawPath(worldPath,camera, chefSprite, this);
-            PathfindingUtils.followPath(chefSprite, worldPath, speed, this);
+        if(!pathfindingActor.getWorldPath().isEmpty()){
+            pathfindingActor.drawPath(camera, chefSprite);
+            pathfindingActor.followPath(chefSprite, speed);
             //Interacts with anything at the end of the path
-            if(pathfindingCounter == worldPath.size() && interactablePathEnd) {
-                setFacing(finalFacing);
+            if(getPathfindingActor().getPathfindingCounter() == pathfindingActor.getWorldPath().size() && interactablePathEnd) {
+                System.out.println("Interactable Path End");
+                pathfindingActor.setFacing(chefSprite, finalFacing);
                 interact(grid, tiledMap);
                 interactablePathEnd = false;
             }
@@ -103,27 +90,15 @@ public class Chef implements IPathfinder, IInteractable {
         //Convert world co-ords to grid co-ords
         Node start = setStartCoords(tiledMap, grid);
         Node end = setEndCoords(tiledMap, grid, camera);
-
-        if(start == null || end == null) return;
-
-        //Set up thread to do pathfinding
-        PathfindingRunnable pathfindingObj = new PathfindingRunnable(start, end, grid);
-        Thread pathfindingThread = new Thread(pathfindingObj);
-        pathfindingThread.start();
-        //Stalls the main thread until the pathfinding is complete
-        while (pathfindingThread.isAlive()){}
-        //Gets the path from the thread in grid co-ordinates
-        Vector2[] gridPath = pathfindingObj.getGridPath();
-
-        if(gridPath.length == 0) return;
-        //Convert grid co-ordinates to world co-ordinates
-        worldPath = PathfindingUtils.convertGridPathToWorld(gridPath, tiledMap);
-        pathfindingCounter = 0;
+        pathfindingActor = new PathfindingActor(start, end, grid, tiledMap);
+        pathfindingActor.createThreadAndPathfind();
+        if(pathfindingActor.getWorldPath().size() == 0) return;
+        pathfindingActor.setPathfindingCounter(0);
         //Check if there is something to interact with at the end of the path
         interactablePathEnd = end.isInteractable();
         if(interactablePathEnd){
             //Fix for a path of 1
-            if(gridPath.length > 1){
+            if(pathfindingActor.getWorldPath().size() > 1){
                 Node penultimateNode = PathfindingUtils.findBestInteractingNode(start, end, grid);
                 finalFacing = PathfindingUtils.calculateFinalFacing(penultimateNode, end);
             }
@@ -133,34 +108,34 @@ public class Chef implements IPathfinder, IInteractable {
     //A function to handle movement with the keyboard
     private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        Vector2 previousPosition = new Vector2(chefSprite.getX(), chefSprite.getY()).cpy();
         int tileWidth = layer.getTileWidth();
         float speed = 100f;
+        Vector2 oldPos = new Vector2(chefSprite.getX(), chefSprite.getY());
         CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, speed);
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
-            setFacing(Facing.UP);
-            worldPath.clear();
+            pathfindingActor.setFacing(chefSprite, Facing.UP);
+            pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.S)){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
-            setFacing(Facing.DOWN);
-            worldPath.clear();
+            pathfindingActor.setFacing(chefSprite, Facing.DOWN);
+            pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.A)){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
-            setFacing(Facing.LEFT);
-            worldPath.clear();
+            pathfindingActor.setFacing(chefSprite, Facing.LEFT);
+            pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
-            setFacing(Facing.RIGHT);
-            worldPath.clear();
+            pathfindingActor.setFacing(chefSprite, Facing.RIGHT);
+            pathfindingActor.getWorldPath().clear();
         }
 
         if(collisionHandler.hasCollision()){
-            chefSprite.setPosition(previousPosition.x, previousPosition.y);
+            chefSprite.setPosition(oldPos.x, oldPos.y);
         }
 
 
@@ -168,7 +143,7 @@ public class Chef implements IPathfinder, IInteractable {
         //  depending on whom the chef is interacting with, this will remove the corresponding customer from the list
         else if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             // if(chef interaction is with customer
-            PiazzaPanic.customers.remove(0);   //  to be changed to remove correct customer from list
+            GameScreen.customers.remove(0);   //  to be changed to remove correct customer from list
             // else {interact with station}
         }
     }
@@ -196,14 +171,21 @@ public class Chef implements IPathfinder, IInteractable {
     public void interact(Node[][] grid, TiledMap tiledMap){
         Node interactedNode = getInteractedNode(grid, tiledMap);
         if(interactedNode.getInteractable() != null){
-            interactedNode.getInteractable().onInteract(this, interactedNode, tiledMap, grid);
+            IInteractable interactableEntity = interactedNode.getInteractable();
+            interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
             System.out.println("Found Interactable");
+            return;
         }
-        else if(!foodStack.isEmpty()){
+        else if(foodStack.isEmpty()){
+            SoundUtils.getFailureSound().play();
+            return;
+        }
+        else{
             Food currentFood = this.foodStack.pop();
             currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
-            PiazzaPanic.RENDERED_FOODS.add(currentFood);
+            GameScreen.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
+            SoundUtils.getItemPickupSound().play();
         }
     }
 
@@ -212,15 +194,20 @@ public class Chef implements IPathfinder, IInteractable {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         if(chef.foodStack.isEmpty()) return;
-        Chef interactedChef = (Chef)interactedNode.getInteractable();
+        Chef interactedChef = (Chef)interactedNode.getGridEntity();
+        if(chef.foodStack.isEmpty()){
+            SoundUtils.getFailureSound().play();
+            return;
+        }
         interactedChef.foodStack.push(chef.foodStack.pop());
         System.out.println("Interacting with a chef");
+        SoundUtils.getItemPickupSound().play();
+
     }
 
     private Node getInteractedNode(Node[][] grid, TiledMap tiledMap){
-        return TileMapUtils.getNodeAtFacing(facing, grid, grid[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(),tiledMap)]);
+        return TileMapUtils.getNodeAtFacing(pathfindingActor.getFacing(), grid, grid[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(),tiledMap)]);
     }
-
 
     @Override
     public Vector2 getPreviousGridPosition() {

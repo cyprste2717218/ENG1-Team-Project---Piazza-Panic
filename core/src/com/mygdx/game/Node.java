@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.mygdx.game.enums.NodeType;
+import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
 
 import java.util.Arrays;
@@ -14,9 +15,10 @@ public class Node implements Comparable<Node>{
     private NodeType nodeType;
     private final int gridX;
     private final int gridY;
+    private IGridEntity gridEntity;
     private IInteractable interactable;
-    private static final Set<NodeType> INTERACTABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.CHEF, NodeType.CUSTOMER, NodeType.STATION, NodeType.FOOD));
-    private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.FOOD, NodeType.CUSTOMER));
+    private static final Set<NodeType> INTERACTABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.CHEF, NodeType.STATION, NodeType.FOOD));
+    private static final Set<NodeType> COLLIDABLE_NODE_TYPES = new HashSet<>(Arrays.asList(NodeType.WALL, NodeType.STATION, NodeType.CUSTOMER));
 
     public Node(int gridX, int gridY, NodeType nodeType){
         g = 0;
@@ -25,9 +27,9 @@ public class Node implements Comparable<Node>{
         this.nodeType = nodeType;
         this.gridX = gridX;
         this.gridY = gridY;
+        gridEntity = null;
         interactable = null;
     }
-
     public Node(int gridX, int gridY){
         this(gridX, gridY, NodeType.EMPTY);
     }
@@ -80,12 +82,17 @@ public class Node implements Comparable<Node>{
         return COLLIDABLE_NODE_TYPES.contains(nodeType);
     }
 
-    public IInteractable getInteractable() {
-        return interactable;
+    public IGridEntity getGridEntity() {
+        return gridEntity;
     }
 
-    public void setInteractable(IInteractable interactable) {
+    public IInteractable getInteractable(){return interactable;}
+    public void setInteractable(IInteractable interactable){
         this.interactable = interactable;
+    }
+
+    public void setGridEntity(IGridEntity gridEntity) {
+        this.gridEntity = gridEntity;
     }
 
     @Override
