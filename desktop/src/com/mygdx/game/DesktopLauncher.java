@@ -8,9 +8,9 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("MainMenu");
+		config.setTitle("Piazza Panic");
 		config.setWindowedMode(1300,780);
-		config.setResizable(false);
+		config.setResizable(true);
 		new Lwjgl3Application(new PiazzaPanic(), config);
 	}
 }

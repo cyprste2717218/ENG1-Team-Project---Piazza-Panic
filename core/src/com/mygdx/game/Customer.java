@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Customer implements IInteractable, ITimer, IGridEntity {
+public class Customer implements ITimer, IGridEntity {
     boolean beenServed;
     private Sprite customerSprite;
     Food order;
     float orderTimer;
     private static int CUSTOMER_SIZE = 256;
     private Vector2 gridPosition;
-    public Sprite orderSprite;
     PathfindingActor pathfindingActor;
 
     public Customer(Texture customerTexture, float orderTimer){
@@ -42,13 +41,17 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
 
     private Food getRandomOrder() {
         Random rnd = new Random();
-        int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size()-1);
+        int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size());
         System.out.println(FoodItems.finishedFoods.get(orderIndex).name);
         return FoodItems.finishedFoods.get(orderIndex);
     }
 
     public Food getOrder(){
         return order;
+    }
+
+    public void setBeenServed(boolean hasBeenServed){
+        beenServed = hasBeenServed;
     }
 
 
@@ -73,8 +76,8 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
     private Node getAvailableServingStation(Node[][] grid, TiledMap tiledMap){
         //Choose random available serving station
         Random rnd = new Random();
-        ServingStation servingStation = PiazzaPanic.availableServingStations.get(rnd.nextInt(PiazzaPanic.availableServingStations.size()));
-        PiazzaPanic.availableServingStations.remove(servingStation);
+        ServingStation servingStation = GameScreen.availableServingStations.get(rnd.nextInt(GameScreen.availableServingStations.size()));
+        GameScreen.availableServingStations.remove(servingStation);
         servingStation.setCurrentCustomer(this);
         //Get grid position of serving station
         int xPos = TileMapUtils.positionToCoord(servingStation.getSprite().getX(), tiledMap);
@@ -98,7 +101,7 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
         pathfindingActor.followPath(customerSprite, 100f);
         if(pathfindingActor.getPathfindingCounter() == pathfindingActor.getWorldPath().size()){
             if(beenServed){
-                PiazzaPanic.customers.remove(this);
+                GameScreen.customers.remove(this);
                 customerSprite.setPosition(1000,1000);
             }
             else{
@@ -115,5 +118,20 @@ public class Customer implements IInteractable, ITimer, IGridEntity {
             //FAILURE CONDITION
         }
         return timerValue--;
+    }
+
+    @Override
+    public Vector2 getPreviousGridPosition() {
+        return gridPosition;
+    }
+
+    @Override
+    public void setCurrentGridPosition(Vector2 gridPos) {
+        gridPosition = gridPos;
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return customerSprite;
     }
 }

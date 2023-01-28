@@ -6,15 +6,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.*;
+import com.mygdx.game.utils.ScreenUIUtils;
 
 public class MainMenu implements Screen {
     PiazzaPanic game;
     SettingScreen settingScreen;
-    GameScreen gameScreen;
+    public GameScreen gameScreen;
     private Texture settingBlackImage, settingGreenImage, playRedImage, playGreenImage;
     private Rectangle setting, play;
-    int viewportHeight;
-    private OrthographicCamera camera;
+    public OrthographicCamera camera;
+    public ScreenUIUtils screenUIUtils;
+    Viewport viewport;
+
 
     public MainMenu(PiazzaPanic game) {
         this.game = game;
@@ -31,8 +35,11 @@ public class MainMenu implements Screen {
         play = new Rectangle(Gdx.graphics.getWidth()/2-playRedImage.getWidth()*1.625F/2, Gdx.graphics.getHeight()/2-playRedImage.getHeight()*1.625F/2, playRedImage.getWidth()*1.625F, playRedImage.getHeight()*1.625F);
 
         camera = new OrthographicCamera();
-        viewportHeight = 780;
-        camera.setToOrtho(false,1300,viewportHeight);
+        camera.setToOrtho(false);
+        viewport = new StretchViewport(1300, 780, camera);
+        viewport.apply();
+        game.batch.setProjectionMatrix(camera.combined);
+        screenUIUtils = new ScreenUIUtils(game, game.batch, viewport, camera, this);
     }
 
     @Override
@@ -44,28 +51,14 @@ public class MainMenu implements Screen {
     public void render(float delta) {
         game.batch.begin();
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);		// rgba(227,247,252,1)
-        if (Gdx.input.getX()>setting.x && Gdx.input.getX()<setting.x+setting.width && Gdx.input.getY()<viewportHeight-setting.y && Gdx.input.getY()>viewportHeight-setting.y-setting.height) {
-            game.batch.draw(settingGreenImage, setting.x, setting.y, setting.width, setting.height);
-            if (Gdx.input.isTouched()) {
-                game.setScreen(settingScreen);
-            }
-        } else {
-            game.batch.draw(settingBlackImage, setting.x, setting.y, setting.width, setting.height);
-        }
-        if (Gdx.input.getX()>play.x && Gdx.input.getX()<play.x+play.width && Gdx.input.getY()<viewportHeight-play.y && Gdx.input.getY()>viewportHeight-play.y-play.height) {
-            game.batch.draw(playGreenImage, play.x, play.y, play.width, play.height);
-            if (Gdx.input.isTouched()) {
-                game.setScreen(gameScreen);
-            }
-        } else {
-            game.batch.draw(playRedImage, play.x, play.y, play.width, play.height);
-        }
+        screenUIUtils.createScreenChangingButton(setting, settingGreenImage, settingBlackImage, settingScreen);
+        screenUIUtils.createScreenChangingButton(play, playGreenImage, playRedImage, gameScreen);
         game.batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override

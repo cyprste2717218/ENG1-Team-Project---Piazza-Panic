@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.Node;
 import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.NodeType;
@@ -59,7 +60,7 @@ public class Food implements IInteractable, IGridEntity {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
         SoundUtils.getItemPickupSound().play();
-        PiazzaPanic.RENDERED_FOODS.remove(this);
+        GameScreen.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);
         interactedNode.setGridEntity(null);
         interactedNode.setInteractable(null);
