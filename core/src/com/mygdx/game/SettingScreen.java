@@ -48,9 +48,9 @@ public class SettingScreen implements Screen {
     public void render(float delta) {
         game.batch.begin();
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);
-        difficulty = mainMenu.screenUIUtils.createDifficultyButton(easyButton, easyGreen, easyBlack, DifficultyLevel.EASY, difficulty);
-        difficulty = mainMenu.screenUIUtils.createDifficultyButton(mediumButton, mediumGreen, mediumBlack, DifficultyLevel.MEDIUM, difficulty);
-        difficulty = mainMenu.screenUIUtils.createDifficultyButton(hardButton, hardGreen, hardBlack, DifficultyLevel.HARD, difficulty);
+        mainMenu.gameScreen.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(mediumButton, mediumGreen, mediumBlack, DifficultyLevel.MEDIUM, mainMenu.gameScreen.getDifficultyLevel()));
+        mainMenu.gameScreen.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(hardButton, hardGreen, hardBlack, DifficultyLevel.HARD, mainMenu.gameScreen.getDifficultyLevel()));
+        mainMenu.gameScreen.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(easyButton, easyGreen, easyBlack, DifficultyLevel.EASY, mainMenu.gameScreen.getDifficultyLevel()));
 
         mainMenu.screenUIUtils.createScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu);
         game.batch.end();

@@ -12,7 +12,7 @@ import com.mygdx.game.utils.ScreenUIUtils;
 public class MainMenu implements Screen {
     PiazzaPanic game;
     SettingScreen settingScreen;
-    GameScreen gameScreen;
+    public GameScreen gameScreen;
     private Texture settingBlackImage, settingGreenImage, playRedImage, playGreenImage;
     private Rectangle setting, play;
     public OrthographicCamera camera;
@@ -39,7 +39,7 @@ public class MainMenu implements Screen {
         viewport = new StretchViewport(1300, 780, camera);
         viewport.apply();
         game.batch.setProjectionMatrix(camera.combined);
-        screenUIUtils = new ScreenUIUtils(game, game.batch, viewport, camera);
+        screenUIUtils = new ScreenUIUtils(game, game.batch, viewport, camera, this);
     }
 
     @Override

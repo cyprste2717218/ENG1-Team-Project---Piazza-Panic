@@ -10,6 +10,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.GameScreen;
+import com.mygdx.game.MainMenu;
+import com.mygdx.game.PiazzaPanic;
 import com.mygdx.game.enums.DifficultyLevel;
 
 public class ScreenUIUtils {
@@ -18,12 +21,14 @@ public class ScreenUIUtils {
     SpriteBatch batch;
     Viewport viewport;
     Camera camera;
+    MainMenu mainMenu;
 
-    public ScreenUIUtils(Game game, SpriteBatch batch, Viewport viewport, Camera camera){
+    public ScreenUIUtils(Game game, SpriteBatch batch, Viewport viewport, Camera camera, MainMenu mainMenu){
         this.game = game;
         this.batch = batch;
         this.viewport = viewport;
         this.camera = camera;
+        this.mainMenu = mainMenu;
     }
 
     public void updateViewport(Viewport v){
@@ -47,7 +52,7 @@ public class ScreenUIUtils {
         if(button.contains(new Vector2(clickPos.x, clickPos.y))) {
             batch.draw(hoveredButtonTexture, button.x, button.y);
             if (Gdx.input.isTouched() && currentDifficulty!= buttonDifficulty) {
-                System.out.println(buttonDifficulty);
+                mainMenu.gameScreen.startGame(buttonDifficulty);
                 return buttonDifficulty;
             }
         }else{
