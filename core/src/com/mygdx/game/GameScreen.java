@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.enums.DifficultyLevel;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
@@ -46,6 +47,7 @@ public class GameScreen implements Screen {
     private int selectedChef = 0;
     public static List<Food> RENDERED_FOODS;
     public static List<ServingStation> availableServingStations;
+    private DifficultyLevel difficultyLevel;
 
 
     public static int CUSTOMER_SERVED_COUNTER = 0;
@@ -63,12 +65,7 @@ public class GameScreen implements Screen {
         arrowBlack = new Texture("Menu/arrowBlack65.png");
         arrowGreen = new Texture("Menu/arrowGreen65.png");
         arrowButton = new Rectangle(width/9,height-height/7,arrowBlack.getWidth()*1.15F,arrowBlack.getHeight()*1.15F);
-    }
 
-
-
-    @Override
-    public void show() {
         CustomerServedText = new BitmapFont();
         CustomerServedText.setColor(Color.BLACK);
 
@@ -97,6 +94,18 @@ public class GameScreen implements Screen {
         customers = new ArrayList<>();
         lastCustomerTime = TimeUtils.nanoTime();
         spawnCustomer();
+    }
+
+
+
+    @Override
+    public void show() {
+
+    }
+
+    public void startGame(DifficultyLevel difficultyLevel){
+        this.difficultyLevel = difficultyLevel;
+        game.setScreen(this);
     }
 
     public void handleChefs(){
@@ -246,5 +255,13 @@ public class GameScreen implements Screen {
         }
         tiledMap.dispose();
         orthogonalTiledMapRenderer.dispose();
+    }
+
+    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public DifficultyLevel getDifficultyLevel(){
+        return difficultyLevel;
     }
 }
