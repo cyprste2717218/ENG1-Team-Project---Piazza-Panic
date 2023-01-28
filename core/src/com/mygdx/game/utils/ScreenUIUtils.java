@@ -10,9 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.MainMenu;
-import com.mygdx.game.PiazzaPanic;
+import com.mygdx.game.screens.MainMenu;
 import com.mygdx.game.enums.DifficultyLevel;
 
 public class ScreenUIUtils {

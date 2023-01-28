@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,14 +13,12 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
-import com.mygdx.game.threads.PathfindingRunnable;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.utils.CollisionHandler;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 import com.mygdx.game.enums.Facing;
 

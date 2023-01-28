@@ -8,18 +8,13 @@ import com.mygdx.game.enums.Facing;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
-import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.interfaces.IGridEntity;
-import com.mygdx.game.interfaces.ITimer;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.stations.ServingStation;
-import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.PathfindingUtils;
-import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Customer implements ITimer, IGridEntity {

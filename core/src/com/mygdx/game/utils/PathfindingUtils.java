@@ -21,7 +21,7 @@ public class PathfindingUtils {
         if(!isValidNode(end.getGridX(), end.getGridY(), grid)) return new Vector2[0];
         if(end.isInteractable()) end =  findBestInteractingNode(start, end, grid);
         if(start == end) return new Vector2[] {new Vector2(start.getGridX(), start.getGridY())};
-        if(end.getNodeType() == NodeType.WALL) return new Vector2[0];
+        if(end.isCollidable()) return new Vector2[0];
         clearParents(grid);
 
         PriorityQueue<Node> openList = new PriorityQueue<>();
@@ -37,7 +37,7 @@ public class PathfindingUtils {
                     n.setParent(current);
                     return backTrackPath(n);
                 }
-                else if (!closedList.contains(n) && !n.isCollidable()){
+                else if (!closedList.contains(n) && !n.isCollidable() & !n.isInteractable()){
                     checkNeighbour(current, n, end, openList, closedList);
                 }
             }
@@ -55,6 +55,17 @@ public class PathfindingUtils {
 
         int[] xMod = {1, -1, 0, 0};
         int[] yMod = {0, 0, -1, 1};
+
+        for(int i = 0; i < xMod.length; i++){
+            if(i < 2){
+                if(!isValidNode(end.getGridX(), end.getGridY() - xMod[i], grid)) continue;
+                if(grid[end.getGridX()][end.getGridY() + xMod[i]].isCollidable()) return grid[end.getGridX()][end.getGridY() - xMod[i]];
+            }
+            else{
+                if(!isValidNode(end.getGridX() - yMod[i], end.getGridY(), grid)) continue;
+                if(grid[end.getGridX() + yMod[i]][end.getGridY()].isCollidable()) return grid[end.getGridX() - yMod[i]][end.getGridY()];
+            }
+        }
 
         for(int i = 0; i < xMod.length; i++){
             if(!isValidNode(end.getGridX() + xMod[i],end.getGridY() + yMod[i], grid)) continue;
