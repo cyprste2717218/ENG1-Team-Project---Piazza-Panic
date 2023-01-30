@@ -40,7 +40,7 @@ public class Chef implements IInteractable, IGridEntity {
     public Facing finalFacing = Facing.UP;
 
     private Vector2 gridPosition;
-    
+
     PathfindingActor pathfindingActor;
 
 
@@ -79,7 +79,7 @@ public class Chef implements IInteractable, IGridEntity {
         }
 
     }
-    
+
     //A function to handle movement with the mouse
     private void mouseMovement(TiledMap tiledMap, Node[][] grid, Camera camera){
 

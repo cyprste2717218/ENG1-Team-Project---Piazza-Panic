@@ -158,7 +158,7 @@ public class PiazzaPanic extends ApplicationAdapter {
 
 
 
-	//	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
+		//	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
 		if(customers.size() < 5) {
 			if (TimeUtils.nanoTime() - lastCustomerTime > 10000000000L) {
 				lastCustomerTime = TimeUtils.nanoTime();
