@@ -13,7 +13,7 @@ import com.mygdx.game.utils.SoundUtils;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class CookingStation extends Station implements ITimer {
+public class CookingStation extends Station {
 
     public float operationTimer;
     public boolean canLeaveUnattended;
@@ -57,11 +57,5 @@ public class CookingStation extends Station implements ITimer {
 
     }
 
-    @Override
-    public float runTimer(float timerValue) {
-        if(timerValue == 0){
-            //FAILURE CONDITION
-        }
-        return timerValue;
-    }
+
 }

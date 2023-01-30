@@ -42,8 +42,8 @@ public class PiazzaPanic extends ApplicationAdapter {
 	private int selectedChef = 0;
 	public static List<Food> RENDERED_FOODS;
 	public static List<ServingStation> availableServingStations;
-
-
+	public static String gameMode = "Easy";
+	private static float difficultyMultiplier;
 	public static int CUSTOMER_SERVED_COUNTER = 0;
 	private BitmapFont CustomerServedText;
 
@@ -107,13 +107,19 @@ public class PiazzaPanic extends ApplicationAdapter {
 		customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
 		customers.add(customer);
 		customer.onSpawn(grid, tiledMap);
+		customer.runCustomerTimer();
 		System.out.println("Customer spawned with order: "+ customer.order.name);
 		SoundUtils.getCustomerSpawnSound().play();
 		//	code here for adding the sprite...
 	}
 
+
+
+
 	@Override
 	public void render () {
+
+		gameMode = "Easy"; // will need to have this updated by data passed on from menu when clicking difficulty mode
 		camera.update();
 		Gdx.gl.glClearColor(1f,1f,1f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

@@ -17,12 +17,11 @@ import com.mygdx.game.threads.PathfindingRunnable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Customer implements ITimer, IGridEntity {
+public class Customer implements IGridEntity {
     boolean beenServed;
     private Sprite customerSprite;
     Food order;
@@ -30,6 +29,8 @@ public class Customer implements ITimer, IGridEntity {
     private static int CUSTOMER_SIZE = 256;
     private Vector2 gridPosition;
     PathfindingActor pathfindingActor;
+
+    private String gameMode;
 
     public Customer(Texture customerTexture, float orderTimer){
         customerSprite = new Sprite(customerTexture, CUSTOMER_SIZE, CUSTOMER_SIZE);
@@ -112,12 +113,58 @@ public class Customer implements ITimer, IGridEntity {
         }
     }
 
-    @Override
-    public float runTimer(float timerValue) {
-        if(timerValue == 0){
-            //FAILURE CONDITION
+
+
+    public void runCustomerTimer(){
+
+        final long totalTime = (long) (orderTimer * getMultiplier(PiazzaPanic.gameMode)) * 1000;
+        final long startTime = System.currentTimeMillis();
+        final long elapsedTime = System.currentTimeMillis() - startTime;
+        System.out.println(totalTime);
+
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                System.out.println("Time passed"+(elapsedTime/1000));
+
+                if ((elapsedTime/1000) < (totalTime/1000)) {
+
+                } else {
+                    if (beenServed == true) {
+                        System.out.println("Customer served");
+                    } else  {
+                        System.out.println("Customer left angrily");
+                    }
+
+
+                    // need to end timer somehow
+                }
+            }
+        };
+
+        new Timer().scheduleAtFixedRate(task, 0, 1000);
+
+
+
+    }
+
+    public static float getMultiplier(String gameMode) {
+
+
+        float difficultyMultiplier = 0;
+
+
+        if (gameMode == "Easy") {
+            difficultyMultiplier = 1F;
+        } else if (gameMode == "Medium") {
+            difficultyMultiplier = 2F;
+        } else if (gameMode == "Hard") {
+            difficultyMultiplier = 3F;
         }
-        return timerValue--;
+
+        return difficultyMultiplier;
     }
 
     @Override
