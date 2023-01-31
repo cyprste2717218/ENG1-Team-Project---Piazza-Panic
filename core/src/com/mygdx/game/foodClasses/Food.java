@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Chef;
+import com.mygdx.game.Match;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.Node;
 import com.mygdx.game.enums.NodeType;
@@ -59,7 +60,7 @@ public class Food implements IInteractable, IGridEntity {
 
     //Caused the foodItem to be picked up by the chef when it is interacted with
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
         SoundUtils.getItemPickupSound().play();
         GameScreen.RENDERED_FOODS.remove(this);
         chef.foodStack.push(this);

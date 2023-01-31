@@ -1,14 +1,16 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.enums.DifficultyLevel;
+import com.mygdx.game.enums.ModeOptions;
+
 public class Match {
-    private static final String[] difficultyOptions = new String[]{"EASY", "MEDIUM", "HARD", "EXPERT"};
-    private static final String[] modeOptions = new String[]{"SCENARIO", "ENDLESS"};
-    private String mode;
-    private String difficulty;
+    private ModeOptions mode;
+    private DifficultyLevel difficulty = DifficultyLevel.EASY;
     private int reputationPoints;
     private int customerServed;
     private int maxCustomers;
-    private int timer;          // match timer in seconds
+    private long timer;          // match timer in seconds
     private boolean result;     // true is win, false is loss
     private boolean status;     // true if the match is ongoing, false if the match is ended
 
@@ -17,7 +19,7 @@ public class Match {
      * Initialising match for "endless" mode
      */
     public Match() {
-        mode = modeOptions[1];
+        mode = ModeOptions.ENDLESS;
         reputationPoints = 3;
         customerServed = 0;
         maxCustomers = 0;
@@ -27,26 +29,22 @@ public class Match {
     /**
      * Initialising match for "scenario" mode
      * @param maxCustomers Maximum number of customers allowed in a match.
-     * @param timer        The match is over when the timer runs out.
      */
-    public Match(int maxCustomers, int timer) {
-        mode = modeOptions[0];
+    public Match(int maxCustomers) {
+        mode = ModeOptions.SCENARIO;
         reputationPoints = 3;
         this.customerServed = 0;
-        this.timer = timer;
+        this.timer = TimeUtils.millis();
         this.maxCustomers = maxCustomers;
 
         float score = timer/maxCustomers;
         if (score>=20 && score<25) {
-            difficulty = difficultyOptions[0];
+            difficulty = DifficultyLevel.EASY;
         } else if (score>=15) {
-            difficulty = difficultyOptions[1];
-        } else if (score>=10) {
-            difficulty = difficultyOptions[2];
-        }else {
-            difficulty = difficultyOptions[3];
+            difficulty = DifficultyLevel.MEDIUM;
+        } else {
+            difficulty = DifficultyLevel.HARD;
         }
-
         status = true;
     }
 
@@ -99,13 +97,20 @@ public class Match {
         return status;
     }
     
-    public int getTimer(){
+    public long getTimer(){
         return timer;
     }
     
-    public void setTimer(int timer){
+    public void setTimer(long timer){
         this.timer = timer;
     }
+
+    public DifficultyLevel getDifficultyLevel(){return difficulty;}
+    public void setDifficultyLevel(DifficultyLevel difficultyLevel){difficulty = difficultyLevel;}
+
+    public int getCustomerServed(){return customerServed;}
+    public void incrementCustomerServed(){customerServed++;}
+    public void incrementReputationPoints(){reputationPoints++;}
 
     /**
      * Scoreboard at the end of the match. Error if the game is not yet finished.
@@ -116,7 +121,7 @@ public class Match {
         String output = "Error: The match is not yet finished.";
         result = this.isWin();
         if (!status) {
-            if (mode.equals(modeOptions[1])) {
+            if (mode.equals(ModeOptions.ENDLESS)) {
                 output = "Time:" + timer +
                         "\nNumber of customers served: " + customerServed +
                         "\nNumber of customers served: " + customerServed;

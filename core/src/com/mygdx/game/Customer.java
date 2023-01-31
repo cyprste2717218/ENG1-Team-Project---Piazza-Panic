@@ -71,22 +71,23 @@ public class Customer implements ITimer, IGridEntity {
     private Node getAvailableServingStation(Node[][] grid, TiledMap tiledMap){
         //Choose random available serving station
         Random rnd = new Random();
-        ServingStation servingStation = GameScreen.availableServingStations.get(rnd.nextInt(GameScreen.availableServingStations.size()));
-        GameScreen.availableServingStations.remove(servingStation);
+        int stationIndex = rnd.nextInt(GameScreen.availableServingStations.size());
+        ServingStation servingStation = GameScreen.availableServingStations.get(stationIndex);
+        GameScreen.availableServingStations.remove(stationIndex);
         servingStation.setCurrentCustomer(this);
         //Get grid position of serving station
         int xPos = TileMapUtils.positionToCoord(servingStation.getSprite().getX(), tiledMap);
         int yPos = TileMapUtils.positionToCoord(servingStation.getSprite().getY(), tiledMap);
         //Choose a free node around the serving station
-        int[] xMod = {-1, 0, 0, 1};
-        int[] yMod = {0, 1, -1, 0};
+        int[] xMod = {-1, 1};
         for(int i = 0; i < xMod.length; i++){
-            if(!PathfindingUtils.isValidNode(xPos + xMod[i], yPos + yMod[i], grid)) continue;
-            if(grid[xPos + xMod[i]][yPos + yMod[i]].getNodeType() != NodeType.EMPTY) continue;
-            return grid[xPos + xMod[i]][yPos + yMod[i]];
+            if(!PathfindingUtils.isValidNode(xPos + xMod[i], yPos, grid)) continue;
+            if(grid[xPos + xMod[i]][yPos].getNodeType() != NodeType.EMPTY) continue;
+            return grid[xPos + xMod[i]][yPos];
         }
         //Can't find a node to go
         //We should stop the customer spawning
+        GameScreen.canSpawnCustomers = false;
         return grid[xPos][yPos];
     }
 

@@ -37,7 +37,7 @@ public class PathfindingUtils {
                     n.setParent(current);
                     return backTrackPath(n);
                 }
-                else if (!closedList.contains(n) && !n.isCollidable() & !n.isInteractable()){
+                else if (!closedList.contains(n) && !n.isCollidable()){
                     checkNeighbour(current, n, end, openList, closedList);
                 }
             }

@@ -45,6 +45,18 @@ public class ScreenUIUtils {
         }
     }
 
+    public void createDisablableScreenChangingButton(Rectangle button, Texture hoveredButtonTexture, Texture unHoveredButtonTexture, Screen newScreen, boolean canPress){
+        Vector3 clickPos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0), viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
+        if(button.contains(new Vector2(clickPos.x, clickPos.y))) {
+            batch.draw(hoveredButtonTexture, button.x, button.y, button.width, button.height);
+            if (Gdx.input.isTouched() && canPress) {
+                game.setScreen(newScreen);
+            }
+        } else {
+            batch.draw(unHoveredButtonTexture, button.x, button.y, button.width, button.height);
+        }
+    }
+
     public DifficultyLevel createDifficultyButton(Rectangle button, Texture hoveredButtonTexture, Texture unHoveredButtonTexture, DifficultyLevel buttonDifficulty, DifficultyLevel currentDifficulty){
         Vector3 clickPos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0), viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
         if(button.contains(new Vector2(clickPos.x, clickPos.y))) {

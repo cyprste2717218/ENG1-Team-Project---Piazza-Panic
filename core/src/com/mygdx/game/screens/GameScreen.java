@@ -5,16 +5,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Customer;
+import com.mygdx.game.Match;
 import com.mygdx.game.Node;
 import com.mygdx.game.enums.DifficultyLevel;
 import com.mygdx.game.enums.NodeType;
@@ -22,23 +26,19 @@ import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
-import com.mygdx.game.screens.MainMenu;
-import com.mygdx.game.screens.PiazzaPanic;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class GameScreen implements Screen {
     PiazzaPanic game;
-    MainMenu mainMenu;
-    private Texture arrowBlack,arrowGreen;
-    private Rectangle arrowButton;
-    private BitmapFont font;
+    public MainMenu mainMenu;
+    private Texture arrowBlack,arrowGreen, tutorialBlack, tutorialGreen, recipiesBlack, recipiesGreen;
+    private Rectangle arrowButton, tutorialButton, recipiesButton;
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TiledMap tiledMap;
     private Node[][] grid;
@@ -48,71 +48,87 @@ public class GameScreen implements Screen {
     private int selectedChef = 0;
     public static List<Food> RENDERED_FOODS;
     public static List<ServingStation> availableServingStations;
-    private DifficultyLevel difficultyLevel;
-
-
-    public static int CUSTOMER_SERVED_COUNTER = 0;
-    private BitmapFont CustomerServedText;
-
-
+    private BitmapFont customerSevedFont, reputationPointsFont;
+    public boolean canPressBackButton;
+    public long buttonPressTime;
+    private Match match;
+    GlyphLayout customerServedText;
+    GlyphLayout reputationPointsText;
+    public static boolean canSpawnCustomers;
 
     public GameScreen(PiazzaPanic game, MainMenu mainMenu){
         this.game = game;
         this.mainMenu = mainMenu;
-        SoundUtils.getBackgroundMusic().play();
-
-        float width = Gdx.graphics.getWidth();
-        float height = Gdx.graphics.getHeight();
-        arrowBlack = new Texture("Menu/arrowBlack65.png");
-        arrowGreen = new Texture("Menu/arrowGreen65.png");
-        arrowButton = new Rectangle(width/9,height-height/7,arrowBlack.getWidth()*1.15F,arrowBlack.getHeight()*1.15F);
-
-        CustomerServedText = new BitmapFont();
-        CustomerServedText.setColor(Color.BLACK);
-
-        RENDERED_FOODS = new ArrayList<>();
-
-        tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
-        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        availableServingStations = new ArrayList<>();
-
-        grid = TileMapUtils.tileMapToArray(tiledMap);
-        System.out.println(TileMapUtils.tileMapToString(grid));
-
-        spawnChefs();
-
-        Food salad = new Food(FoodItems.SALAD);
-        salad.setTileMapPosition(2,2, grid, tiledMap);
-        RENDERED_FOODS.add(salad);
-
-        Food burger = new Food(FoodItems.BURGER);
-        burger.setTileMapPosition(6,6, grid, tiledMap);
-        RENDERED_FOODS.add(burger);
-
-        Stations.createAllStations(grid, tiledMap);
-
-        // Customer spawning
-        customers = new ArrayList<>();
-        lastCustomerTime = TimeUtils.nanoTime();
-        spawnCustomer();
     }
-
-
 
     @Override
     public void show() {
+        if(mainMenu.createNewMatch){
+            mainMenu.createNewMatch = false;
+            this.match = new Match(5);
+            selectedChef = 0;
 
+            arrowBlack = new Texture("Menu/arrowBlack65.png");
+            arrowGreen = new Texture("Menu/arrowGreen65.png");
+            arrowButton = new Rectangle(-106, 400f,arrowBlack.getWidth()*1.15F,arrowBlack.getHeight()*1.15F);
+
+            recipiesBlack = new Texture("Menu/RecipiesBlack.png");
+            recipiesGreen = new Texture("Menu/RecipiesGreen.png");
+            recipiesButton = new Rectangle(560, 50, recipiesBlack.getWidth() * 1.15f, recipiesBlack.getHeight()*1.15f);
+
+            tutorialBlack = new Texture("Menu/tutorialBlack.png");
+            tutorialGreen = new Texture("Menu/tutorialGreen.png");
+            tutorialButton = new Rectangle(560, 25, tutorialBlack.getWidth() * 1.15f, tutorialBlack.getHeight()*1.15f);
+
+
+            customerSevedFont = new BitmapFont(Gdx.files.internal("fonts/pixelFont.fnt"),false);
+            customerSevedFont.getData().setScale(0.5F,0.5F);
+            reputationPointsFont = new BitmapFont(Gdx.files.internal("fonts/pixelFont.fnt"),false);
+            reputationPointsFont.getData().setScale(0.5F,0.5F);
+
+            RENDERED_FOODS = new ArrayList<>();
+
+            tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
+            orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+            availableServingStations = new ArrayList<>();
+
+            grid = TileMapUtils.tileMapToArray(tiledMap);
+            System.out.println(TileMapUtils.tileMapToString(grid));
+
+            spawnChefs();
+
+            Food salad = new Food(FoodItems.SALAD);
+            salad.setTileMapPosition(2,2, grid, tiledMap);
+            RENDERED_FOODS.add(salad);
+
+            Food burger = new Food(FoodItems.BURGER);
+            burger.setTileMapPosition(6,6, grid, tiledMap);
+            RENDERED_FOODS.add(burger);
+
+            Stations.clearServingStations();
+            Stations.createAllStations(grid, tiledMap);
+
+            // Customer spawning
+            canSpawnCustomers = true;
+            customers = new ArrayList<>();
+            lastCustomerTime = TimeUtils.nanoTime();
+        }
+        canPressBackButton = false;
+        buttonPressTime = TimeUtils.millis();
+        mainMenu.camera.zoom = 0.65f;
+        mainMenu.camera.translate(-375,-135);
+        game.batch.setProjectionMatrix(mainMenu.camera.combined);
     }
 
     public void startGame(DifficultyLevel difficultyLevel){
-        this.difficultyLevel = difficultyLevel;
+        match.setDifficultyLevel(difficultyLevel);
         game.setScreen(this);
     }
 
     public void handleChefs(){
-        chefs[selectedChef].move(tiledMap, grid, mainMenu.camera);
+        chefs[selectedChef].move(tiledMap, grid, mainMenu.camera, match);
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
-            chefs[selectedChef].interact(grid, tiledMap);
+            chefs[selectedChef].interact(grid, tiledMap, match);
         }
         swapChef();
     }
@@ -124,6 +140,9 @@ public class GameScreen implements Screen {
 
         Texture chefTexture2 = new Texture("chefSprite.png");
         chefs[1] = new Chef(chefTexture2);
+
+        chefs[0].setTileMapPosition(3,9,grid,tiledMap);
+        chefs[1].setTileMapPosition(7,10,grid,tiledMap);
     }
 
     private void swapChef(){
@@ -148,20 +167,33 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         mainMenu.camera.update();
         Gdx.gl.glClearColor(0.89f,0.97f,0.99f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         orthogonalTiledMapRenderer.setView(mainMenu.camera);
-
-
         updateGridEntities(chefs, RENDERED_FOODS, customers);
 
         game.batch.begin();
+        game.batch.setProjectionMatrix(mainMenu.camera.combined);
+        orthogonalTiledMapRenderer.render();
+        game.batch.end();
+        game.batch.begin();
+        game.batch.setProjectionMatrix(mainMenu.camera.combined);
+        mainMenu.screenUIUtils.createScreenChangingButton(tutorialButton, tutorialGreen, tutorialBlack, new TutorialScreen(this));
+        mainMenu.screenUIUtils.createScreenChangingButton(recipiesButton, recipiesGreen, recipiesBlack, new RecipeScreen(this));
 
-        mainMenu.screenUIUtils.createScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu);
+        //Adds a delay before the back button can be pressed so that it won't be triggered while trying to exit other screens
+        mainMenu.screenUIUtils.createDisablableScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu, canPressBackButton);
+        if(!canPressBackButton && TimeUtils.millis() - 250L >= buttonPressTime){
+            canPressBackButton = true;
+            System.out.println("Can press button");
+        }
 
-        CustomerServedText.draw(game.batch, "Customer Served: " + CUSTOMER_SERVED_COUNTER, 35,450);
+
+        customerServedText = new GlyphLayout(customerSevedFont,"Customers Served: " + match.getCustomerServed());
+        reputationPointsText = new GlyphLayout(reputationPointsFont, "Reputation Points: " + match.getReputationPoints());
+        customerSevedFont.draw(game.batch, customerServedText, 525, 500);
+        reputationPointsFont.draw(game.batch, reputationPointsText, 525, 475);
         for(Chef chef: chefs){chef.getSprite().draw(game.batch);}
         for(Food food : RENDERED_FOODS){game.batch.draw(food.getSprite().getTexture(), food.getSprite().getX() + 96, food.getSprite().getY() + 96);}
 
@@ -171,19 +203,19 @@ public class GameScreen implements Screen {
         }
         Stations.renderAllStations(game.batch);
         game.batch.end();
-        orthogonalTiledMapRenderer.render();
         handleChefs();
         //System.out.println(TileMapUtils.tileMapToString(grid));
 
-
-
         //	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
-        if(customers.size() < 5) {
-            if (TimeUtils.nanoTime() - lastCustomerTime > 10000000000L) {
+        if(customers.size() < 5 && canSpawnCustomers) {
+            if (TimeUtils.nanoTime() - lastCustomerTime > 1000000000L) {
                 lastCustomerTime = TimeUtils.nanoTime();
                 spawnCustomer();
                 System.out.println("Spawning customer: " + customers.size());
             }
+        }
+        if(match.getCustomerServed() == 5){
+            game.setScreen(new WinScreen(this, match.getTimer()));
         }
     }
 
@@ -194,6 +226,9 @@ public class GameScreen implements Screen {
         gridEntities.addAll(customers);
 
         for(IGridEntity gridEntity : gridEntities){
+            if(gridEntity.getPreviousGridPosition() != null){
+                if(gridEntity.getPreviousGridPosition().equals(new Vector2(gridEntity.getSprite().getX(), gridEntity.getSprite().getY()))) continue;
+            }
             resetGridEntityProperties(gridEntity);
             setGridEntityProperties(gridEntity);
         }
@@ -220,7 +255,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        mainMenu.viewport.update(width, height);
+        mainMenu.resize(width, height);
     }
 
     @Override
@@ -235,6 +270,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
+        mainMenu.camera.translate(375,135);
+        mainMenu.camera.zoom = 1f;
     }
 
     @Override
@@ -242,19 +279,13 @@ public class GameScreen implements Screen {
         game.batch.dispose();
         arrowBlack.dispose();
         arrowGreen.dispose();
-        font.dispose();
         for(Chef chef : chefs){
             chef.getSprite().getTexture().dispose();
         }
         tiledMap.dispose();
         orthogonalTiledMapRenderer.dispose();
     }
-
-    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
-        this.difficultyLevel = difficultyLevel;
-    }
-
-    public DifficultyLevel getDifficultyLevel(){
-        return difficultyLevel;
+    public Match getMatch() {
+        return match;
     }
 }

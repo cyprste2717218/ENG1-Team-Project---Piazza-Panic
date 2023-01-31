@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
@@ -28,17 +29,12 @@ public class Chef implements IInteractable, IGridEntity {
     private final Sprite chefSprite;
     public Stack<Food> foodStack;
     private final int squareSize = 32;
-
     long mouseClickTime = 0;
     final float speed = 100;
     private boolean interactablePathEnd = false;
-
     public Facing finalFacing = Facing.UP;
-
     private Vector2 gridPosition;
-    
     PathfindingActor pathfindingActor;
-
 
     public Chef(Texture chefTexture){
         chefSprite = new Sprite(chefTexture, CHEF_SIZE, CHEF_SIZE);
@@ -58,7 +54,7 @@ public class Chef implements IInteractable, IGridEntity {
 
 
     //A function to handle all movement of the chef
-    public void move(TiledMap tiledMap, Node[][] grid, Camera camera){
+    public void move(TiledMap tiledMap, Node[][] grid, Camera camera, Match match){
 
         if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, grid);
         else mouseMovement(tiledMap, grid, camera);
@@ -70,11 +66,16 @@ public class Chef implements IInteractable, IGridEntity {
             if(getPathfindingActor().getPathfindingCounter() == pathfindingActor.getWorldPath().size() && interactablePathEnd) {
                 System.out.println("Interactable Path End");
                 pathfindingActor.setFacing(chefSprite, finalFacing);
-                interact(grid, tiledMap);
+                interact(grid, tiledMap, match);
                 interactablePathEnd = false;
             }
         }
-
+        if(interactablePathEnd && pathfindingActor.getWorldPath().isEmpty()){
+            System.out.println("Interactable Path End");
+            pathfindingActor.setFacing(chefSprite, finalFacing);
+            interact(grid, tiledMap, match);
+            interactablePathEnd = false;
+        }
     }
     
     //A function to handle movement with the mouse
@@ -95,7 +96,7 @@ public class Chef implements IInteractable, IGridEntity {
         interactablePathEnd = end.isInteractable();
         if(interactablePathEnd){
             //Fix for a path of 1
-            if(pathfindingActor.getWorldPath().size() > 1){
+            if(pathfindingActor.getWorldPath().size() > 0){
                 Node penultimateNode = PathfindingUtils.findBestInteractingNode(start, end, grid);
                 finalFacing = PathfindingUtils.calculateFinalFacing(penultimateNode, end);
             }
@@ -108,7 +109,7 @@ public class Chef implements IInteractable, IGridEntity {
         int tileWidth = layer.getTileWidth();
         float speed = 100f;
         Vector2 oldPos = new Vector2(chefSprite.getX(), chefSprite.getY());
-        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize, speed);
+        CollisionHandler collisionHandler = new CollisionHandler(tileWidth, grid, tiledMap, chefSprite, squareSize - 2, speed);
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
@@ -145,6 +146,14 @@ public class Chef implements IInteractable, IGridEntity {
         }
     }
 
+    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap){
+        if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
+        grid[mapPosX][mapPosY].setNodeType(NodeType.CHEF);
+        grid[mapPosX][mapPosY].setGridEntity(this);
+        grid[mapPosX][mapPosY].setInteractable(this);
+        chefSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
+    }
+
     private Node setStartCoords(TiledMap tiledMap, Node[][] grid){
         int startGridX = TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap);
         int startGridY = TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap);
@@ -165,20 +174,20 @@ public class Chef implements IInteractable, IGridEntity {
 
 
     //Used to interact with other objects
-    public void interact(Node[][] grid, TiledMap tiledMap){
+    public void interact(Node[][] grid, TiledMap tiledMap, Match match){
         Node interactedNode = getInteractedNode(grid, tiledMap);
         if(interactedNode.getInteractable() != null){
             IInteractable interactableEntity = interactedNode.getInteractable();
-            interactableEntity.onInteract(this, interactedNode, tiledMap, grid);
+            interactableEntity.onInteract(this, interactedNode, tiledMap, grid, match);
             System.out.println("Found Interactable");
             return;
         }
-        else if(foodStack.isEmpty()){
+        else if(foodStack.isEmpty() || interactedNode.isCollidable()){
             SoundUtils.getFailureSound().play();
             return;
         }
         else{
-            Food currentFood = this.foodStack.pop();
+            Food currentFood = new Food(this.foodStack.pop());
             currentFood.getSprite().setPosition(TileMapUtils.coordToPosition(interactedNode.getGridX(), tiledMap), TileMapUtils.coordToPosition(interactedNode.getGridY(), tiledMap));
             GameScreen.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
@@ -189,7 +198,7 @@ public class Chef implements IInteractable, IGridEntity {
     //This function allows your chef to give the interacted chef some food
     //Keep in mind that the parameter chef refers to the chef who is giving, and interactedChef refers to the chef who is receiving
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
         if(chef.foodStack.isEmpty()) return;
         Chef interactedChef = (Chef)interactedNode.getGridEntity();
         if(chef.foodStack.isEmpty()){

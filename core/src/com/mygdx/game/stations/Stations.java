@@ -22,24 +22,38 @@ public class Stations {
     public static FormingStation PREP_AREA = new FormingStation(500, true, new Texture("stationSprite.png"));
     public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE, new Texture("stationSprite.png"));
     public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO, new Texture("stationSprite.png"));
-    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.LETTUCE, new Texture("stationSprite.png"));
+    public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.ONION, new Texture("stationSprite.png"));
     public static IngredientStation BEEF_MINCE_STATION = new IngredientStation(FoodItems.BEEF_MINCE, new Texture("stationSprite.png"));
     public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("stationSprite.png"));
     public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
     public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("stationSprite.png"));
     public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("stationSprite.png"));
     public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("stationSprite.png"));
+    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("stationSprite.png"));
     private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
         SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
         SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);
+        SERVING_STATION_3.setTileMapPosition(3, 4, grid, tiledMap);
+        SERVING_STATION_4.setTileMapPosition(3, 2, grid, tiledMap);
+        SERVING_STATION_5.setTileMapPosition(6, 2, grid, tiledMap);
+    }
+
+    public static void clearServingStations(){
+        SERVING_STATION_1.clearStation();
+        SERVING_STATION_2.clearStation();
+        SERVING_STATION_3.clearStation();
+        SERVING_STATION_4.clearStation();
+        SERVING_STATION_5.clearStation();
     }
 
 
     // function to apply texture to station, then position it onto the tile map
     public static void createAllStations(Node[][] grid, TiledMap tiledMap){
         CHOPPING_BOARD.setTileMapPosition(2, 14, grid, tiledMap);
-        FRYER.setTileMapPosition(6, 14, grid, tiledMap);
-        PREP_AREA.setTileMapPosition(4,14, grid, tiledMap);
+        FRYER.setTileMapPosition(4, 14, grid, tiledMap);
+        PREP_AREA.setTileMapPosition(6,14, grid, tiledMap);
 
         //Ingredient Stations - to be placed in the pantry
         LETTUCE_STATION.setTileMapPosition(12, 6, grid, tiledMap);

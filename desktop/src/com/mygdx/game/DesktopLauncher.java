@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.mygdx.game.screens.PiazzaPanic;
@@ -10,7 +11,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Piazza Panic");
-		config.setWindowedMode(1300,780);
+		config.setWindowedMode(1300, 780);
 		config.setResizable(true);
 		new Lwjgl3Application(new PiazzaPanic(), config);
 	}
