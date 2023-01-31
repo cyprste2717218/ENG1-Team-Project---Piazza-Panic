@@ -160,6 +160,7 @@ public class GameScreen implements Screen {
         customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
         customers.add(customer);
         customer.onSpawn(grid, tiledMap);
+        customer.runCustomerTimer(match);
         System.out.println("Customer spawned with order: "+ customer.getOrder().name);
         SoundUtils.getCustomerSpawnSound().play();
     }
