@@ -36,9 +36,12 @@ public class Chef implements IInteractable, IGridEntity {
     private Vector2 gridPosition;
     PathfindingActor pathfindingActor;
 
-    public Chef(Texture chefTexture){
-        chefSprite = new Sprite(chefTexture, CHEF_SIZE, CHEF_SIZE);
-        this.chefSprite.setScale(0.125f);
+    Texture[] movementTextures;
+
+    public Chef(){
+        movementTextures = new Texture[] {new Texture("CustomerAssets/Customer_Pink_Up.png"),new Texture("CustomerAssets/Customer_Pink_Left.png"),new Texture("CustomerAssets/Customer_Pink_Down.png"),new Texture("CustomerAssets/Customer_Pink_Right.png")};
+        chefSprite = new Sprite(movementTextures[0], 256, 256);
+        this.chefSprite.setScale(2f);
         foodStack = new Stack<>();
         pathfindingActor = new PathfindingActor(null, null, null,null);
     }
@@ -61,18 +64,18 @@ public class Chef implements IInteractable, IGridEntity {
 
         if(!pathfindingActor.getWorldPath().isEmpty()){
             pathfindingActor.drawPath(camera, chefSprite);
-            pathfindingActor.followPath(chefSprite, speed);
+            pathfindingActor.followPath(chefSprite, speed, movementTextures);
             //Interacts with anything at the end of the path
             if(getPathfindingActor().getPathfindingCounter() == pathfindingActor.getWorldPath().size() && interactablePathEnd) {
                 System.out.println("Interactable Path End");
-                pathfindingActor.setFacing(chefSprite, finalFacing);
+                pathfindingActor.setFacing(chefSprite, finalFacing, movementTextures);
                 interact(grid, tiledMap, match);
                 interactablePathEnd = false;
             }
         }
         if(interactablePathEnd && pathfindingActor.getWorldPath().isEmpty()){
             System.out.println("Interactable Path End");
-            pathfindingActor.setFacing(chefSprite, finalFacing);
+            pathfindingActor.setFacing(chefSprite, finalFacing, movementTextures);
             interact(grid, tiledMap, match);
             interactablePathEnd = false;
         }
@@ -113,22 +116,22 @@ public class Chef implements IInteractable, IGridEntity {
 
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             chefSprite.translateY(speed * Gdx.graphics.getDeltaTime());
-            pathfindingActor.setFacing(chefSprite, Facing.UP);
+            pathfindingActor.setFacing(chefSprite, Facing.UP, movementTextures);
             pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.S)){
             chefSprite.translateY(-speed * Gdx.graphics.getDeltaTime());
-            pathfindingActor.setFacing(chefSprite, Facing.DOWN);
+            pathfindingActor.setFacing(chefSprite, Facing.DOWN, movementTextures);
             pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.A)){
             chefSprite.translateX(-speed * Gdx.graphics.getDeltaTime());
-            pathfindingActor.setFacing(chefSprite, Facing.LEFT);
+            pathfindingActor.setFacing(chefSprite, Facing.LEFT, movementTextures);
             pathfindingActor.getWorldPath().clear();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             chefSprite.translateX(speed * Gdx.graphics.getDeltaTime());
-            pathfindingActor.setFacing(chefSprite, Facing.RIGHT);
+            pathfindingActor.setFacing(chefSprite, Facing.RIGHT, movementTextures);
             pathfindingActor.getWorldPath().clear();
         }
 

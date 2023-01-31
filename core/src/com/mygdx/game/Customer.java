@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.enums.Facing;
@@ -27,13 +29,24 @@ public class Customer implements IGridEntity {
     private static int CUSTOMER_SIZE = 256;
     private Vector2 gridPosition;
     PathfindingActor pathfindingActor;
+    Texture[] movementTextures;
 
-    public Customer(Texture customerTexture, float orderTimer){
-        customerSprite = new Sprite(customerTexture, CUSTOMER_SIZE, CUSTOMER_SIZE);
-        this.customerSprite.setScale(0.125f);
+    public Customer(float orderTimer){
+        movementTextures = getRandomCustomerTextures();
+        customerSprite = new Sprite(movementTextures[0] ,256, 256);
+        this.customerSprite.setScale(2f);
         beenServed = false;
         order = getRandomOrder();
         this.orderTimer = orderTimer;
+    }
+
+    private Texture[] getRandomCustomerTextures(){
+        Texture[][] customerTextures = new Texture[][] {{new Texture("CustomerAssets/Customer_Blue_Up.png"),new Texture("CustomerAssets/Customer_Blue_Left.png"),new Texture("CustomerAssets/Customer_Blue_Down.png"),new Texture("CustomerAssets/Customer_Blue_Right.png")},
+        {new Texture("CustomerAssets/Customer_Orange_Up.png"),new Texture("CustomerAssets/Customer_Orange_Left.png"),new Texture("CustomerAssets/Customer_Orange_Down.png"),new Texture("CustomerAssets/Customer_Orange_Right.png")},
+        {new Texture("CustomerAssets/Customer_Pink_Up.png"),new Texture("CustomerAssets/Customer_Pink_Left.png"),new Texture("CustomerAssets/Customer_Pink_Down.png"),new Texture("CustomerAssets/Customer_Pink_Right.png")}};
+        Random rnd = new Random();
+        int textureChoice = rnd.nextInt(customerTextures.length);
+        return customerTextures[textureChoice];
     }
 
     private Food getRandomOrder() {
@@ -96,14 +109,14 @@ public class Customer implements IGridEntity {
 
     public void moveCustomer(){
         if(pathfindingActor.getWorldPath().isEmpty()) return;
-        pathfindingActor.followPath(customerSprite, 100f);
+        pathfindingActor.followPath(customerSprite, 100f, movementTextures);
         if(pathfindingActor.getPathfindingCounter() == pathfindingActor.getWorldPath().size()){
             if(beenServed){
                 GameScreen.customers.remove(this);
                 customerSprite.setPosition(1000,1000);
             }
             else{
-                pathfindingActor.setFacing(customerSprite, Facing.UP);
+                pathfindingActor.setFacing(customerSprite, Facing.UP, movementTextures);
                 pathfindingActor.getWorldPath().clear();
                 pathfindingActor.setPathfindingCounter(0);
             }
