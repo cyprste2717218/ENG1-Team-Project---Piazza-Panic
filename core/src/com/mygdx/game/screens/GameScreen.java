@@ -48,12 +48,13 @@ public class GameScreen implements Screen {
     private int selectedChef = 0;
     public static List<Food> RENDERED_FOODS;
     public static List<ServingStation> availableServingStations;
-    private BitmapFont customerSevedFont, reputationPointsFont;
+    private BitmapFont customerSevedFont, reputationPointsFont, moneyGainedFont;
     public boolean canPressBackButton;
     public long buttonPressTime;
     private Match match;
     GlyphLayout customerServedText;
     GlyphLayout reputationPointsText;
+    GlyphLayout moneyGainedText;
     public static boolean canSpawnCustomers;
     RecipeScreen recipeScreen;
     TutorialScreen tutorialScreen;
@@ -87,6 +88,8 @@ public class GameScreen implements Screen {
             customerSevedFont.getData().setScale(0.5F,0.5F);
             reputationPointsFont = new BitmapFont(Gdx.files.internal("fonts/pixelFont.fnt"),false);
             reputationPointsFont.getData().setScale(0.5F,0.5F);
+            moneyGainedFont = new BitmapFont(Gdx.files.internal("fonts/pixelFont.fnt"),false);
+            moneyGainedFont.getData().setScale(0.5F,0.5F);
 
             RENDERED_FOODS = new ArrayList<>();
 
@@ -199,8 +202,10 @@ public class GameScreen implements Screen {
 
         customerServedText = new GlyphLayout(customerSevedFont,"Customers Served: " + match.getCustomerServed());
         reputationPointsText = new GlyphLayout(reputationPointsFont, "Reputation Points: " + match.getReputationPoints());
+        moneyGainedText = new GlyphLayout(moneyGainedFont, "Money Gained: $" + match.getMoneyGained());
         customerSevedFont.draw(game.batch, customerServedText, 525, 500);
         reputationPointsFont.draw(game.batch, reputationPointsText, 525, 475);
+        moneyGainedFont.draw(game.batch, moneyGainedText, 525,450);
         for(Chef chef: chefs){chef.getSprite().draw(game.batch);}
         for(Food food : RENDERED_FOODS){game.batch.draw(food.getSprite().getTexture(), food.getSprite().getX() + 96, food.getSprite().getY() + 96);}
 

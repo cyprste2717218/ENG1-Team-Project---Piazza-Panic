@@ -9,6 +9,7 @@ public class Match {
     private DifficultyLevel difficulty = DifficultyLevel.EASY;
     private int reputationPoints;
     private int customerServed;
+    private int moneyGained;
     private int maxCustomers;
     private long timer;          // match timer in seconds
     private boolean result;     // true is win, false is loss
@@ -22,6 +23,7 @@ public class Match {
         mode = ModeOptions.ENDLESS;
         reputationPoints = 3;
         customerServed = 0;
+        moneyGained = 0;
         maxCustomers = 0;
         status = true;
     }
@@ -34,6 +36,7 @@ public class Match {
         mode = ModeOptions.SCENARIO;
         reputationPoints = 3;
         this.customerServed = 0;
+        this.moneyGained = 0;
         this.timer = TimeUtils.millis();
         this.maxCustomers = maxCustomers;
 
@@ -88,7 +91,7 @@ public class Match {
     public int getReputationPoints(){
         return reputationPoints;
     }
-
+    public int getMoneyGained() {return moneyGained;}
     public boolean getResult(){
         return result;
     }
@@ -111,6 +114,7 @@ public class Match {
     public int getCustomerServed(){return customerServed;}
     public void incrementCustomerServed(){customerServed++;}
     public void incrementReputationPoints(){reputationPoints++;}
+    public void incrementMoneyGained(int money){moneyGained+=money;}
 
     /**
      * Scoreboard at the end of the match. Error if the game is not yet finished.
@@ -129,6 +133,7 @@ public class Match {
                 output = "You " + (result ? "win" : "lose") +
                         "\nDifficulty: " + difficulty +
                         "\nReputation points: " + reputationPoints +
+                        "\nMoney Earned: " + moneyGained +
                         "\nNumber of customers served: " + customerServed;
             }
         }
