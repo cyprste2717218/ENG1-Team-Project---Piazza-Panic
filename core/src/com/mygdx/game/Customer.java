@@ -136,10 +136,10 @@ public class Customer implements ITimer, IGridEntity {
 
                 } else {
                     if (beenServed) {
-                        System.out.println("Customer served");
+                        //System.out.println("Customer served");
 
                     } else  {
-                        System.out.println("Customer left angrily");
+                        //System.out.println("Customer left angrily");
                     }
 
                     // need to end timer somehow
