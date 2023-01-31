@@ -17,9 +17,9 @@ import java.util.Stack;
 public class Stations {
 
     public static List<ServingStation> servingStations = new ArrayList<>();
-    public static CuttingStation CHOPPING_BOARD = new CuttingStation(500, true, new Texture("FoodStations/choppingBoard.png"));
-    public static FryingStation FRYER = new FryingStation(500, true, new Texture("FoodStations/fryer.png"));
-    public static FormingStation PREP_AREA = new FormingStation(500, true, new Texture("FoodStations/prepArea.png"));
+    public static CuttingStation CHOPPING_BOARD = new CuttingStation(10, true, new Texture("FoodStations/choppingBoard.png"));
+    public static FryingStation FRYER = new FryingStation(10, true, new Texture("FoodStations/fryer.png"));
+    public static FormingStation PREP_AREA = new FormingStation(10, true, new Texture("FoodStations/prepArea.png"));
     public static IngredientStation LETTUCE_STATION = new IngredientStation(FoodItems.LETTUCE, new Texture("FoodStations/lettuceStation.png"));
     public static IngredientStation TOMATO_STATION = new IngredientStation(FoodItems.TOMATO, new Texture("FoodStations/TomatoStation.png"));
     public static IngredientStation ONION_STATION = new IngredientStation(FoodItems.ONION, new Texture("FoodStations/OnionStation.png"));
@@ -27,11 +27,11 @@ public class Stations {
     public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("FoodStations/bunsStation.png"));
     public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
     public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("FoodItems/waterBucket.png"));
-    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/thoughtLeft.png"));
-    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/thoughtLeft.png"));
-    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/thoughtLeft.png"));
-    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/thoughtRight.png"));
-    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/thoughtLeft.png"));
+    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/prepArea.png"));
     private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
         SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
         SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -26,10 +27,13 @@ import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
+import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.SoundUtils;
 import com.mygdx.game.utils.TileMapUtils;
+import com.mygdx.game.utils.TimerUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +51,7 @@ public class GameScreen implements Screen {
     private Chef[] chefs;
     private int selectedChef = 0;
     public static List<Food> RENDERED_FOODS;
+    public static List<TimerUtils> TIMER_USERS;
     public static List<ServingStation> availableServingStations;
     private BitmapFont customerSevedFont, reputationPointsFont, moneyGainedFont;
     public boolean canPressBackButton;
@@ -92,6 +97,7 @@ public class GameScreen implements Screen {
             moneyGainedFont.getData().setScale(0.5F,0.5F);
 
             RENDERED_FOODS = new ArrayList<>();
+            TIMER_USERS = new ArrayList<>();
 
             tiledMap = new TmxMapLoader().load("test_kitchen.tmx");
             orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -168,7 +174,6 @@ public class GameScreen implements Screen {
         customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
         customers.add(customer);
         customer.onSpawn(grid, tiledMap);
-        customer.runCustomerTimer(match);
         System.out.println("Customer spawned with order: "+ customer.getOrder().name);
         SoundUtils.getCustomerSpawnSound().play();
     }
@@ -228,6 +233,14 @@ public class GameScreen implements Screen {
         }
         if(match.getCustomerServed() == 5){
             game.setScreen(new WinScreen(this, match.getTimer()));
+        }
+        runTimers();
+    }
+
+    private void runTimers(){
+        for(TimerUtils timerUser: TIMER_USERS){
+            timerUser.runTimer(chefs[selectedChef]);
+            timerUser.renderTimer(game.batch);
         }
     }
 

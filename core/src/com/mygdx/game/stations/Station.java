@@ -17,7 +17,7 @@ import com.mygdx.game.utils.TileMapUtils;
 public class Station implements IInteractable, IGridEntity {
     protected static final int STATION_SIZE = 256;
     public Food stock;
-    private Sprite stationSprite;;
+    private Sprite stationSprite;
 
     public Station(Food inventory, Texture stationTexture){
         this.stock = inventory;

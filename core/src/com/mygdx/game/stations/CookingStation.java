@@ -8,6 +8,7 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.utils.SoundUtils;
+import com.mygdx.game.utils.TimerUtils;
 
 import java.util.HashMap;
 
@@ -15,6 +16,7 @@ public class CookingStation extends Station implements ITimer {
 
     public float operationTimer;
     public boolean canLeaveUnattended;
+    TimerUtils timer;
     // hash map to allow operations to be performed on foodItems:
     // Example: Onion -> Chopped Onion
     // Done via input food (key) being popped off chef's stack,
@@ -31,20 +33,36 @@ public class CookingStation extends Station implements ITimer {
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
         super.onInteract(chef, interactedNode, tiledMap, grid, match);
-
-        // error checking
-        if (chef.foodStack.isEmpty()) {
-            System.out.println("Unable to interact, chefs foodStack is empty");
-            return;
-        } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek().name)) {
-            System.out.println("Cannot interact with this station, incorrect item");
-            return;
+        if(timer == null) timer = new TimerUtils(operationTimer, this, match, getSprite());
+        if(timer.getIsRunning()) return;
+        if(stock != null && !timer.getIsRunning()){
+            chef.foodStack.push(stock);
+            stock = null;
+            timer = new TimerUtils(operationTimer, this, match, getSprite());
         }
+        else{
+            // error checking
+            if (chef.foodStack.isEmpty()) {
+                System.out.println("Unable to interact, chefs foodStack is empty");
+                return;
+            } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek().name)) {
+                System.out.println("Cannot interact with this station, incorrect item");
+                return;
+            }
+            stock = new Food(this.operationLookupTable.get(chef.foodStack.pop().name));
+            timer.setIsRunning(true);
+        }
+
+
+
+
+
+
+
+
         // pushes the corresponding lookup of the popped item from chefs stack back onto the chefs stack
         // i.e. pops Bun, pushes Toasted Bun
-        System.out.println(chef.foodStack.peek().name);
-        chef.foodStack.push(new Food(this.operationLookupTable.get(chef.foodStack.pop().name)));
-        System.out.println(chef.foodStack.peek().name);
+
 
         if(this instanceof CuttingStation){
             SoundUtils.getCuttingSound().play();
@@ -56,10 +74,8 @@ public class CookingStation extends Station implements ITimer {
     }
 
     @Override
-    public float runTimer(float timerValue) {
-        if(timerValue == 0){
-            //FAILURE CONDITION
-        }
-        return timerValue;
+    public void finishedTimer(Chef chef) {
+        System.out.println(stock);
+        SoundUtils.getTimerFinishedSound().play();
     }
 }
