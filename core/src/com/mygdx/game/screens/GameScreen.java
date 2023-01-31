@@ -55,6 +55,8 @@ public class GameScreen implements Screen {
     GlyphLayout customerServedText;
     GlyphLayout reputationPointsText;
     public static boolean canSpawnCustomers;
+    RecipeScreen recipeScreen;
+    TutorialScreen tutorialScreen;
 
     public GameScreen(PiazzaPanic game, MainMenu mainMenu){
         this.game = game;
@@ -112,6 +114,9 @@ public class GameScreen implements Screen {
             canSpawnCustomers = true;
             customers = new ArrayList<>();
             lastCustomerTime = TimeUtils.nanoTime();
+
+            recipeScreen = new RecipeScreen(this);
+            tutorialScreen = new TutorialScreen(this);
         }
         canPressBackButton = false;
         buttonPressTime = TimeUtils.millis();
@@ -168,6 +173,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
         mainMenu.camera.update();
         Gdx.gl.glClearColor(0.89f,0.97f,0.99f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -180,8 +186,8 @@ public class GameScreen implements Screen {
         game.batch.end();
         game.batch.begin();
         game.batch.setProjectionMatrix(mainMenu.camera.combined);
-        mainMenu.screenUIUtils.createScreenChangingButton(tutorialButton, tutorialGreen, tutorialBlack, new TutorialScreen(this));
-        mainMenu.screenUIUtils.createScreenChangingButton(recipiesButton, recipiesGreen, recipiesBlack, new RecipeScreen(this));
+        mainMenu.screenUIUtils.createScreenChangingButton(tutorialButton, tutorialGreen, tutorialBlack, tutorialScreen);
+        mainMenu.screenUIUtils.createScreenChangingButton(recipiesButton, recipiesGreen, recipiesBlack, recipeScreen);
 
         //Adds a delay before the back button can be pressed so that it won't be triggered while trying to exit other screens
         mainMenu.screenUIUtils.createDisablableScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu, canPressBackButton);

@@ -123,23 +123,23 @@ public class Customer implements ITimer, IGridEntity {
         final long totalTime = (long) (orderTimer * match.getDifficultyLevel().getTimeMultipier() * 1000);
         final long startTime = System.currentTimeMillis();
         final long elapsedTime = System.currentTimeMillis() - startTime;
-        System.out.println(totalTime);
+        //System.out.println(totalTime);
 
 
         final TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 long elapsedTime = System.currentTimeMillis() - startTime;
-                System.out.println("Time passed"+(elapsedTime/1000));
+                //System.out.println("Time passed"+(elapsedTime/1000));
 
                 if ((elapsedTime/1000) < (totalTime/1000)) {
 
                 } else {
                     if (beenServed) {
-                        System.out.println("Customer served");
+                        //System.out.println("Customer served");
 
                     } else  {
-                        System.out.println("Customer left angrily");
+                        //System.out.println("Customer left angrily");
                     }
 
                     // need to end timer somehow
