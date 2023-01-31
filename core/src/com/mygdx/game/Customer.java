@@ -16,6 +16,8 @@ import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Customer implements ITimer, IGridEntity {
     boolean beenServed;
@@ -116,6 +118,38 @@ public class Customer implements ITimer, IGridEntity {
         return timerValue--;
     }
 
+    public void runCustomerTimer(Match match){
+
+        final long totalTime = (long) (orderTimer * match.getDifficultyLevel().getTimeMultipier() * 1000);
+        final long startTime = System.currentTimeMillis();
+        final long elapsedTime = System.currentTimeMillis() - startTime;
+        System.out.println(totalTime);
+
+
+        final TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                System.out.println("Time passed"+(elapsedTime/1000));
+
+                if ((elapsedTime/1000) < (totalTime/1000)) {
+
+                } else {
+                    if (beenServed) {
+                        System.out.println("Customer served");
+
+                    } else  {
+                        System.out.println("Customer left angrily");
+                    }
+
+                    // need to end timer somehow
+                }
+            }
+        };
+
+        new Timer().scheduleAtFixedRate(task, 0, 1000);
+
+    }
     @Override
     public Vector2 getPreviousGridPosition() {
         return gridPosition;
