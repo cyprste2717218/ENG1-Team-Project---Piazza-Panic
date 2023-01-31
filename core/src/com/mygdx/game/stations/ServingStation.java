@@ -29,7 +29,7 @@ public class ServingStation extends Station{
         Texture orderTexture = customer.getOrder().getSprite().getTexture();
         orderSprite = new Sprite(orderTexture, STATION_SIZE, STATION_SIZE);
         orderSprite.setScale(0.0625f);
-        orderSprite.setPosition(getSprite().getX(), getSprite().getY());
+        orderSprite.setPosition(getSprite().getX(), getSprite().getY() + 7);
     }
 
     public void clearStation(){

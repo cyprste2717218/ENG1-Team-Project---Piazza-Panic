@@ -61,7 +61,7 @@ public class Match {
      * 1 if customer is served within the time limit,
      * -1 if customer runs out of tolerance waiting
      */
-    public int tolerance(Customer customer, int tolerance) {
+    /*public int tolerance(Customer customer, int tolerance) {
         if (customer.runTimer(tolerance) == -1) {
             reputationPoints--;
             return -1;
@@ -71,7 +71,7 @@ public class Match {
             return 1;
         }
         return 0;
-    }
+    }*/
 
     /**
      * Conditions for the match. "ENDLESS" match ends when reputationPoints reaches 0.
