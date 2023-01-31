@@ -46,6 +46,7 @@ public class FormingStation extends CookingStation {
         if(!chef.foodStack.peek().isFormable) return;
         // if the water bucket is used with the station, the station is cleared
         if(chef.foodStack.peek().equals(FoodItems.WATER_BUCKET)) {
+            System.out.println("Clearing Forming Station");
             chef.foodStack.pop();
             this.inventory.clear();
             return;
@@ -55,24 +56,21 @@ public class FormingStation extends CookingStation {
         // if the inventory is empty, then we just push an item, do not check hash map swap
         // this is because there are no recipes that form one item into a finished food
         if (this.inventory.isEmpty()) {
-            System.out.println("Pushing onto empty: " + chef.foodStack.peek().name);
+            System.out.println("Pushing onto empty: "+ chef.foodStack.peek().name);
             this.inventory.push(chef.foodStack.pop());
-            return;
-        }
-        if (inventory.contains(chef.foodStack.peek()))  {
+        } else if (inventory.contains(chef.foodStack.peek()))  {
             System.out.println("Item already in inventory");
             chef.foodStack.pop();
-            return;
-        }
-        this.inventory.push(chef.foodStack.pop());
-        System.out.println("Stack length:"+this.inventory.size());
-
-        Food newFood = groupHashMapSwap();
-
-        // checking to see if a finished food has been created
-        if (newFood != null)    {
-            System.out.println("Finished Food: "+ newFood.name);
-            chef.foodStack.push(newFood);
+        } else  {
+            System.out.println("Pushing more: "+chef.foodStack.peek().name);
+            System.out.println("Stack length:"+this.inventory.size());
+            this.inventory.push(chef.foodStack.pop());
+            Food newFood = groupHashMapSwap();
+            // checking to see if a finished food has been created
+            if (newFood != null)    {
+                System.out.println("Finished Food: "+newFood.name);
+                chef.foodStack.push(newFood);
+            }
         }
         SoundUtils.getFormingSound().stop();
     }
