@@ -27,11 +27,11 @@ public class Stations {
     public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("FoodStations/bunsStation.png"));
     public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
     public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("FoodItems/waterBucket.png"));
-    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/serving_station.png"));
     private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
         SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
         SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);

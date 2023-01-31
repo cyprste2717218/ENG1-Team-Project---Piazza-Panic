@@ -29,7 +29,7 @@ public class FoodItems {
     public static Food SLICED_CHEESE = new Food("Sliced Cheese", new Texture("Food_Assets/CheeseSlice.png"), true, 0); //Yes - LPC Food
 
     //A foodItem used to clear the Forming station
-    public static Food WATER_BUCKET = new Food("Water Bucket", new Texture("Food_Assets/Tomato.png"), true, 0); //No
+    public static Food WATER_BUCKET = new Food("Water Bucket", new Texture("Food_Assets/water_bucket.png"), true, 0); //No
 
 
     //Not creatable yet

@@ -149,11 +149,8 @@ public class GameScreen implements Screen {
 
     private void spawnChefs(){
         chefs = new Chef[2];
-        Texture chefTexture = new Texture("chefSprite.png");
-        chefs[0] = new Chef(chefTexture);
-
-        Texture chefTexture2 = new Texture("chefSprite.png");
-        chefs[1] = new Chef(chefTexture2);
+        chefs[0] = new Chef();
+        chefs[1] = new Chef();
 
         chefs[0].setTileMapPosition(3,9,grid,tiledMap);
         chefs[1].setTileMapPosition(7,10,grid,tiledMap);
@@ -170,7 +167,7 @@ public class GameScreen implements Screen {
     private void spawnCustomer() {
         if(availableServingStations.isEmpty()) return;
         Texture customerTexture = new Texture("badlogic.jpg");
-        Customer customer = new Customer(customerTexture, 50);
+        Customer customer = new Customer(50);
         customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
         customers.add(customer);
         customer.onSpawn(grid, tiledMap);
@@ -225,7 +222,7 @@ public class GameScreen implements Screen {
 
         //	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
         if(customers.size() < 5 && canSpawnCustomers) {
-            if (TimeUtils.nanoTime() - lastCustomerTime > 1000000000L) {
+            if (TimeUtils.nanoTime() - lastCustomerTime > 10000000000L) {
                 lastCustomerTime = TimeUtils.nanoTime();
                 spawnCustomer();
                 System.out.println("Spawning customer: " + customers.size());

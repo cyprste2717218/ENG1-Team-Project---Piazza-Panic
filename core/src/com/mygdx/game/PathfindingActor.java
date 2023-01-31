@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -47,9 +48,10 @@ public class PathfindingActor {
         pathfindingCounter = pCounter;
     }
 
-    public void setFacing(Sprite sprite, Facing direction){
+    public void setFacing(Sprite sprite, Facing direction, Texture[] movementTextures){
         facing = direction;
-        sprite.setRotation(90f * facing.ordinal());
+        sprite.setTexture(movementTextures[facing.ordinal()]);
+        //sprite.setRotation(90f * facing.ordinal());
     }
 
     public Facing getFacing(){
@@ -72,7 +74,7 @@ public class PathfindingActor {
     }
 
     //Makes the sprite follow the path
-    public void followPath(Sprite sprite, float speed){
+    public void followPath(Sprite sprite, float speed, Texture[] movementTextures){
 
         if(pathfindingCounter >= worldPath.size()) return;
         int pointBuffer = 2;
@@ -80,7 +82,7 @@ public class PathfindingActor {
         //The direction from point a to point b = atan(bY-aY,bX-aX)
         float angle = (float) Math.atan2(worldPath.get(pathfindingCounter).y - sprite.getY(), worldPath.get(pathfindingCounter).x - sprite.getX());
         Vector2 movementDir = new Vector2((float)Math.cos(angle) * speed, (float)Math.sin(angle) * speed);
-        setPathfinderFacing(movementDir, sprite);
+        setPathfinderFacing(movementDir, sprite, movementTextures);
         sprite.setPosition(sprite.getX() + movementDir.x * Gdx.graphics.getDeltaTime(), sprite.getY() + movementDir.y * Gdx.graphics.getDeltaTime());
 
         if(Math.abs(worldPath.get(pathfindingCounter).x - sprite.getX()) <= pointBuffer && Math.abs(worldPath.get(pathfindingCounter).y - sprite.getY()) <= pointBuffer){
@@ -89,15 +91,15 @@ public class PathfindingActor {
     }
 
     //This function controls the direction the sprite is facing during its pathfinding
-    private void setPathfinderFacing(Vector2 movementDir, Sprite sprite){
+    private void setPathfinderFacing(Vector2 movementDir, Sprite sprite, Texture[] movementTextures){
         //check which movement direction is the largest and face that way
         if(Math.abs(movementDir.x) > Math.abs(movementDir.y)){
-            if(movementDir.x > 0) setFacing(sprite, Facing.RIGHT);
-            else setFacing(sprite, Facing.LEFT);
+            if(movementDir.x > 0) setFacing(sprite, Facing.RIGHT, movementTextures);
+            else setFacing(sprite, Facing.LEFT, movementTextures);
         }
         else{
-            if(movementDir.y > 0) setFacing(sprite, Facing.UP);
-            else setFacing(sprite, Facing.DOWN);
+            if(movementDir.y > 0) setFacing(sprite, Facing.UP, movementTextures);
+            else setFacing(sprite, Facing.DOWN, movementTextures);
         }
     }
 
