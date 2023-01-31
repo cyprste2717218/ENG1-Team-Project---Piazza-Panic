@@ -1,17 +1,15 @@
 package com.mygdx.game.stations;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Chef;
+import com.mygdx.game.Match;
 import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.Food;
-import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.utils.SoundUtils;
 
 import java.util.HashMap;
-import java.util.Stack;
 
 public class CookingStation extends Station implements ITimer {
 
@@ -21,7 +19,7 @@ public class CookingStation extends Station implements ITimer {
     // Example: Onion -> Chopped Onion
     // Done via input food (key) being popped off chef's stack,
     // and output food (value) being pushed on
-    public HashMap<Food, Food> operationLookupTable;
+    public HashMap<String, Food> operationLookupTable;
 
     public CookingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
         super(null, stationTexture);
@@ -31,21 +29,21 @@ public class CookingStation extends Station implements ITimer {
     }
 
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
-        super.onInteract(chef, interactedNode, tiledMap, grid);
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
+        super.onInteract(chef, interactedNode, tiledMap, grid, match);
 
         // error checking
         if (chef.foodStack.isEmpty()) {
             System.out.println("Unable to interact, chefs foodStack is empty");
             return;
-        } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek())) {
+        } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek().name)) {
             System.out.println("Cannot interact with this station, incorrect item");
             return;
         }
         // pushes the corresponding lookup of the popped item from chefs stack back onto the chefs stack
         // i.e. pops Bun, pushes Toasted Bun
         System.out.println(chef.foodStack.peek().name);
-        chef.foodStack.push(this.operationLookupTable.get(chef.foodStack.pop()));
+        chef.foodStack.push(new Food(this.operationLookupTable.get(chef.foodStack.pop().name)));
         System.out.println(chef.foodStack.peek().name);
 
         if(this instanceof CuttingStation){

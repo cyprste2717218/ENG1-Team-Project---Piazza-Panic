@@ -10,7 +10,6 @@ import com.mygdx.game.utils.SoundUtils;
 public class ServingStation extends Station{
 
     private Customer currentCustomer;
-
     private Sprite orderSprite;
 
     public ServingStation(Texture stationTexture){
@@ -33,32 +32,45 @@ public class ServingStation extends Station{
         orderSprite.setPosition(getSprite().getX(), getSprite().getY());
     }
 
+    public void clearStation(){
+        currentCustomer = null;
+        orderSprite = null;
+        if(!GameScreen.availableServingStations.contains(this)){
+            GameScreen.availableServingStations.add(this);
+        }
+        if(!Stations.servingStations.contains(this)){
+            Stations.servingStations.add(this);
+        }
+    }
+
     public Sprite getOrderSprite(){
         return orderSprite;
     }
 
     @Override
-    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid) {
-        super.onInteract(chef, interactedNode, tiledMap, grid);
+    public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
+        super.onInteract(chef, interactedNode, tiledMap, grid, match);
         if(currentCustomer == null || chef.foodStack.isEmpty()){
             SoundUtils.getFailureSound().play();
             return;
         }
         if(currentCustomer.getOrder().equals(chef.foodStack.peek())){
-            completeCustomerOrder(chef, grid, tiledMap);
+            completeCustomerOrder(chef, grid, tiledMap, match);
         }
         else SoundUtils.getFailureSound().play();
     }
 
-    private void completeCustomerOrder(Chef chef, Node[][] grid, TiledMap tiledMap){
+    private void completeCustomerOrder(Chef chef, Node[][] grid, TiledMap tiledMap, Match match){
         chef.foodStack.pop();
         SoundUtils.getCorrectOrderSound().play();
-        GameScreen.CUSTOMER_SERVED_COUNTER++;
+        match.incrementCustomerServed();
+        match.incrementReputationPoints();
         currentCustomer.setBeenServed(true);
         currentCustomer.customerLeave(grid, tiledMap);
         currentCustomer = null;
         orderSprite = null;
         GameScreen.availableServingStations.add(this);
+        GameScreen.canSpawnCustomers = true;
     }
 
 
