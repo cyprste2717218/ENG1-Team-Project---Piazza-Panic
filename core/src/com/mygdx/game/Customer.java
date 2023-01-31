@@ -2,15 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.enums.Facing;
 import com.mygdx.game.enums.NodeType;
 import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
-import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.stations.ServingStation;
@@ -18,8 +15,6 @@ import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Customer implements IGridEntity {
     boolean beenServed;
@@ -52,7 +47,7 @@ public class Customer implements IGridEntity {
     private Food getRandomOrder() {
         Random rnd = new Random();
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size());
-        System.out.println(FoodItems.finishedFoods.get(orderIndex).name);
+        System.out.println(FoodItems.finishedFoods.get(orderIndex).getName());
         return FoodItems.finishedFoods.get(orderIndex);
     }
 

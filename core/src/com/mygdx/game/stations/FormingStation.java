@@ -22,8 +22,8 @@ public class FormingStation extends CookingStation {
         this.inventory = new Stack<>();
 
         // finished food ingredients
-        List<String> burgerIngredients = Arrays.asList(FoodItems.TOASTED_BUN.name, FoodItems.COOKED_PATTY.name);
-        List<String> saladIngredients = Arrays.asList(FoodItems.CHOPPED_LETTUCE.name, FoodItems.CHOPPED_TOMATO.name, FoodItems.CHOPPED_ONION.name);
+        List<String> burgerIngredients = Arrays.asList(FoodItems.TOASTED_BUN.getName(), FoodItems.COOKED_PATTY.getName());
+        List<String> saladIngredients = Arrays.asList(FoodItems.CHOPPED_LETTUCE.getName(), FoodItems.CHOPPED_TOMATO.getName(), FoodItems.CHOPPED_ONION.getName());
         operationLookupTable_Forming.put(burgerIngredients, FoodItems.BURGER);
         operationLookupTable_Forming.put(saladIngredients, FoodItems.SALAD);
     }
@@ -32,7 +32,7 @@ public class FormingStation extends CookingStation {
     private Food groupHashMapSwap() {
         //Convert the inventory into a string list
         List<String> components = new ArrayList<>();
-        for(Food food: inventory)components.add(food.name);
+        for(Food food: inventory)components.add(food.getName());
         for(List<String> recipe: operationLookupTable_Forming.keySet()){
             if(recipe.containsAll(components) && recipe.size() == components.size()) return new Food(operationLookupTable_Forming.get(recipe));
         }
@@ -43,7 +43,7 @@ public class FormingStation extends CookingStation {
         // check if chef's stack is empty
         if(chef.foodStack.isEmpty()) return;
         // chef if item isn't formable
-        if(!chef.foodStack.peek().isFormable) return;
+        if(!chef.foodStack.peek().isFormable()) return;
         // if the water bucket is used with the station, the station is cleared
         if(chef.foodStack.peek().equals(FoodItems.WATER_BUCKET)) {
             System.out.println("Clearing Forming Station");
@@ -56,19 +56,19 @@ public class FormingStation extends CookingStation {
         // if the inventory is empty, then we just push an item, do not check hash map swap
         // this is because there are no recipes that form one item into a finished food
         if (this.inventory.isEmpty()) {
-            System.out.println("Pushing onto empty: "+ chef.foodStack.peek().name);
+            System.out.println("Pushing onto empty: "+ chef.foodStack.peek().getName());
             this.inventory.push(chef.foodStack.pop());
         } else if (inventory.contains(chef.foodStack.peek()))  {
             System.out.println("Item already in inventory");
             chef.foodStack.pop();
         } else  {
-            System.out.println("Pushing more: "+chef.foodStack.peek().name);
+            System.out.println("Pushing more: "+ chef.foodStack.peek().getName());
             System.out.println("Stack length:"+this.inventory.size());
             this.inventory.push(chef.foodStack.pop());
             Food newFood = groupHashMapSwap();
             // checking to see if a finished food has been created
             if (newFood != null)    {
-                System.out.println("Finished Food: "+newFood.name);
+                System.out.println("Finished Food: "+ newFood.getName());
                 chef.foodStack.push(newFood);
             }
         }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -35,17 +36,21 @@ public class Chef implements IInteractable, IGridEntity {
     public Facing finalFacing = Facing.UP;
     private Vector2 gridPosition;
     PathfindingActor pathfindingActor;
+    public Texture[] movementTextures;
 
-    Texture[] movementTextures;
-
-    public Chef(){
-        movementTextures = new Texture[] {new Texture("CustomerAssets/Customer_Pink_Up.png"),new Texture("CustomerAssets/Customer_Pink_Left.png"),new Texture("CustomerAssets/Customer_Pink_Down.png"),new Texture("CustomerAssets/Customer_Pink_Right.png")};
+    public Chef(int textureSelecter){
+        movementTextures = selectChefTexture(textureSelecter);
         chefSprite = new Sprite(movementTextures[0], 256, 256);
         this.chefSprite.setScale(2f);
         foodStack = new Stack<>();
         pathfindingActor = new PathfindingActor(null, null, null,null);
     }
 
+    private Texture[] selectChefTexture(int textureSelecter){
+        Texture[][] chefTextures = new Texture[][] {{new Texture("Chef_Assets/Chef_Dark_Up.png"),new Texture("Chef_Assets/Chef_Dark_Left.png"),new Texture("Chef_Assets/Chef_Dark_Down.png"),new Texture("Chef_Assets/Chef_Dark_Right.png")},
+                {new Texture("Chef_Assets/Chef_Pink_Up.png"),new Texture("Chef_Assets/Chef_Pink_Left.png"),new Texture("Chef_Assets/Chef_Pink_Down.png"),new Texture("Chef_Assets/Chef_Pink_Right.png")}};
+        return chefTextures[textureSelecter];
+    }
     @Override
     public Sprite getSprite(){
         return chefSprite;
@@ -195,6 +200,31 @@ public class Chef implements IInteractable, IGridEntity {
             GameScreen.RENDERED_FOODS.add(currentFood);
             System.out.println("Interacting with Nothing");
             SoundUtils.getItemPickupSound().play();
+        }
+    }
+
+    public void drawSprites(SpriteBatch batch){
+        if(foodStack.isEmpty()){
+            chefSprite.draw(batch);
+            return;
+        }
+        switch (pathfindingActor.getFacing()){
+            case UP:
+                batch.draw(foodStack.peek().getSprite().getTexture(), chefSprite.getX() + 96, chefSprite.getY() + 96);
+                chefSprite.draw(batch);
+                break;
+            case DOWN:
+                chefSprite.draw(batch);
+                batch.draw(foodStack.peek().getSprite().getTexture(), chefSprite.getX() + 96, chefSprite.getY() + 96);
+                break;
+            case RIGHT:
+                chefSprite.draw(batch);
+                batch.draw(foodStack.peek().getSprite().getTexture(), chefSprite.getX() + 111, chefSprite.getY() + 85);
+                break;
+            case LEFT:
+                chefSprite.draw(batch);
+                batch.draw(foodStack.peek().getSprite().getTexture(), chefSprite.getX() + 81, chefSprite.getY() + 85);
+                break;
         }
     }
 

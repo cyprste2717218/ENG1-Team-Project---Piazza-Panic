@@ -12,8 +12,8 @@ public class FryingStation extends CookingStation{
 
     public FryingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
         super(operationTimer, canLeaveUnattended, stationTexture);
-        operationLookupTable.put(FoodItems.BUN.name, FoodItems.TOASTED_BUN);
-        operationLookupTable.put(FoodItems.RAW_PATTY.name, FoodItems.COOKED_PATTY);
+        operationLookupTable.put(FoodItems.BUN.getName(), FoodItems.TOASTED_BUN);
+        operationLookupTable.put(FoodItems.RAW_PATTY.getName(), FoodItems.COOKED_PATTY);
     }
 
     @Override
