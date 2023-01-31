@@ -61,7 +61,7 @@ public class ServingStation extends Station{
     }
 
     private void completeCustomerOrder(Chef chef, Node[][] grid, TiledMap tiledMap, Match match){
-        match.incrementMoneyGained(chef.foodStack.peek().reward);
+        match.incrementMoneyGained(chef.foodStack.peek().getReward());
         chef.foodStack.pop();
         SoundUtils.getCorrectOrderSound().play();
         match.incrementCustomerServed();

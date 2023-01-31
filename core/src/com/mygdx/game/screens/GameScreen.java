@@ -3,19 +3,15 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Customer;
@@ -27,7 +23,6 @@ import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
-import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.SoundUtils;
@@ -141,6 +136,12 @@ public class GameScreen implements Screen {
 
     public void handleChefs(){
         chefs[selectedChef].move(tiledMap, grid, mainMenu.camera, match);
+        for(Chef chef : chefs){
+            if(chef == chefs[selectedChef]) continue;
+            if(!chef.getPathfindingActor().getWorldPath().isEmpty()){
+                chef.getPathfindingActor().followPath(chef.getSprite(), 100f, chef.movementTextures);
+            }
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
             chefs[selectedChef].interact(grid, tiledMap, match);
         }
@@ -149,8 +150,8 @@ public class GameScreen implements Screen {
 
     private void spawnChefs(){
         chefs = new Chef[2];
-        chefs[0] = new Chef();
-        chefs[1] = new Chef();
+        chefs[0] = new Chef(0);
+        chefs[1] = new Chef(1);
 
         chefs[0].setTileMapPosition(3,9,grid,tiledMap);
         chefs[1].setTileMapPosition(7,10,grid,tiledMap);
@@ -158,7 +159,6 @@ public class GameScreen implements Screen {
 
     private void swapChef(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            chefs[selectedChef].getPathfindingActor().getWorldPath().clear();
             selectedChef = selectedChef == chefs.length - 1 ? 0 : selectedChef + 1;
             SoundUtils.getChefSwitchSound().play();
         }
@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
         customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
         customers.add(customer);
         customer.onSpawn(grid, tiledMap);
-        System.out.println("Customer spawned with order: "+ customer.getOrder().name);
+        System.out.println("Customer spawned with order: "+ customer.getOrder().getName());
         SoundUtils.getCustomerSpawnSound().play();
     }
 
@@ -208,7 +208,11 @@ public class GameScreen implements Screen {
         customerSevedFont.draw(game.batch, customerServedText, 525, 500);
         reputationPointsFont.draw(game.batch, reputationPointsText, 525, 475);
         moneyGainedFont.draw(game.batch, moneyGainedText, 525,450);
-        for(Chef chef: chefs){chef.getSprite().draw(game.batch);}
+        for(Chef chef: chefs){
+            //chef.getSprite().draw(game.batch);
+            //chef.drawFoodOnStack(game.batch);
+            chef.drawSprites(game.batch);
+        }
         for(Food food : RENDERED_FOODS){game.batch.draw(food.getSprite().getTexture(), food.getSprite().getX() + 96, food.getSprite().getY() + 96);}
 
         for(Customer customer: new ArrayList<>(customers)){

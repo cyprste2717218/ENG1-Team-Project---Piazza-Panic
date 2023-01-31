@@ -45,11 +45,11 @@ public class CookingStation extends Station implements ITimer {
             if (chef.foodStack.isEmpty()) {
                 System.out.println("Unable to interact, chefs foodStack is empty");
                 return;
-            } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek().name)) {
+            } else if (!this.operationLookupTable.containsKey(chef.foodStack.peek().getName())) {
                 System.out.println("Cannot interact with this station, incorrect item");
                 return;
             }
-            stock = new Food(this.operationLookupTable.get(chef.foodStack.pop().name));
+            stock = new Food(this.operationLookupTable.get(chef.foodStack.pop().getName()));
             timer.setIsRunning(true);
         }
 

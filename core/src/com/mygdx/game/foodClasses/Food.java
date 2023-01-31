@@ -18,17 +18,17 @@ import com.mygdx.game.utils.TileMapUtils;
 
 public class Food implements IInteractable, IGridEntity {
 
-    public String name; //The name of the food
+    private String name; //The name of the food
     private Sprite foodSprite; //The sprite of the food
-    public boolean isFormable; //Whether the food can be used in the FormingStation
-    public int reward; //The monetary reward for making the food
+    private boolean isFormable; //Whether the food can be used in the FormingStation
+    private int reward; //The monetary reward for making the food
     private Vector2 gridPosition; //Used to keep track of the gridPosition of the food for the updateGridEntities() method in PiazzaPanic
 
     public Food(String name, Texture foodTexture, boolean isFormable, int reward){
-        this.name = name;
+        this.setName(name);
         foodSprite = new Sprite(foodTexture);
-        this.isFormable = isFormable;
-        this.reward = reward;
+        this.setFormable(isFormable);
+        this.setReward(reward);
 
         //If the food has a monetary reward, it is automatically added to the list of foodItems that the customers can used
         if(reward > 0){
@@ -39,18 +39,18 @@ public class Food implements IInteractable, IGridEntity {
 
     //A secondary constructor to create foodItems from the pre-established settings in the FoodItems class
     public Food(Food foodSettings){
-        name = foodSettings.name;
+        setName(foodSettings.getName());
         TextureRegion textureRegion = new TextureRegion(foodSettings.foodSprite.getTexture(), 0,0,64,64);
         foodSprite = new Sprite(textureRegion.getTexture());
         foodSprite.setSize(64,64);
         foodSprite.setScale(0.75f);
-        isFormable = foodSettings.isFormable;
-        reward = foodSettings.reward;
+        setFormable(foodSettings.isFormable());
+        setReward(foodSettings.getReward());
     }
 
     //A function to compare two food items
     public boolean equals(Food f) {
-        return name == f.name;
+        return getName() == f.getName();
     }
 
     @Override
@@ -87,5 +87,29 @@ public class Food implements IInteractable, IGridEntity {
         grid[mapPosX][mapPosY].setNodeType(NodeType.FOOD);
         grid[mapPosX][mapPosY].setGridEntity(this);
         foodSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isFormable() {
+        return isFormable;
+    }
+
+    public void setFormable(boolean formable) {
+        isFormable = formable;
+    }
+
+    public int getReward() {
+        return reward;
+    }
+
+    public void setReward(int reward) {
+        this.reward = reward;
     }
 }
