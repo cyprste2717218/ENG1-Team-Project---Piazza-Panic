@@ -19,6 +19,11 @@ public class FryingStation extends CookingStation{
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
         super.onInteract(chef, interactedNode, tiledMap, grid, match);
-        SoundUtils.getFryerSound().stop();
+
+    }
+
+    @Override
+    public void finishedTimer(Chef chef) {
+        super.finishedTimer(chef);
     }
 }

@@ -25,4 +25,10 @@ public class CuttingStation extends CookingStation{
         super.onInteract(chef, interactedNode, tiledMap, grid, match);
         SoundUtils.getCuttingSound().stop();
     }
+
+    @Override
+    public void finishedTimer(Chef chef) {
+        super.finishedTimer(chef);
+
+    }
 }
