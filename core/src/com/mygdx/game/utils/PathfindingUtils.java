@@ -12,10 +12,21 @@ import com.mygdx.game.Node;
 import com.mygdx.game.enums.NodeType;
 import java.util.*;
 
+/**
+ * The type Pathfinding utils.
+ */
 public class PathfindingUtils {
     private PathfindingUtils(){}
 
-    //Pathfinds between two grid co-ordinates
+    /**
+     * Find path vector 2 [ ].
+     *
+     * @param start the start
+     * @param end   the end
+     * @param grid  the grid
+     * @return the vector 2 [ ]
+     */
+//Pathfinds between two grid co-ordinates
     public static Vector2[] findPath(Node start, Node end, Node[][] grid){
 
         if(!isValidNode(end.getGridX(), end.getGridY(), grid)) return new Vector2[0];
@@ -47,7 +58,15 @@ public class PathfindingUtils {
         return new Vector2[0];
     }
 
-    //Finds the node next to an interactable node that should be pathfound to
+    /**
+     * Find best interacting node node.
+     *
+     * @param start the start
+     * @param end   the end
+     * @param grid  the grid
+     * @return the node
+     */
+//Finds the node next to an interactable node that should be pathfound to
     //It finds the most extreme direction of the shortest node to path to
     public static Node findBestInteractingNode(Node start, Node end, Node[][] grid){
         double smallestDistance = 10000;
@@ -83,7 +102,14 @@ public class PathfindingUtils {
         return bestNode;
     }
 
-    //Because all interactable objects path to one space before them, this function calculates the correct direction for the sprite to face to interact with the object on a neighbouring node
+    /**
+     * Calculate final facing facing.
+     *
+     * @param penultimate the penultimate
+     * @param end         the end
+     * @return the facing
+     */
+//Because all interactable objects path to one space before them, this function calculates the correct direction for the sprite to face to interact with the object on a neighbouring node
     public static Facing calculateFinalFacing(Node penultimate, Node end){
         if(end.getGridY() > penultimate.getGridY()) return Facing.UP;
         if(end.getGridY() < penultimate.getGridY()) return Facing.DOWN;
@@ -104,7 +130,14 @@ public class PathfindingUtils {
         openList.add(n);
     }
 
-    //Converts a path in grid co-ordinates to world co-ordinates
+    /**
+     * Convert grid path to world list.
+     *
+     * @param path     the path
+     * @param tiledMap the tiled map
+     * @return the list
+     */
+//Converts a path in grid co-ordinates to world co-ordinates
     public static List<Vector2> convertGridPathToWorld(Vector2[] path, TiledMap tiledMap){
         if(path.length == 0) return Collections.emptyList();
         List<Vector2> worldPath = new ArrayList<>();
@@ -126,11 +159,26 @@ public class PathfindingUtils {
         }
     }
 
-    //Checks the node is on the grid
+    /**
+     * Is valid node boolean.
+     *
+     * @param gridX the grid x
+     * @param gridY the grid y
+     * @param grid  the grid
+     * @return the boolean
+     */
+//Checks the node is on the grid
     public static boolean isValidNode(int gridX, int gridY, Node[][] grid){
         return gridY < grid.length && gridY >= 0 && gridX >= 0 && gridX < grid.length;
     }
 
+    /**
+     * Is valid node boolean.
+     *
+     * @param node the node
+     * @param grid the grid
+     * @return the boolean
+     */
     public static boolean isValidNode(Node node, Node[][] grid){
         return isValidNode(node.getGridX(), node.getGridY(), grid);
     }

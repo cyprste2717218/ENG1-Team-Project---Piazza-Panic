@@ -4,6 +4,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.enums.DifficultyLevel;
 import com.mygdx.game.enums.ModeOptions;
 
+/**
+ * The type Match.
+ */
 public class Match {
     private ModeOptions mode;
     private DifficultyLevel difficulty = DifficultyLevel.EASY;
@@ -30,6 +33,7 @@ public class Match {
 
     /**
      * Initialising match for "scenario" mode
+     *
      * @param maxCustomers Maximum number of customers allowed in a match.
      */
     public Match(int maxCustomers) {
@@ -75,8 +79,8 @@ public class Match {
 
     /**
      * Conditions for the match. "ENDLESS" match ends when reputationPoints reaches 0.
-     * @return true boolean if "SCENARIO" match is won, i.e. winning conditions are met
-     *         false boolean otherwise
+     *
+     * @return true boolean if "SCENARIO" match is won, i.e. winning conditions are met         false boolean otherwise
      */
     public boolean isWin(){
         if (reputationPoints <= 0 || (timer==0 && customerServed<maxCustomers)) {
@@ -88,32 +92,94 @@ public class Match {
         return false;
     }
 
+    /**
+     * Get reputation points int.
+     *
+     * @return the int
+     */
     public int getReputationPoints(){
         return reputationPoints;
     }
+
+    /**
+     * Gets money gained.
+     *
+     * @return the money gained
+     */
     public int getMoneyGained() {return moneyGained;}
+
+    /**
+     * Get result boolean.
+     *
+     * @return the boolean
+     */
     public boolean getResult(){
         return result;
     }
 
+    /**
+     * Get status boolean.
+     *
+     * @return the boolean
+     */
     public boolean getStatus(){
         return status;
     }
-    
+
+    /**
+     * Get timer long.
+     *
+     * @return the long
+     */
     public long getTimer(){
         return timer;
     }
-    
+
+    /**
+     * Set timer.
+     *
+     * @param timer the timer
+     */
     public void setTimer(long timer){
         this.timer = timer;
     }
 
+    /**
+     * Get difficulty level difficulty level.
+     *
+     * @return the difficulty level
+     */
     public DifficultyLevel getDifficultyLevel(){return difficulty;}
+
+    /**
+     * Set difficulty level.
+     *
+     * @param difficultyLevel the difficulty level
+     */
     public void setDifficultyLevel(DifficultyLevel difficultyLevel){difficulty = difficultyLevel;}
 
+    /**
+     * Get customer served int.
+     *
+     * @return the int
+     */
     public int getCustomerServed(){return customerServed;}
+
+    /**
+     * Increment customer served.
+     */
     public void incrementCustomerServed(){customerServed++;}
+
+    /**
+     * Increment reputation points.
+     */
     public void incrementReputationPoints(){reputationPoints++;}
+
+    /**
+     * Increment money gained.
+     *
+     * @param money the money
+     */
     public void incrementMoneyGained(int money){moneyGained+=money;}
 
     /**

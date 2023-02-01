@@ -1,19 +1,41 @@
 package com.mygdx.game.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * The type Tutorial screen.
+ */
 public class TutorialScreen implements Screen {
 
+    /**
+     * The Game screen.
+     */
     GameScreen gameScreen;
-    Texture arrowBlack,arrowGreen;
+    /**
+     * The Arrow black.
+     */
+    Texture arrowBlack, /**
+     * The Arrow green.
+     */
+    arrowGreen;
+    /**
+     * The Tutorial sprite.
+     */
     Sprite tutorialSprite;
+    /**
+     * The Arrow button.
+     */
     Rectangle arrowButton;
+
+    /**
+     * Instantiates a new Tutorial screen.
+     *
+     * @param gameScreen the game screen
+     */
     public TutorialScreen(GameScreen gameScreen){
         this.gameScreen = gameScreen;
 
@@ -31,9 +53,9 @@ public class TutorialScreen implements Screen {
     @Override
     public void render(float delta) {
         gameScreen.game.batch.begin();
-        gameScreen.game.batch.setProjectionMatrix(gameScreen.mainMenu.camera.combined);
+        gameScreen.game.batch.setProjectionMatrix(gameScreen.getMainMenu().getCamera().combined);
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);
-        gameScreen.mainMenu.screenUIUtils.createScreenChangingButton(arrowButton,arrowGreen,arrowBlack,gameScreen);
+        gameScreen.getMainMenu().getScreenUIUtils().createScreenChangingButton(arrowButton,arrowGreen,arrowBlack,gameScreen);
         tutorialSprite.draw(gameScreen.game.batch);
         gameScreen.game.batch.end();
     }

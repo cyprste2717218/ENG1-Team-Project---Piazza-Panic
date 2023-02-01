@@ -8,8 +8,18 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.utils.SoundUtils;
 
+/**
+ * The type Cutting station.
+ */
 public class CuttingStation extends CookingStation{
 
+    /**
+     * Instantiates a new Cutting station.
+     *
+     * @param operationTimer     the operation timer
+     * @param canLeaveUnattended the can leave unattended
+     * @param stationTexture     the station texture
+     */
     public CuttingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
         //Set sprite, timer and canLeaveUnattended Here
         super(operationTimer, canLeaveUnattended, stationTexture);

@@ -8,8 +8,18 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.utils.SoundUtils;
 
+/**
+ * The type Frying station.
+ */
 public class FryingStation extends CookingStation{
 
+    /**
+     * Instantiates a new Frying station.
+     *
+     * @param operationTimer     the operation timer
+     * @param canLeaveUnattended the can leave unattended
+     * @param stationTexture     the station texture
+     */
     public FryingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
         super(operationTimer, canLeaveUnattended, stationTexture);
         operationLookupTable.put(FoodItems.BUN.getName(), FoodItems.TOASTED_BUN);
