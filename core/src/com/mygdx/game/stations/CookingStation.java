@@ -1,5 +1,6 @@
 package com.mygdx.game.stations;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Chef;
@@ -35,6 +36,7 @@ public class CookingStation extends Station implements ITimer {
 // hash map to allow operations to be performed on foodItems:
     //
     public HashMap<String, Food> operationLookupTable;
+    private Sound stationSound;
 
     /**
      * Instantiates a new Cooking station.
@@ -48,6 +50,15 @@ public class CookingStation extends Station implements ITimer {
         this.operationTimer = operationTimer;
         this.canLeaveUnattended = canLeaveUnattended;
         operationLookupTable = new HashMap<>();
+    }
+    
+    public void setStationSound()    {
+        if (this instanceof CuttingStation) {
+            stationSound = SoundUtils.getCuttingSound();
+            stationSound.loop();
+        }   else if (this instanceof FryingStation) {
+            stationSound = SoundUtils.getFryerSound();
+        }
     }
 
     /**
@@ -81,31 +92,15 @@ public class CookingStation extends Station implements ITimer {
             }
             stock = new Food(this.operationLookupTable.get(chef.getFoodStack().pop().getName()));
             timer.setIsRunning(true);
+            setStationSound();
+            stationSound.play();
         }
-
-
-
-
-
-
-
-
-        // pushes the corresponding lookup of the popped item from chefs stack back onto the chefs stack
-        // i.e. pops Bun, pushes Toasted Bun
-
-
-        if(this instanceof CuttingStation){
-            SoundUtils.getCuttingSound().play();
-        }
-        else if(this instanceof FryingStation){
-            SoundUtils.getFryerSound().play();
-        }
-
     }
 
     @Override
     public void finishedTimer(Chef chef) {
         System.out.println(stock);
         SoundUtils.getTimerFinishedSound().play();
+        stationSound.stop();
     }
 }
