@@ -19,6 +19,7 @@ import com.mygdx.game.enums.NodeType;
 public class TileMapUtils {
 
     /**
+     * Converts a TiledMap object into a 2d array of nodes
      * Tile map to array node[ ][ ].
      *
      * @param tiledMap the tiled map
@@ -43,7 +44,7 @@ public class TileMapUtils {
     }
 
     /**
-     * Tile map to string string.
+     * A debug class that prints out the current state of the grid as a string
      *
      * @param arrMap the arr map
      * @return the string
@@ -63,14 +64,13 @@ public class TileMapUtils {
     }
 
     /**
-     * Get node at facing node.
+     * Gets the node that the chef is currently facing
      *
      * @param facing      the facing
      * @param grid        the grid
      * @param currentNode the current node
      * @return the node
      */
-//A function that gets the node in front of the chef
     public static Node getNodeAtFacing(Facing facing, Node[][] grid, Node currentNode){
         if(!PathfindingUtils.isValidNode(currentNode, grid)) return null;
         boolean valid = false;
@@ -91,7 +91,7 @@ public class TileMapUtils {
     }
 
     /**
-     * Position to coord int.
+     * Converts a single axis world co-ordinate to a grid co-ordinate
      *
      * @param spriteCoord the sprite coord
      * @param tiledMap    the tiled map
@@ -106,7 +106,7 @@ public class TileMapUtils {
     }
 
     /**
-     * Coord to position float.
+     * Converts a single axis grid co-ordinate to a centered world co-ordinate
      *
      * @param coord    the coord
      * @param tiledMap the tiled map
@@ -123,11 +123,11 @@ public class TileMapUtils {
     }
 
     /**
-     * Get collision at sprite boolean.
+     * A helper function to check whether there is a collision with a node on the grid at the sprite position
      *
      * @param sprite   the sprite
      * @param tiledMap the tiled map
-     * @param arrMap   the arr map
+     * @param arrMap   the grid
      * @return the boolean
      */
 //Checks for a collision at the location of a sprite
@@ -136,12 +136,12 @@ public class TileMapUtils {
     }
 
     /**
-     * Get collision at sprite boolean.
+     * A helper function to check whether there is a collision with a node on the grid at the sprite position
      *
-     * @param x        the x
-     * @param y        the y
+     * @param x        the x co-ordinate on the grid
+     * @param y        the y co-ordinate on the grid
      * @param tiledMap the tiled map
-     * @param arrMap   the arr map
+     * @param arrMap   the grid
      * @return the boolean
      */
     public static boolean getCollisionAtSprite(float x, float y, TiledMap tiledMap, Node[][] arrMap){

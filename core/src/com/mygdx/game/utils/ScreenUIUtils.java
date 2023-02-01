@@ -112,7 +112,7 @@ public class ScreenUIUtils {
         if(button.contains(new Vector2(clickPos.x, clickPos.y))) {
             batch.draw(hoveredButtonTexture, button.x, button.y);
             if (Gdx.input.isTouched() && currentDifficulty!= buttonDifficulty) {
-                mainMenu.getGameScreen().startGame();
+                //game.setScreen(mainMenu.getGameScreen());
                 return buttonDifficulty;
             }
         }else{

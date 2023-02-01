@@ -74,7 +74,6 @@ public class SettingScreen implements Screen {
         mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(mediumButton, mediumGreen, mediumBlack, DifficultyLevel.MEDIUM, mainMenu.getStoredDifficultyLevel()));
         mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(hardButton, hardGreen, hardBlack, DifficultyLevel.HARD, mainMenu.getStoredDifficultyLevel()));
         mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(easyButton, easyGreen, easyBlack, DifficultyLevel.EASY, mainMenu.getStoredDifficultyLevel()));
-
         mainMenu.getScreenUIUtils().createScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu);
         game.batch.end();
     }
