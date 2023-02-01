@@ -1,24 +1,44 @@
 package com.mygdx.game.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.game.utils.ScreenUIUtils;
 
+/**
+ * The type Recipe screen.
+ */
 public class RecipeScreen implements Screen {
 
     //We need a back button to Piazza Panic
     //We need a visual representation of the recipies
 
+    /**
+     * The Game screen.
+     */
     GameScreen gameScreen;
-    Texture arrowBlack,arrowGreen;
+    /**
+     * The Arrow black.
+     */
+    Texture arrowBlack, /**
+     * The Arrow green.
+     */
+    arrowGreen;
+    /**
+     * The Arrow button.
+     */
     Rectangle arrowButton;
+    /**
+     * The Recipies sprite.
+     */
     Sprite recipiesSprite;
 
+    /**
+     * Instantiates a new Recipe screen.
+     *
+     * @param gameScreen the game screen
+     */
     public RecipeScreen(GameScreen gameScreen){
         this.gameScreen = gameScreen;
         arrowBlack = new Texture("Menu/arrowBlack65.png");
@@ -36,9 +56,9 @@ public class RecipeScreen implements Screen {
     @Override
     public void render(float delta) {
         gameScreen.game.batch.begin();
-        gameScreen.game.batch.setProjectionMatrix(gameScreen.mainMenu.camera.combined);
+        gameScreen.game.batch.setProjectionMatrix(gameScreen.getMainMenu().getCamera().combined);
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);
-        gameScreen.mainMenu.screenUIUtils.createScreenChangingButton(arrowButton,arrowGreen,arrowBlack,gameScreen);
+        gameScreen.getMainMenu().getScreenUIUtils().createScreenChangingButton(arrowButton,arrowGreen,arrowBlack,gameScreen);
         recipiesSprite.draw(gameScreen.game.batch);
         gameScreen.game.batch.end();
     }

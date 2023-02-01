@@ -16,16 +16,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Pathfinding actor.
+ */
 public class PathfindingActor {
 
     private List<Vector2> worldPath;
     private int pathfindingCounter;
     private Facing facing;
+    /**
+     * The Start.
+     */
     Node start;
+    /**
+     * The End.
+     */
     Node end;
+    /**
+     * The Grid.
+     */
     Node[][] grid;
+    /**
+     * The Tiled map.
+     */
     TiledMap tiledMap;
 
+    /**
+     * Instantiates a new Pathfinding actor.
+     *
+     * @param start    the start
+     * @param end      the end
+     * @param grid     the grid
+     * @param tiledMap the tiled map
+     */
     public PathfindingActor(Node start, Node end, Node[][] grid, TiledMap tiledMap){
         this.start = start;
         this.end = end;
@@ -36,28 +59,60 @@ public class PathfindingActor {
         facing = Facing.UP;
     }
 
+    /**
+     * Get world path list.
+     *
+     * @return the list
+     */
     public List<Vector2> getWorldPath(){
         return worldPath;
     }
 
+    /**
+     * Get pathfinding counter int.
+     *
+     * @return the int
+     */
     public int getPathfindingCounter(){
         return pathfindingCounter;
     }
 
+    /**
+     * Set pathfinding counter.
+     *
+     * @param pCounter the p counter
+     */
     public void setPathfindingCounter(int pCounter){
         pathfindingCounter = pCounter;
     }
 
+    /**
+     * Set facing.
+     *
+     * @param sprite           the sprite
+     * @param direction        the direction
+     * @param movementTextures the movement textures
+     */
     public void setFacing(Sprite sprite, Facing direction, Texture[] movementTextures){
         facing = direction;
         sprite.setTexture(movementTextures[facing.ordinal()]);
         //sprite.setRotation(90f * facing.ordinal());
     }
 
+    /**
+     * Get facing facing.
+     *
+     * @return the facing
+     */
     public Facing getFacing(){
         return facing;
     }
 
+    /**
+     * Create thread and pathfind list.
+     *
+     * @return the list
+     */
     public List<Vector2> createThreadAndPathfind(){
         //If the start or end is invalid, return an empty list
         if(start == null || end == null) return Collections.emptyList();
@@ -73,7 +128,14 @@ public class PathfindingActor {
         return worldPath;
     }
 
-    //Makes the sprite follow the path
+    /**
+     * Follow path.
+     *
+     * @param sprite           the sprite
+     * @param speed            the speed
+     * @param movementTextures the movement textures
+     */
+//Makes the sprite follow the path
     public void followPath(Sprite sprite, float speed, Texture[] movementTextures){
 
         if(pathfindingCounter >= worldPath.size()) return;
@@ -103,7 +165,13 @@ public class PathfindingActor {
         }
     }
 
-    //This function draws a line along the path to provide a visual indicator
+    /**
+     * Draw path.
+     *
+     * @param camera the camera
+     * @param sprite the sprite
+     */
+//This function draws a line along the path to provide a visual indicator
     public void drawPath(Camera camera, Sprite sprite){
         if(worldPath.isEmpty()) return;
         ShapeRenderer shapeRenderer = new ShapeRenderer();

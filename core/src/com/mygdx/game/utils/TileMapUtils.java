@@ -13,9 +13,18 @@ import com.mygdx.game.Node;
 import com.mygdx.game.enums.Facing;
 import com.mygdx.game.enums.NodeType;
 
+/**
+ * The utils class containing helper functions regarding the tile map.
+ */
 public class TileMapUtils {
 
-    //Function that takes the tileMap and converts it to a 2d array showing where the walls are
+    /**
+     * Tile map to array node[ ][ ].
+     *
+     * @param tiledMap the tiled map
+     * @return the node [ ] [ ]
+     */
+//Function that takes the tileMap and converts it to a 2d array showing where the walls are
     public static Node[][] tileMapToArray(TiledMap tiledMap){
 
         //This applies to both the tileMap and the nodeProperties array
@@ -33,7 +42,13 @@ public class TileMapUtils {
         return arrMap;
     }
 
-    //A debug function to draw what the array thinks the map looks like
+    /**
+     * Tile map to string string.
+     *
+     * @param arrMap the arr map
+     * @return the string
+     */
+//A debug function to draw what the array thinks the map looks like
     public static String tileMapToString(Node[][] arrMap){
         StringBuilder sB = new StringBuilder();
         for (int y = arrMap.length - 1; y >= 0; y--){
@@ -47,7 +62,15 @@ public class TileMapUtils {
         return sB.toString();
     }
 
-    //A function that gets the node in front of the chef
+    /**
+     * Get node at facing node.
+     *
+     * @param facing      the facing
+     * @param grid        the grid
+     * @param currentNode the current node
+     * @return the node
+     */
+//A function that gets the node in front of the chef
     public static Node getNodeAtFacing(Facing facing, Node[][] grid, Node currentNode){
         if(!PathfindingUtils.isValidNode(currentNode, grid)) return null;
         boolean valid = false;
@@ -67,7 +90,14 @@ public class TileMapUtils {
         }
     }
 
-    //A function to convert a world position to a grid position
+    /**
+     * Position to coord int.
+     *
+     * @param spriteCoord the sprite coord
+     * @param tiledMap    the tiled map
+     * @return the int
+     */
+//A function to convert a world position to a grid position
     //The + 256 is because the grid is 256 worldCoordinates wide
     //The -4 is to account for the camera offset
     public static int positionToCoord(float spriteCoord, TiledMap tiledMap){
@@ -75,7 +105,14 @@ public class TileMapUtils {
         return (int)(spriteCoord + 256)/layer.getTileWidth() - 4;
     }
 
-    //A function to convert a grid position to a world position
+    /**
+     * Coord to position float.
+     *
+     * @param coord    the coord
+     * @param tiledMap the tiled map
+     * @return the float
+     */
+//A function to convert a grid position to a world position
     //The -240 is because the grid is 256 worldCoordinates wide and a tile is 32 wide
     //32/2 is 16 which is used to centre the coord
     //256-16 = 240
@@ -85,11 +122,28 @@ public class TileMapUtils {
         return (coord + 4f) * layer.getTileWidth() - 240;
     }
 
-    //Checks for a collision at the location of a sprite
+    /**
+     * Get collision at sprite boolean.
+     *
+     * @param sprite   the sprite
+     * @param tiledMap the tiled map
+     * @param arrMap   the arr map
+     * @return the boolean
+     */
+//Checks for a collision at the location of a sprite
     public static boolean getCollisionAtSprite(Sprite sprite, TiledMap tiledMap, Node[][] arrMap){
         return getCollisionAtSprite(sprite.getX(), sprite.getY(),tiledMap, arrMap);
     }
 
+    /**
+     * Get collision at sprite boolean.
+     *
+     * @param x        the x
+     * @param y        the y
+     * @param tiledMap the tiled map
+     * @param arrMap   the arr map
+     * @return the boolean
+     */
     public static boolean getCollisionAtSprite(float x, float y, TiledMap tiledMap, Node[][] arrMap){
         return arrMap[positionToCoord(x,tiledMap)][positionToCoord(y, tiledMap)].isCollidable();
     }

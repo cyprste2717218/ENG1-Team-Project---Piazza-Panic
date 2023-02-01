@@ -8,24 +8,44 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Match;
 import com.mygdx.game.enums.DifficultyLevel;
 
+/**
+ * The type Setting screen.
+ */
 public class SettingScreen implements Screen {
+    /**
+     * The Game.
+     */
     PiazzaPanic game;
+    /**
+     * The Main menu.
+     */
     MainMenu mainMenu;
+    /**
+     * The Difficulty.
+     */
     DifficultyLevel difficulty = DifficultyLevel.EASY;
     private Texture easyBlack,easyGreen,mediumBlack,mediumGreen,hardBlack,hardGreen,arrowBlack,arrowGreen;
     private Rectangle easyButton,mediumButton,hardButton,arrowButton;
     private float width, height;
-    private Match match;
+
+    /**
+     * Instantiates a new Setting screen.
+     *
+     * @param game     the game
+     * @param mainMenu the main menu
+     */
     public SettingScreen(PiazzaPanic game, MainMenu mainMenu){
         this.game = game;
         this.mainMenu = mainMenu;
         initialise();
     }
 
+    /**
+     * Initialises the SettingScreen.
+     */
     public void initialise(){
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        match = mainMenu.gameScreen.getMatch();
 
         easyBlack = new Texture("Menu/easyButtonBlack80.png");
         easyGreen = new Texture("Menu/easyButtonGreen80.png");
@@ -51,11 +71,11 @@ public class SettingScreen implements Screen {
     public void render(float delta) {
         game.batch.begin();
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);
-        match.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(mediumButton, mediumGreen, mediumBlack, DifficultyLevel.MEDIUM, match.getDifficultyLevel()));
-        match.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(hardButton, hardGreen, hardBlack, DifficultyLevel.HARD, match.getDifficultyLevel()));
-        match.setDifficultyLevel(mainMenu.screenUIUtils.createDifficultyButton(easyButton, easyGreen, easyBlack, DifficultyLevel.EASY, match.getDifficultyLevel()));
+        mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(mediumButton, mediumGreen, mediumBlack, DifficultyLevel.MEDIUM, mainMenu.getStoredDifficultyLevel()));
+        mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(hardButton, hardGreen, hardBlack, DifficultyLevel.HARD, mainMenu.getStoredDifficultyLevel()));
+        mainMenu.setStoredDifficultyLevel(mainMenu.getScreenUIUtils().createDifficultyButton(easyButton, easyGreen, easyBlack, DifficultyLevel.EASY, mainMenu.getStoredDifficultyLevel()));
 
-        mainMenu.screenUIUtils.createScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu);
+        mainMenu.getScreenUIUtils().createScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu);
         game.batch.end();
     }
 

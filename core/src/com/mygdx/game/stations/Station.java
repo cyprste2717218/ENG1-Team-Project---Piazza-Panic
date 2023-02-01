@@ -14,24 +14,46 @@ import com.mygdx.game.interfaces.IInteractable;
 import com.mygdx.game.utils.PathfindingUtils;
 import com.mygdx.game.utils.TileMapUtils;
 
+/**
+ * The type Station.
+ */
 public class Station implements IInteractable, IGridEntity {
+    /**
+     * The constant STATION_SIZE used for defining the size of the sprite.
+     */
     protected static final int STATION_SIZE = 256;
-    public Food stock;
+    /**
+     * The Food item stored within the station
+     */
+    protected Food stock;
     private Sprite stationSprite;
 
-    public Station(Food inventory, Texture stationTexture){
-        this.stock = inventory;
+    /**
+     * Instantiates a new Station.
+     *
+     * @param stock      the item stored within the station
+     * @param stationTexture the station texture
+     */
+    public Station(Food stock, Texture stationTexture){
+        this.stock = stock;
         this.stationSprite = new Sprite(stationTexture, STATION_SIZE, STATION_SIZE);
         this.stationSprite.setScale(0.125f);
     }
-    public Station() {}
 
-    // sets coords for the sprite on the tile map
-    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] walls, TiledMap tiledMap)    {
-        if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, walls)) return;
-        walls[mapPosX][mapPosY].setNodeType(NodeType.STATION);
-        walls[mapPosX][mapPosY].setGridEntity(this);
-        walls[mapPosX][mapPosY].setInteractable(this);
+    /**
+     * Sets tile map position.
+     *
+     * @param mapPosX  the map pos x
+     * @param mapPosY  the map pos y
+     * @param grid    the pathfinding grid
+     * @param tiledMap the tiled map
+     */
+// sets coords for the sprite on the tile map
+    public void setTileMapPosition(int mapPosX, int mapPosY, Node[][] grid, TiledMap tiledMap)    {
+        if(!PathfindingUtils.isValidNode(mapPosX, mapPosY, grid)) return;
+        grid[mapPosX][mapPosY].setNodeType(NodeType.STATION);
+        grid[mapPosX][mapPosY].setGridEntity(this);
+        grid[mapPosX][mapPosY].setInteractable(this);
         stationSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
     
