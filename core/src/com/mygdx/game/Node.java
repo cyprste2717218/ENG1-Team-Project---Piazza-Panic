@@ -193,6 +193,13 @@ public class Node implements Comparable<Node>{
         this.gridEntity = gridEntity;
     }
 
+    /**
+     * Compares the cost of using one node to another
+     * @param n the object to be compared.
+     * @return an integer,
+     * As we know that we want the node with the least F cost, the node with the lowest returns -1
+     * 0 if their path cost is the same
+     */
     @Override
     public int compareTo(Node n) {
         if(this.getF() < n.getF()) return -1;
