@@ -62,6 +62,10 @@ public class Customer implements IGridEntity {
         this.orderTimer = orderTimer;
     }
 
+    /**
+     * Returns a randomly chosen texture for the new customer
+     * @return
+     */
     private Texture[] getRandomCustomerTextures(){
         Texture[][] customerTextures = new Texture[][] {{new Texture("CustomerAssets/Customer_Blue_Up.png"),new Texture("CustomerAssets/Customer_Blue_Left.png"),new Texture("CustomerAssets/Customer_Blue_Down.png"),new Texture("CustomerAssets/Customer_Blue_Right.png")},
         {new Texture("CustomerAssets/Customer_Orange_Up.png"),new Texture("CustomerAssets/Customer_Orange_Left.png"),new Texture("CustomerAssets/Customer_Orange_Down.png"),new Texture("CustomerAssets/Customer_Orange_Right.png")},
@@ -71,6 +75,10 @@ public class Customer implements IGridEntity {
         return customerTextures[textureChoice];
     }
 
+    /**
+     * Returns a randomly chosen "finished food" (e.g. Burger, Salad)
+     * @return
+     */
     private Food getRandomOrder() {
         Random rnd = new Random();
         int orderIndex = rnd.nextInt(FoodItems.finishedFoods.size());
@@ -80,7 +88,6 @@ public class Customer implements IGridEntity {
 
     /**
      * Get order food.
-     *
      * @return the food
      */
     public Food getOrder(){
@@ -89,21 +96,18 @@ public class Customer implements IGridEntity {
 
     /**
      * Set been served.
-     *
      * @param hasBeenServed the has been served
      */
     public void setBeenServed(boolean hasBeenServed){
         beenServed = hasBeenServed;
     }
 
-
     /**
-     * Customer leave.
-     *
+     * Have customer leave by pathfinding from their current position to the bottom of the screen and then being deleted
      * @param grid     the grid
      * @param tiledMap the tiled map
      */
-//Have customer leave by pathfinding from their current position to the bottom of the screen and then being deleted
+
     public void customerLeave(Node[][] grid, TiledMap tiledMap){
         Node start = grid[TileMapUtils.positionToCoord(customerSprite.getX(), tiledMap)]
                 [TileMapUtils.positionToCoord(customerSprite.getY(), tiledMap)];
@@ -115,7 +119,6 @@ public class Customer implements IGridEntity {
 
     /**
      * On spawn.
-     *
      * @param grid     the grid
      * @param tiledMap the tiled map
      */
@@ -127,6 +130,12 @@ public class Customer implements IGridEntity {
         pathfindingActor.createThreadAndPathfind();
     }
 
+    /**
+     * Finds an available serving station for the new customer to wait by
+     * @param grid
+     * @param tiledMap
+     * @return the available station
+     */
     private Node getAvailableServingStation(Node[][] grid, TiledMap tiledMap){
         //Choose random available serving station
         Random rnd = new Random();
@@ -171,16 +180,28 @@ public class Customer implements IGridEntity {
         }
     }
 
+    /**
+     * Return previous grid position
+     * @return
+     */
     @Override
     public Vector2 getPreviousGridPosition() {
         return gridPosition;
     }
 
+    /**
+     * Set the current grid position
+     * @param gridPos the grid pos
+     */
     @Override
     public void setCurrentGridPosition(Vector2 gridPos) {
         gridPosition = gridPos;
     }
 
+    /**
+     * Return the customer sprite
+     * @return
+     */
     @Override
     public Sprite getSprite() {
         return customerSprite;

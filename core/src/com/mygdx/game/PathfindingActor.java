@@ -152,7 +152,13 @@ public class PathfindingActor {
         }
     }
 
-    //This function controls the direction the sprite is facing during its pathfinding
+    /**
+     * This function controls the direction the sprite is facing during its pathfinding
+     * @param movementDir
+     * @param sprite
+     * @param movementTextures
+     */
+
     private void setPathfinderFacing(Vector2 movementDir, Sprite sprite, Texture[] movementTextures){
         //check which movement direction is the largest and face that way
         if(Math.abs(movementDir.x) > Math.abs(movementDir.y)){
@@ -167,11 +173,11 @@ public class PathfindingActor {
 
     /**
      * Draw path.
-     *
+     * This function draws a line along the path to provide a visual indicator
      * @param camera the camera
      * @param sprite the sprite
      */
-//This function draws a line along the path to provide a visual indicator
+
     public void drawPath(Camera camera, Sprite sprite){
         if(worldPath.isEmpty()) return;
         ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -192,11 +198,21 @@ public class PathfindingActor {
         shapeRenderer.dispose();
     }
 
-    //Helper methods to convert world vectors into vectors to be drawn on the camera
+    /**
+     * Helper methods to convert world vectors into vectors to be drawn on the camera
+     * @param inputX
+     * @param inputY
+     * @return the modified vector
+     */
     private Vector2 modifyVectorForDrawing(float inputX, float inputY){
         return modifyVectorForDrawing(new Vector2(inputX, inputY));
     }
 
+    /**
+     * Same as previous function, however allows the user to inout a vector, instead of (x,y)
+     * @param inputVector
+     * @return the modified vector
+     */
     private Vector2 modifyVectorForDrawing(Vector2 inputVector){
         final float mid = (float)256/2;
         Vector2 midpoint = new Vector2(mid, mid);

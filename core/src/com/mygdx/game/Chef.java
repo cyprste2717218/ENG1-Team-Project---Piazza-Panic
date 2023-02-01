@@ -61,11 +61,21 @@ public class Chef implements IInteractable, IGridEntity {
         pathfindingActor = new PathfindingActor(null, null, null,null);
     }
 
+    /**
+     * Select the texture for the chef
+     * @param textureSelecter
+     * @return the texture
+     */
     private Texture[] selectChefTexture(int textureSelecter){
         Texture[][] chefTextures = new Texture[][] {{new Texture("Chef_Assets/Chef_Dark_Up.png"),new Texture("Chef_Assets/Chef_Dark_Left.png"),new Texture("Chef_Assets/Chef_Dark_Down.png"),new Texture("Chef_Assets/Chef_Dark_Right.png")},
                 {new Texture("Chef_Assets/Chef_Pink_Up.png"),new Texture("Chef_Assets/Chef_Pink_Left.png"),new Texture("Chef_Assets/Chef_Pink_Down.png"),new Texture("Chef_Assets/Chef_Pink_Right.png")}};
         return chefTextures[textureSelecter];
     }
+
+    /**
+     * Return chef sprite
+     * @return
+     */
     @Override
     public Sprite getSprite(){
         return chefSprite;
@@ -82,14 +92,12 @@ public class Chef implements IInteractable, IGridEntity {
 
 
     /**
-     * Move.
-     *
+     * A function to handle all movement of the chef.
      * @param tiledMap the tiled map
      * @param grid     the grid
      * @param camera   the camera
      * @param match    the match
      */
-//A function to handle all movement of the chef
     public void move(TiledMap tiledMap, Node[][] grid, Camera camera, Match match){
 
         if(!Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) keyBoardMovement(tiledMap, grid);
@@ -113,8 +121,13 @@ public class Chef implements IInteractable, IGridEntity {
             interactablePathEnd = false;
         }
     }
-    
-    //A function to handle movement with the mouse
+
+    /**
+     * A function to handle movement with the mouse
+     * @param tiledMap
+     * @param grid
+     * @param camera
+     */
     private void mouseMovement(TiledMap tiledMap, Node[][] grid, Camera camera){
 
         //Adds a delay between how often you can pathfind
@@ -139,7 +152,11 @@ public class Chef implements IInteractable, IGridEntity {
         }
     }
 
-    //A function to handle movement with the keyboard
+    /**
+     * A function to handle movement with the keyboard
+     * @param tiledMap
+     * @param grid
+     */
     private void keyBoardMovement(TiledMap tiledMap, Node[][] grid){
         float speed = 100f;
         Vector2 oldPos = new Vector2(chefSprite.getX(), chefSprite.getY());
@@ -196,6 +213,12 @@ public class Chef implements IInteractable, IGridEntity {
         chefSprite.setPosition(TileMapUtils.coordToPosition(mapPosX, tiledMap), TileMapUtils.coordToPosition(mapPosY, tiledMap));
     }
 
+    /**
+     * Set the starting coordinates
+     * @param tiledMap
+     * @param grid
+     * @return the starting coords in the format (x,y)
+     */
     private Node setStartCoords(TiledMap tiledMap, Node[][] grid){
         int startGridX = TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap);
         int startGridY = TileMapUtils.positionToCoord(chefSprite.getY(), tiledMap);
@@ -203,6 +226,13 @@ public class Chef implements IInteractable, IGridEntity {
         return grid[startGridX][startGridY];
     }
 
+    /**
+     * Set the end coordinates
+     * @param tiledMap
+     * @param grid
+     * @param camera
+     * @return end coords in format (x,y)
+     */
     private Node setEndCoords(TiledMap tiledMap, Node[][] grid, Camera camera){
         Vector3 unprojectedCoord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         float endWorldX = unprojectedCoord.x - 128;
@@ -212,7 +242,6 @@ public class Chef implements IInteractable, IGridEntity {
         if (!PathfindingUtils.isValidNode(endGridX, endGridY, grid)) return null;
         return grid[endGridX][endGridY];
     }
-
 
     /**
      * Interact.
@@ -273,8 +302,15 @@ public class Chef implements IInteractable, IGridEntity {
         }
     }
 
-    //This function allows your chef to give the interacted chef some food
-    //Keep in mind that the parameter chef refers to the chef who is giving, and interactedChef refers to the chef who is receiving
+    /**
+     * This function allows your chef to give the interacted chef some food.
+     * Keep in mind that the parameter chef refers to the chef who is giving, and interactedChef refers to the chef who is receiving
+     * @param chef           the chef that interacted with the object
+     * @param interactedNode the interacted node - the node which is being interacted with
+     * @param tiledMap       the tiled map
+     * @param grid           the grid
+     * @param match          the match
+     */
     @Override
     public void onInteract(Chef chef, Node interactedNode, TiledMap tiledMap, Node[][] grid, Match match) {
         if(chef.getFoodStack().isEmpty()) return;
@@ -289,15 +325,29 @@ public class Chef implements IInteractable, IGridEntity {
 
     }
 
+    /**
+     * Return the node that has been interacted with
+     * @param grid
+     * @param tiledMap
+     * @return
+     */
     private Node getInteractedNode(Node[][] grid, TiledMap tiledMap){
         return TileMapUtils.getNodeAtFacing(pathfindingActor.getFacing(), grid, grid[TileMapUtils.positionToCoord(chefSprite.getX(), tiledMap)][TileMapUtils.positionToCoord(chefSprite.getY(),tiledMap)]);
     }
 
+    /**
+     * Return the previous grid postiion
+     * @return
+     */
     @Override
     public Vector2 getPreviousGridPosition() {
         return gridPosition;
     }
 
+    /**
+     * set the current grid position
+     * @param gridPos the grid pos
+     */
     @Override
     public void setCurrentGridPosition(Vector2 gridPos) {
         gridPosition = gridPos;

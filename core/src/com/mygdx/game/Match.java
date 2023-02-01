@@ -54,29 +54,6 @@ public class Match {
         }
         status = true;
     }
-
-    /**
-     * If customer is served within the tolerance time limit, a reputation point earned.
-     * If customer's tolerance runs out, a reputation point is lost.
-     *
-     * @param customer  customer for the current match
-     * @param tolerance customer's tolerance in seconds
-     * @return 0 if customer is waiting for the food,
-     * 1 if customer is served within the time limit,
-     * -1 if customer runs out of tolerance waiting
-     */
-    /*public int tolerance(Customer customer, int tolerance) {
-        if (customer.runTimer(tolerance) == -1) {
-            reputationPoints--;
-            return -1;
-        } else if (customer.beenServed) {
-            reputationPoints++;
-            customerServed++;
-            return 1;
-        }
-        return 0;
-    }*/
-
     /**
      * Conditions for the match. "ENDLESS" match ends when reputationPoints reaches 0.
      *
