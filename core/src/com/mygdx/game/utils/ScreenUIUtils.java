@@ -115,7 +115,10 @@ public class ScreenUIUtils {
                 //game.setScreen(mainMenu.getGameScreen());
                 return buttonDifficulty;
             }
-        }else{
+        }else if(currentDifficulty == buttonDifficulty){
+            batch.draw(hoveredButtonTexture, button.x, button.y);
+        }
+        else{
             batch.draw(unHoveredButtonTexture, button.x, button.y);
         }
         return currentDifficulty;
