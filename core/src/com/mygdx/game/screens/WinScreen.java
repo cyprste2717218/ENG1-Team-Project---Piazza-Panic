@@ -2,7 +2,6 @@ package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -10,15 +9,42 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
+/**
+ * The type Win screen.
+ */
 public class WinScreen implements Screen {
 
+    /**
+     * The Game screen.
+     */
     GameScreen gameScreen;
+    /**
+     * The Time taken.
+     */
     float timeTaken;
+    /**
+     * The Reputation points.
+     */
     int reputationPoints;
     private BitmapFont font, fontRep;
-    Texture arrowBlack, arrowGreen;
+    /**
+     * The Arrow black.
+     */
+    Texture arrowBlack, /**
+     * The Arrow green.
+     */
+    arrowGreen;
+    /**
+     * The Arrow button.
+     */
     Rectangle arrowButton;
 
+    /**
+     * Instantiates a new Win screen.
+     *
+     * @param gameScreen the game screen
+     * @param startTime  the start time
+     */
     public WinScreen(GameScreen gameScreen, long startTime){
         this.gameScreen = gameScreen;
         this.reputationPoints = gameScreen.getMatch().getReputationPoints();
@@ -40,7 +66,7 @@ public class WinScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0.89f,0.97f,0.99f,1);
         gameScreen.game.batch.begin();
-        gameScreen.game.batch.setProjectionMatrix(gameScreen.mainMenu.camera.combined);
+        gameScreen.game.batch.setProjectionMatrix(gameScreen.getMainMenu().getCamera().combined);
         font.getData().setScale(1.3F,1.3F);
         GlyphLayout scoreLayout = new GlyphLayout(font,"Time Taken: " + String.format("%.2f",timeTaken) + "s");
 
@@ -54,7 +80,7 @@ public class WinScreen implements Screen {
             font.draw(gameScreen.game.batch,winLayout,442.5f,420f);
         }
         fontRep.draw(gameScreen.game.batch,scoreLayout,900,740);
-        gameScreen.mainMenu.screenUIUtils.createScreenChangingButton(arrowButton,arrowGreen,arrowBlack,gameScreen.mainMenu);
+        gameScreen.getMainMenu().getScreenUIUtils().createScreenChangingButton(arrowButton,arrowGreen,arrowBlack, gameScreen.getMainMenu());
         gameScreen.game.batch.end();
     }
 

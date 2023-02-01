@@ -3,19 +3,15 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.Chef;
 import com.mygdx.game.Customer;
@@ -27,7 +23,6 @@ import com.mygdx.game.foodClasses.Food;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.interfaces.IGridEntity;
 import com.mygdx.game.interfaces.IInteractable;
-import com.mygdx.game.interfaces.ITimer;
 import com.mygdx.game.stations.ServingStation;
 import com.mygdx.game.stations.Stations;
 import com.mygdx.game.utils.SoundUtils;
@@ -38,42 +33,160 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The type Game screen.
+ */
 public class GameScreen implements Screen {
+    /**
+     * The Game.
+     */
     PiazzaPanic game;
-    public MainMenu mainMenu;
+    private MainMenu mainMenu;
     private Texture arrowBlack,arrowGreen, tutorialBlack, tutorialGreen, recipiesBlack, recipiesGreen;
     private Rectangle arrowButton, tutorialButton, recipiesButton;
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TiledMap tiledMap;
     private Node[][] grid;
-    public static List<Customer> customers;	// array of active customers
+    private static List<Customer> customers;	// array of active customers
     private Long lastCustomerTime;
     private Chef[] chefs;
     private int selectedChef = 0;
-    public static List<Food> RENDERED_FOODS;
-    public static List<TimerUtils> TIMER_USERS;
-    public static List<ServingStation> availableServingStations;
+    private static List<Food> RENDERED_FOODS;
+    private static List<TimerUtils> TIMER_USERS;
+    private static List<ServingStation> availableServingStations;
     private BitmapFont customerSevedFont, reputationPointsFont, moneyGainedFont;
-    public boolean canPressBackButton;
-    public long buttonPressTime;
+    private boolean canPressBackButton;
+    private long buttonPressTime;
     private Match match;
+    /**
+     * The Customer served text.
+     */
     GlyphLayout customerServedText;
+    /**
+     * The Reputation points text.
+     */
     GlyphLayout reputationPointsText;
+    /**
+     * The Money gained text.
+     */
     GlyphLayout moneyGainedText;
-    public static boolean canSpawnCustomers;
+    private static boolean canSpawnCustomers;
+    /**
+     * The Recipe screen.
+     */
     RecipeScreen recipeScreen;
+    /**
+     * The Tutorial screen.
+     */
     TutorialScreen tutorialScreen;
 
+    /**
+     * Instantiates a new Game screen.
+     *
+     * @param game     the game
+     * @param mainMenu the main menu
+     */
     public GameScreen(PiazzaPanic game, MainMenu mainMenu){
         this.game = game;
-        this.mainMenu = mainMenu;
+        this.setMainMenu(mainMenu);
+    }
+
+    /**
+     * Gets customers.
+     *
+     * @return the customers
+     */
+    public static List<Customer> getCustomers() {
+        return customers;
+    }
+
+    /**
+     * Sets customers.
+     *
+     * @param customers the customers
+     */
+    public static void setCustomers(List<Customer> customers) {
+        GameScreen.customers = customers;
+    }
+
+    /**
+     * Gets rendered foods.
+     *
+     * @return the rendered foods
+     */
+    public static List<Food> getRenderedFoods() {
+        return RENDERED_FOODS;
+    }
+
+    /**
+     * Sets rendered foods.
+     *
+     * @param renderedFoods the rendered foods
+     */
+    public static void setRenderedFoods(List<Food> renderedFoods) {
+        RENDERED_FOODS = renderedFoods;
+    }
+
+    /**
+     * Gets timer users.
+     *
+     * @return the timer users
+     */
+    public static List<TimerUtils> getTimerUsers() {
+        return TIMER_USERS;
+    }
+
+    /**
+     * Sets timer users.
+     *
+     * @param timerUsers the timer users
+     */
+    public static void setTimerUsers(List<TimerUtils> timerUsers) {
+        TIMER_USERS = timerUsers;
+    }
+
+    /**
+     * Gets available serving stations.
+     *
+     * @return the available serving stations
+     */
+    public static List<ServingStation> getAvailableServingStations() {
+        return availableServingStations;
+    }
+
+    /**
+     * Sets available serving stations.
+     *
+     * @param availableServingStations the available serving stations
+     */
+    public static void setAvailableServingStations(List<ServingStation> availableServingStations) {
+        GameScreen.availableServingStations = availableServingStations;
+    }
+
+    /**
+     * Is can spawn customers boolean.
+     *
+     * @return the boolean
+     */
+    public static boolean isCanSpawnCustomers() {
+        return canSpawnCustomers;
+    }
+
+    /**
+     * Sets can spawn customers.
+     *
+     * @param canSpawnCustomers the can spawn customers
+     */
+    public static void setCanSpawnCustomers(boolean canSpawnCustomers) {
+        GameScreen.canSpawnCustomers = canSpawnCustomers;
     }
 
     @Override
     public void show() {
-        if(mainMenu.createNewMatch){
-            mainMenu.createNewMatch = false;
+        if(getMainMenu().isCreateNewMatch()){
+            getMainMenu().setCreateNewMatch(false);
             this.match = new Match(5);
+            match.setDifficultyLevel(getMainMenu().getStoredDifficultyLevel());
             selectedChef = 0;
 
             arrowBlack = new Texture("Menu/arrowBlack65.png");
@@ -108,39 +221,42 @@ public class GameScreen implements Screen {
 
             spawnChefs();
 
-            Food salad = new Food(FoodItems.SALAD);
-            salad.setTileMapPosition(2,2, grid, tiledMap);
-            RENDERED_FOODS.add(salad);
-
-            Food burger = new Food(FoodItems.BURGER);
-            burger.setTileMapPosition(6,6, grid, tiledMap);
-            RENDERED_FOODS.add(burger);
-
             Stations.clearServingStations();
             Stations.createAllStations(grid, tiledMap);
 
             // Customer spawning
-            canSpawnCustomers = true;
+            setCanSpawnCustomers(true);
             customers = new ArrayList<>();
             lastCustomerTime = TimeUtils.nanoTime();
 
             recipeScreen = new RecipeScreen(this);
             tutorialScreen = new TutorialScreen(this);
         }
-        canPressBackButton = false;
-        buttonPressTime = TimeUtils.millis();
-        mainMenu.camera.zoom = 0.65f;
-        mainMenu.camera.translate(-375,-135);
-        game.batch.setProjectionMatrix(mainMenu.camera.combined);
+        setCanPressBackButton(false);
+        setButtonPressTime(TimeUtils.millis());
+        getMainMenu().getCamera().zoom = 0.65f;
+        getMainMenu().getCamera().translate(-375,-135);
+        game.batch.setProjectionMatrix(getMainMenu().getCamera().combined);
     }
 
-    public void startGame(DifficultyLevel difficultyLevel){
-        match.setDifficultyLevel(difficultyLevel);
+    /**
+     * Start game.
+     */
+    public void startGame(){
         game.setScreen(this);
     }
 
+    /**
+     * Handles the chef movements, inputs and switching
+     */
     public void handleChefs(){
-        chefs[selectedChef].move(tiledMap, grid, mainMenu.camera, match);
+        chefs[selectedChef].move(tiledMap, grid, getMainMenu().getCamera(), match);
+        for(Chef chef : chefs){
+            if(chef == chefs[selectedChef]) continue;
+            if(!chef.getPathfindingActor().getWorldPath().isEmpty()){
+                chef.getPathfindingActor().followPath(chef.getSprite(), 100f, chef.getMovementTextures());
+            }
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.F)){
             chefs[selectedChef].interact(grid, tiledMap, match);
         }
@@ -149,11 +265,8 @@ public class GameScreen implements Screen {
 
     private void spawnChefs(){
         chefs = new Chef[2];
-        Texture chefTexture = new Texture("chefSprite.png");
-        chefs[0] = new Chef(chefTexture);
-
-        Texture chefTexture2 = new Texture("chefSprite.png");
-        chefs[1] = new Chef(chefTexture2);
+        chefs[0] = new Chef(0);
+        chefs[1] = new Chef(1);
 
         chefs[0].setTileMapPosition(3,9,grid,tiledMap);
         chefs[1].setTileMapPosition(7,10,grid,tiledMap);
@@ -161,20 +274,19 @@ public class GameScreen implements Screen {
 
     private void swapChef(){
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            chefs[selectedChef].getPathfindingActor().getWorldPath().clear();
             selectedChef = selectedChef == chefs.length - 1 ? 0 : selectedChef + 1;
             SoundUtils.getChefSwitchSound().play();
         }
     }
 
     private void spawnCustomer() {
-        if(availableServingStations.isEmpty()) return;
+        if(getAvailableServingStations().isEmpty()) return;
         Texture customerTexture = new Texture("badlogic.jpg");
-        Customer customer = new Customer(customerTexture, 50);
+        Customer customer = new Customer(50);
         customer.getSprite().setPosition(TileMapUtils.coordToPosition(8, tiledMap), TileMapUtils.coordToPosition(1, tiledMap));
-        customers.add(customer);
+        getCustomers().add(customer);
         customer.onSpawn(grid, tiledMap);
-        System.out.println("Customer spawned with order: "+ customer.getOrder().name);
+        System.out.println("Customer spawned with order: "+ customer.getOrder().getName());
         SoundUtils.getCustomerSpawnSound().play();
     }
 
@@ -182,25 +294,25 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         //System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
-        mainMenu.camera.update();
+        getMainMenu().getCamera().update();
         Gdx.gl.glClearColor(0.89f,0.97f,0.99f,1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        orthogonalTiledMapRenderer.setView(mainMenu.camera);
-        updateGridEntities(chefs, RENDERED_FOODS, customers);
+        orthogonalTiledMapRenderer.setView(getMainMenu().getCamera());
+        updateGridEntities(chefs, getRenderedFoods(), getCustomers());
 
         game.batch.begin();
-        game.batch.setProjectionMatrix(mainMenu.camera.combined);
+        game.batch.setProjectionMatrix(getMainMenu().getCamera().combined);
         orthogonalTiledMapRenderer.render();
         game.batch.end();
         game.batch.begin();
-        game.batch.setProjectionMatrix(mainMenu.camera.combined);
-        mainMenu.screenUIUtils.createScreenChangingButton(tutorialButton, tutorialGreen, tutorialBlack, tutorialScreen);
-        mainMenu.screenUIUtils.createScreenChangingButton(recipiesButton, recipiesGreen, recipiesBlack, recipeScreen);
+        game.batch.setProjectionMatrix(getMainMenu().getCamera().combined);
+        getMainMenu().getScreenUIUtils().createScreenChangingButton(tutorialButton, tutorialGreen, tutorialBlack, tutorialScreen);
+        getMainMenu().getScreenUIUtils().createScreenChangingButton(recipiesButton, recipiesGreen, recipiesBlack, recipeScreen);
 
         //Adds a delay before the back button can be pressed so that it won't be triggered while trying to exit other screens
-        mainMenu.screenUIUtils.createDisablableScreenChangingButton(arrowButton, arrowGreen, arrowBlack, mainMenu, canPressBackButton);
-        if(!canPressBackButton && TimeUtils.millis() - 250L >= buttonPressTime){
-            canPressBackButton = true;
+        getMainMenu().getScreenUIUtils().createDisablableScreenChangingButton(arrowButton, arrowGreen, arrowBlack, getMainMenu(), isCanPressBackButton());
+        if(!isCanPressBackButton() && TimeUtils.millis() - 250L >= getButtonPressTime()){
+            setCanPressBackButton(true);
             System.out.println("Can press button");
         }
 
@@ -211,10 +323,14 @@ public class GameScreen implements Screen {
         customerSevedFont.draw(game.batch, customerServedText, 525, 500);
         reputationPointsFont.draw(game.batch, reputationPointsText, 525, 475);
         moneyGainedFont.draw(game.batch, moneyGainedText, 525,450);
-        for(Chef chef: chefs){chef.getSprite().draw(game.batch);}
-        for(Food food : RENDERED_FOODS){game.batch.draw(food.getSprite().getTexture(), food.getSprite().getX() + 96, food.getSprite().getY() + 96);}
+        for(Chef chef: chefs){
+            //chef.getSprite().draw(game.batch);
+            //chef.drawFoodOnStack(game.batch);
+            chef.drawSprites(game.batch);
+        }
+        for(Food food : getRenderedFoods()){game.batch.draw(food.getSprite().getTexture(), food.getSprite().getX() + 96, food.getSprite().getY() + 96);}
 
-        for(Customer customer: new ArrayList<>(customers)){
+        for(Customer customer: new ArrayList<>(getCustomers())){
             customer.getSprite().draw(game.batch);
             customer.moveCustomer();
         }
@@ -224,21 +340,24 @@ public class GameScreen implements Screen {
         //System.out.println(TileMapUtils.tileMapToString(grid));
 
         //	customer spawning - used a maximum of 5 for number of concurrent customers with 10 seconds delay
-        if(customers.size() < 5 && canSpawnCustomers) {
-            if (TimeUtils.nanoTime() - lastCustomerTime > 1000000000L) {
+        if(getCustomers().size() < 5 && isCanSpawnCustomers()) {
+            if (TimeUtils.nanoTime() - lastCustomerTime > 10000000000L) {
                 lastCustomerTime = TimeUtils.nanoTime();
                 spawnCustomer();
-                System.out.println("Spawning customer: " + customers.size());
+                System.out.println("Spawning customer: " + getCustomers().size());
             }
         }
-        if(match.getCustomerServed() == 5){
+        else{
+            lastCustomerTime = TimeUtils.nanoTime() - 5000000000L;
+        }
+        if(match.getCustomerServed() == match.getDifficultyLevel().getCustomerTarget()){
             game.setScreen(new WinScreen(this, match.getTimer()));
         }
         runTimers();
     }
 
     private void runTimers(){
-        for(TimerUtils timerUser: TIMER_USERS){
+        for(TimerUtils timerUser: getTimerUsers()){
             timerUser.runTimer(chefs[selectedChef]);
             timerUser.renderTimer(game.batch);
         }
@@ -280,7 +399,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        mainMenu.resize(width, height);
+        getMainMenu().resize(width, height);
     }
 
     @Override
@@ -295,8 +414,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-        mainMenu.camera.translate(375,135);
-        mainMenu.camera.zoom = 1f;
+        getMainMenu().getCamera().translate(375,135);
+        getMainMenu().getCamera().zoom = 1f;
     }
 
     @Override
@@ -310,7 +429,67 @@ public class GameScreen implements Screen {
         tiledMap.dispose();
         orthogonalTiledMapRenderer.dispose();
     }
+
+    /**
+     * Gets match.
+     *
+     * @return the match
+     */
     public Match getMatch() {
         return match;
+    }
+
+    /**
+     * Gets main menu.
+     *
+     * @return the main menu
+     */
+    public MainMenu getMainMenu() {
+        return mainMenu;
+    }
+
+    /**
+     * Sets main menu.
+     *
+     * @param mainMenu the main menu
+     */
+    public void setMainMenu(MainMenu mainMenu) {
+        this.mainMenu = mainMenu;
+    }
+
+    /**
+     * Is can press back button boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isCanPressBackButton() {
+        return canPressBackButton;
+    }
+
+    /**
+     * Sets can press back button.
+     *
+     * @param canPressBackButton the can press back button
+     */
+    public void setCanPressBackButton(boolean canPressBackButton) {
+        this.canPressBackButton = canPressBackButton;
+    }
+
+    /**
+     * Gets button press time.
+     *
+     * @return the button press time
+     */
+    public long getButtonPressTime() {
+        return buttonPressTime;
+    }
+
+    /**
+     * Sets button press time.
+     *
+     * @param buttonPressTime the button press time
+     */
+    public void setButtonPressTime(long buttonPressTime) {
+        this.buttonPressTime = buttonPressTime;
     }
 }

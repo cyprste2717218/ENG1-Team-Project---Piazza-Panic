@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -15,16 +16,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Pathfinding actor.
+ */
 public class PathfindingActor {
 
     private List<Vector2> worldPath;
     private int pathfindingCounter;
     private Facing facing;
+    /**
+     * The Start.
+     */
     Node start;
+    /**
+     * The End.
+     */
     Node end;
+    /**
+     * The Grid.
+     */
     Node[][] grid;
+    /**
+     * The Tiled map.
+     */
     TiledMap tiledMap;
 
+    /**
+     * Instantiates a new Pathfinding actor.
+     *
+     * @param start    the start
+     * @param end      the end
+     * @param grid     the grid
+     * @param tiledMap the tiled map
+     */
     public PathfindingActor(Node start, Node end, Node[][] grid, TiledMap tiledMap){
         this.start = start;
         this.end = end;
@@ -35,27 +59,60 @@ public class PathfindingActor {
         facing = Facing.UP;
     }
 
+    /**
+     * Get world path list.
+     *
+     * @return the list
+     */
     public List<Vector2> getWorldPath(){
         return worldPath;
     }
 
+    /**
+     * Get pathfinding counter int.
+     *
+     * @return the int
+     */
     public int getPathfindingCounter(){
         return pathfindingCounter;
     }
 
+    /**
+     * Set pathfinding counter.
+     *
+     * @param pCounter the p counter
+     */
     public void setPathfindingCounter(int pCounter){
         pathfindingCounter = pCounter;
     }
 
-    public void setFacing(Sprite sprite, Facing direction){
+    /**
+     * Set facing.
+     *
+     * @param sprite           the sprite
+     * @param direction        the direction
+     * @param movementTextures the movement textures
+     */
+    public void setFacing(Sprite sprite, Facing direction, Texture[] movementTextures){
         facing = direction;
-        sprite.setRotation(90f * facing.ordinal());
+        sprite.setTexture(movementTextures[facing.ordinal()]);
+        //sprite.setRotation(90f * facing.ordinal());
     }
 
+    /**
+     * Get facing facing.
+     *
+     * @return the facing
+     */
     public Facing getFacing(){
         return facing;
     }
 
+    /**
+     * Create thread and pathfind list.
+     *
+     * @return the list
+     */
     public List<Vector2> createThreadAndPathfind(){
         //If the start or end is invalid, return an empty list
         if(start == null || end == null) return Collections.emptyList();
@@ -71,8 +128,15 @@ public class PathfindingActor {
         return worldPath;
     }
 
-    //Makes the sprite follow the path
-    public void followPath(Sprite sprite, float speed){
+    /**
+     * Follow path.
+     *
+     * @param sprite           the sprite
+     * @param speed            the speed
+     * @param movementTextures the movement textures
+     */
+//Makes the sprite follow the path
+    public void followPath(Sprite sprite, float speed, Texture[] movementTextures){
 
         if(pathfindingCounter >= worldPath.size()) return;
         int pointBuffer = 2;
@@ -80,7 +144,7 @@ public class PathfindingActor {
         //The direction from point a to point b = atan(bY-aY,bX-aX)
         float angle = (float) Math.atan2(worldPath.get(pathfindingCounter).y - sprite.getY(), worldPath.get(pathfindingCounter).x - sprite.getX());
         Vector2 movementDir = new Vector2((float)Math.cos(angle) * speed, (float)Math.sin(angle) * speed);
-        setPathfinderFacing(movementDir, sprite);
+        setPathfinderFacing(movementDir, sprite, movementTextures);
         sprite.setPosition(sprite.getX() + movementDir.x * Gdx.graphics.getDeltaTime(), sprite.getY() + movementDir.y * Gdx.graphics.getDeltaTime());
 
         if(Math.abs(worldPath.get(pathfindingCounter).x - sprite.getX()) <= pointBuffer && Math.abs(worldPath.get(pathfindingCounter).y - sprite.getY()) <= pointBuffer){
@@ -89,19 +153,25 @@ public class PathfindingActor {
     }
 
     //This function controls the direction the sprite is facing during its pathfinding
-    private void setPathfinderFacing(Vector2 movementDir, Sprite sprite){
+    private void setPathfinderFacing(Vector2 movementDir, Sprite sprite, Texture[] movementTextures){
         //check which movement direction is the largest and face that way
         if(Math.abs(movementDir.x) > Math.abs(movementDir.y)){
-            if(movementDir.x > 0) setFacing(sprite, Facing.RIGHT);
-            else setFacing(sprite, Facing.LEFT);
+            if(movementDir.x > 0) setFacing(sprite, Facing.RIGHT, movementTextures);
+            else setFacing(sprite, Facing.LEFT, movementTextures);
         }
         else{
-            if(movementDir.y > 0) setFacing(sprite, Facing.UP);
-            else setFacing(sprite, Facing.DOWN);
+            if(movementDir.y > 0) setFacing(sprite, Facing.UP, movementTextures);
+            else setFacing(sprite, Facing.DOWN, movementTextures);
         }
     }
 
-    //This function draws a line along the path to provide a visual indicator
+    /**
+     * Draw path.
+     *
+     * @param camera the camera
+     * @param sprite the sprite
+     */
+//This function draws a line along the path to provide a visual indicator
     public void drawPath(Camera camera, Sprite sprite){
         if(worldPath.isEmpty()) return;
         ShapeRenderer shapeRenderer = new ShapeRenderer();

@@ -8,16 +8,26 @@ import com.mygdx.game.Node;
 import com.mygdx.game.foodClasses.FoodItems;
 import com.mygdx.game.utils.SoundUtils;
 
+/**
+ * The type Cutting station.
+ */
 public class CuttingStation extends CookingStation{
 
+    /**
+     * Instantiates a new Cutting station.
+     *
+     * @param operationTimer     the operation timer
+     * @param canLeaveUnattended the can leave unattended
+     * @param stationTexture     the station texture
+     */
     public CuttingStation(float operationTimer, boolean canLeaveUnattended, Texture stationTexture) {
         //Set sprite, timer and canLeaveUnattended Here
         super(operationTimer, canLeaveUnattended, stationTexture);
-        operationLookupTable.put(FoodItems.LETTUCE.name, FoodItems.CHOPPED_LETTUCE);
-        operationLookupTable.put(FoodItems.ONION.name, FoodItems.CHOPPED_ONION);
-        operationLookupTable.put(FoodItems.TOMATO.name, FoodItems.CHOPPED_TOMATO);
-        operationLookupTable.put(FoodItems.CHEESE.name, FoodItems.SLICED_CHEESE);
-        operationLookupTable.put(FoodItems.BEEF_MINCE.name, FoodItems.RAW_PATTY);
+        operationLookupTable.put(FoodItems.LETTUCE.getName(), FoodItems.CHOPPED_LETTUCE);
+        operationLookupTable.put(FoodItems.ONION.getName(), FoodItems.CHOPPED_ONION);
+        operationLookupTable.put(FoodItems.TOMATO.getName(), FoodItems.CHOPPED_TOMATO);
+        operationLookupTable.put(FoodItems.CHEESE.getName(), FoodItems.SLICED_CHEESE);
+        operationLookupTable.put(FoodItems.BEEF_MINCE.getName(), FoodItems.RAW_PATTY);
     }
 
     @Override

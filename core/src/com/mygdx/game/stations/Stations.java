@@ -16,6 +16,9 @@ import java.util.Stack;
 
 public class Stations {
 
+    /**
+     * The list of all serving stations in the level
+     */
     public static List<ServingStation> servingStations = new ArrayList<>();
     public static CuttingStation CHOPPING_BOARD = new CuttingStation(10, true, new Texture("FoodStations/choppingBoard.png"));
     public static FryingStation FRYER = new FryingStation(10, true, new Texture("FoodStations/fryer.png"));
@@ -27,11 +30,11 @@ public class Stations {
     public static IngredientStation BURGER_BUN_STATION = new IngredientStation(FoodItems.BUN, new Texture("FoodStations/bunsStation.png"));
     public static IngredientStation CHEESE_STATION = new IngredientStation(FoodItems.CHEESE, new Texture("stationSprite.png"));
     public static IngredientStation WATER_BUCKET_STATION = new IngredientStation(FoodItems.WATER_BUCKET, new Texture("FoodItems/waterBucket.png"));
-    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/prepArea.png"));
-    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/prepArea.png"));
+    public static ServingStation SERVING_STATION_1 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_2 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_3 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_4 = new ServingStation(new Texture("FoodStations/serving_station.png"));
+    public static ServingStation SERVING_STATION_5 = new ServingStation(new Texture("FoodStations/serving_station.png"));
     private static void createAllServingStations(Node[][] grid, TiledMap tiledMap){
         SERVING_STATION_1.setTileMapPosition(12, 4, grid, tiledMap);
         SERVING_STATION_2.setTileMapPosition(12, 2, grid, tiledMap);
@@ -40,6 +43,9 @@ public class Stations {
         SERVING_STATION_5.setTileMapPosition(6, 2, grid, tiledMap);
     }
 
+    /**
+     * Clears the data from all serving stations
+     */
     public static void clearServingStations(){
         SERVING_STATION_1.clearStation();
         SERVING_STATION_2.clearStation();
@@ -49,7 +55,12 @@ public class Stations {
     }
 
 
-    // function to apply texture to station, then position it onto the tile map
+    /**
+     * Creates all the stations when the game is loaded and places them on the grid.
+     *
+     * @param grid     the grid
+     * @param tiledMap the tiled map
+     */
     public static void createAllStations(Node[][] grid, TiledMap tiledMap){
         CHOPPING_BOARD.setTileMapPosition(2, 14, grid, tiledMap);
         FRYER.setTileMapPosition(4, 14, grid, tiledMap);
@@ -69,6 +80,11 @@ public class Stations {
         System.out.print("Stations Created\n");
     }
 
+    /**
+     * Renders all stations.
+     *
+     * @param batch the sprite batch
+     */
     public static void renderAllStations(SpriteBatch batch)  {
         CHOPPING_BOARD.getSprite().draw(batch);
         FRYER.getSprite().draw(batch);
@@ -79,7 +95,6 @@ public class Stations {
         ONION_STATION.getSprite().draw(batch);
         BEEF_MINCE_STATION.getSprite().draw(batch);
         BURGER_BUN_STATION.getSprite().draw(batch);
-        //CHEESE_STATION.getSprite().draw(batch);
         WATER_BUCKET_STATION.getSprite().draw(batch);
 
         for(ServingStation servingStation: servingStations){
