@@ -187,6 +187,7 @@ public class GameScreen implements Screen {
             getMainMenu().setCreateNewMatch(false);
             this.match = new Match(5);
             match.setDifficultyLevel(getMainMenu().getStoredDifficultyLevel());
+            System.out.println("Difficulty: " + match.getDifficultyLevel().name());
             selectedChef = 0;
 
             arrowBlack = new Texture("Menu/arrowBlack65.png");
@@ -237,13 +238,6 @@ public class GameScreen implements Screen {
         getMainMenu().getCamera().zoom = 0.65f;
         getMainMenu().getCamera().translate(-375,-135);
         game.batch.setProjectionMatrix(getMainMenu().getCamera().combined);
-    }
-
-    /**
-     * Start game.
-     */
-    public void startGame(){
-        game.setScreen(this);
     }
 
     /**

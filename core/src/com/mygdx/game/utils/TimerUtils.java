@@ -59,9 +59,9 @@ public class TimerUtils {
         currentTime = TimeUtils.millis();
         this.match = match;
         totalTime = currentTime + (long)(startTime * match.getDifficultyLevel().getTimeMultipier() * 1000);
-        this.startTime = startTime;
+        this.startTime = startTime * match.getDifficultyLevel().getTimeMultipier();
         this.timerUser = timerUser;
-        currentTimeSeconds = startTime;
+        currentTimeSeconds = this.startTime;
         isRunning = false;
         GameScreen.getTimerUsers().add(this);
         this.sprite = sprite;
@@ -99,6 +99,7 @@ public class TimerUtils {
         }
         else{
             if(TimeUtils.millis() - 1000 >= currentTime){
+                System.out.println(currentTime);
                 currentTime += 1000;
                 currentTimeSeconds--;
                 System.out.println(currentTimeSeconds);

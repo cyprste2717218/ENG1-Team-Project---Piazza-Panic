@@ -13,18 +13,18 @@ import com.mygdx.game.enums.NodeType;
 import java.util.*;
 
 /**
- * The type Pathfinding utils.
+ * A helper class for the pathfinding algorithm
  */
 public class PathfindingUtils {
     private PathfindingUtils(){}
 
     /**
-     * Find path vector 2 [ ].
+     * Uses the A* pathfinding algorithm to find path in format vector2[ ].
      *
-     * @param start the start
-     * @param end   the end
-     * @param grid  the grid
-     * @return the vector 2 [ ]
+     * @param start the start node
+     * @param end   the end node
+     * @param grid  the grid to pathfind on
+     * @return the vector2[ ] path that is found
      */
 //Pathfinds between two grid co-ordinates
     public static Vector2[] findPath(Node start, Node end, Node[][] grid){
@@ -60,11 +60,13 @@ public class PathfindingUtils {
 
     /**
      * Find best interacting node node.
+     * When pathfinding to an interactable node, we want to stop next to it, face it and interact
+     * This function finds the best node to stop at before reaching the interactable node
      *
-     * @param start the start
-     * @param end   the end
-     * @param grid  the grid
-     * @return the node
+     * @param start the start node
+     * @param end   the end node
+     * @param grid  the pathfinding grid
+     * @return the node to stop at
      */
 //Finds the node next to an interactable node that should be pathfound to
     //It finds the most extreme direction of the shortest node to path to
@@ -103,11 +105,11 @@ public class PathfindingUtils {
     }
 
     /**
-     * Calculate final facing facing.
+     * Calculates which direction to face at the end.
      *
-     * @param penultimate the penultimate
-     * @param end         the end
-     * @return the facing
+     * @param penultimate the penultimate node
+     * @param end         the end nde
+     * @return the direction to face
      */
 //Because all interactable objects path to one space before them, this function calculates the correct direction for the sprite to face to interact with the object on a neighbouring node
     public static Facing calculateFinalFacing(Node penultimate, Node end){
@@ -131,11 +133,11 @@ public class PathfindingUtils {
     }
 
     /**
-     * Convert grid path to world list.
+     * Converts a path in grid co-ordinates to a path in world co-ordinates
      *
-     * @param path     the path
+     * @param path     the path in grid co-ordinates
      * @param tiledMap the tiled map
-     * @return the list
+     * @return the path in world co-ordinates list
      */
 //Converts a path in grid co-ordinates to world co-ordinates
     public static List<Vector2> convertGridPathToWorld(Vector2[] path, TiledMap tiledMap){
@@ -161,6 +163,7 @@ public class PathfindingUtils {
 
     /**
      * Is valid node boolean.
+     * Checks the node is on the grid
      *
      * @param gridX the grid x
      * @param gridY the grid y
@@ -174,6 +177,7 @@ public class PathfindingUtils {
 
     /**
      * Is valid node boolean.
+     * Checks the node is on the grid
      *
      * @param node the node
      * @param grid the grid
